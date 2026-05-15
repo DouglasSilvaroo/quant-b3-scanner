@@ -11,6 +11,14 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from scanner import executar_scanner
+from auth import (
+    tela_login,
+    tela_cadastro
+)
+
+from database import (
+    criar_tabela_usuarios
+)
 
 from statsmodels.tsa.stattools import coint
 from statsmodels.regression.linear_model import OLS
@@ -25,6 +33,20 @@ st.set_page_config(
     page_icon="📈",
     layout="wide"
 )
+
+# ==========================================
+# BANCO
+# ==========================================
+
+criar_tabela_usuarios()
+
+# ==========================================
+# SESSÃO
+# ==========================================
+
+if "logado" not in st.session_state:
+
+    st.session_state["logado"] = False
 
 # ==========================================
 # LISTA B3
@@ -90,16 +112,44 @@ LISTA_ATIVOS = [
     "UGPA3.SA"
 
 ]
+# ==========================================
+# LOGIN
+# ==========================================
+
+if not st.session_state["logado"]:
+
+    st.title("🏦 QUANT B3 INSTITUCIONAL")
+
+    aba1, aba2 = st.tabs([
+        "Login",
+        "Cadastro"
+    ])
+
+    with aba1:
+
+        tela_login()
+
+    with aba2:
+
+        tela_cadastro()
+
+    st.stop()
 
 # ==========================================
-# TÍTULO
+# PAINEL
 # ==========================================
 
 st.title("📊 PAINEL SPREADS")
 
 st.markdown(
-    "### Plataforma Profissional de Pair Trading"
+    f"### Usuário logado: {st.session_state['usuario']}"
 )
+
+if st.button("Logout"):
+
+    st.session_state["logado"] = False
+
+    st.rerun()
 
 # ==========================================
 # SIDEBAR
