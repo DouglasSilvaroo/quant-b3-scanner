@@ -8,7 +8,6 @@ from supabase import create_client
 # ==========================================
 
 SUPABASE_URL = os.getenv("SUPABASE_URL")
-
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 supabase = create_client(
@@ -27,14 +26,14 @@ def criar_usuario(
 
     try:
 
-        usuario_existente = supabase.table(
+        resposta = supabase.table(
             "usuarios"
         ).select("*").eq(
             "username",
             username
         ).execute()
 
-        if usuario_existente.data:
+        if len(resposta.data) > 0:
 
             return False
 
@@ -51,6 +50,7 @@ def criar_usuario(
 
     except Exception as erro:
 
+        print("ERRO CRIAR USUARIO:")
         print(erro)
 
         return False
@@ -70,7 +70,7 @@ def buscar_usuario(username):
             username
         ).execute()
 
-        if resposta.data:
+        if len(resposta.data) > 0:
 
             return resposta.data[0]
 
@@ -78,6 +78,7 @@ def buscar_usuario(username):
 
     except Exception as erro:
 
+        print("ERRO BUSCAR:")
         print(erro)
 
         return None
@@ -112,4 +113,5 @@ def salvar_operacao(
 
     except Exception as erro:
 
+        print("ERRO SALVAR:")
         print(erro)
