@@ -8,21 +8,15 @@ from database import (
 )
 
 # ==========================================
-# HASH SENHA
+# HASH
 # ==========================================
 
 def gerar_hash(senha):
 
-    senha_bytes = senha.encode("utf-8")
-
-    salt = bcrypt.gensalt()
-
-    hash_senha = bcrypt.hashpw(
-        senha_bytes,
-        salt
-    )
-
-    return hash_senha.decode("utf-8")
+    return bcrypt.hashpw(
+        senha.encode("utf-8"),
+        bcrypt.gensalt()
+    ).decode("utf-8")
 
 # ==========================================
 # VERIFICAR SENHA
@@ -48,13 +42,13 @@ def tela_cadastro():
 
     novo_usuario = st.text_input(
         "Usuário",
-        key="cad_user"
+        key="cadastro_usuario"
     )
 
     nova_senha = st.text_input(
         "Senha",
         type="password",
-        key="cad_pass"
+        key="cadastro_senha"
     )
 
     if st.button("Cadastrar"):
@@ -79,7 +73,7 @@ def tela_cadastro():
         if sucesso:
 
             st.success(
-                "Usuário cadastrado!"
+                "Usuário cadastrado com sucesso!"
             )
 
         else:
@@ -98,13 +92,13 @@ def tela_login():
 
     usuario = st.text_input(
         "Usuário",
-        key="login_user"
+        key="login_usuario"
     )
 
     senha = st.text_input(
         "Senha",
         type="password",
-        key="login_pass"
+        key="login_senha"
     )
 
     if st.button("Entrar"):
@@ -113,33 +107,48 @@ def tela_login():
             usuario
         )
 
-        if usuario_db:
+        # DEBUG
+        print(usuario_db)
 
-            senha_hash = usuario_db["password"]
+        if usuario_db is None:
 
-            if verificar_senha(
-                senha,
-                senha_hash
-            ):
+            st.error(
+                "Usuário não encontrado."
+            )
 
-                st.session_state["logado"] = True
+            return
 
-                st.session_state["usuario"] = usuario
+        senha_hash = usuario_db.get(
+            "password"
+        )
 
-                st.success(
-                    "Login realizado!"
-                )
+        if senha_hash is None:
 
-                st.rerun()
+            st.error(
+                "Senha não encontrada no banco."
+            )
 
-            else:
+            return
 
-                st.error(
-                    "Senha inválida."
-                )
+        senha_valida = verificar_senha(
+            senha,
+            senha_hash
+        )
+
+        if senha_valida:
+
+            st.session_state["logado"] = True
+
+            st.session_state["usuario"] = usuario
+
+            st.success(
+                "Login realizado!"
+            )
+
+            st.rerun()
 
         else:
 
             st.error(
-                "Usuário não encontrado."
+                "Senha inválida."
             )
