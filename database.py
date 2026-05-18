@@ -16,7 +16,7 @@ def criar_tabela_operacoes():
     pass
 
 # ==========================================
-# USUÁRIOS
+# ADICIONAR USUÁRIO
 # ==========================================
 
 def adicionar_usuario(
@@ -30,23 +30,27 @@ def adicionar_usuario(
     )
 
 # ==========================================
-# BUSCAR USUÁRIO
+# VALIDAR USUÁRIO
 # ==========================================
 
 def validar_usuario(username):
 
-    return buscar_usuario(username)
+    return buscar_usuario(
+        username
+    )
 
 # ==========================================
-# OPERAÇÕES
+# SALVAR TRADE
 # ==========================================
 
 def salvar_trade(
+
     ativo1,
     ativo2,
     zscore,
     score,
     sinal
+
 ):
 
     return salvar_operacao(
