@@ -1,8 +1,14 @@
 
-from supabase import create_client
 import os
 
+from supabase import create_client
+
+# ==========================================
+# CONEXÃO
+# ==========================================
+
 SUPABASE_URL = os.getenv("SUPABASE_URL")
+
 SUPABASE_KEY = os.getenv("SUPABASE_KEY")
 
 supabase = create_client(
@@ -11,60 +17,99 @@ supabase = create_client(
 )
 
 # ==========================================
-# USUÁRIOS
+# CRIAR USUÁRIO
 # ==========================================
 
-def criar_usuario(username, password):
+def criar_usuario(
+    username,
+    password
+):
 
-    existente = supabase.table("usuarios").select("*").eq(
-        "username",
-        username
-    ).execute()
+    try:
 
-    if existente.data:
+        usuario_existente = supabase.table(
+            "usuarios"
+        ).select("*").eq(
+            "username",
+            username
+        ).execute()
+
+        if usuario_existente.data:
+
+            return False
+
+        supabase.table(
+            "usuarios"
+        ).insert({
+
+            "username": username,
+            "password": password
+
+        }).execute()
+
+        return True
+
+    except Exception as erro:
+
+        print(erro)
 
         return False
 
-    supabase.table("usuarios").insert({
+# ==========================================
+# BUSCAR USUÁRIO
+# ==========================================
 
-        "username": username,
-        "password": password
+def buscar_usuario(username):
 
-    }).execute()
+    try:
 
-    return True
+        resposta = supabase.table(
+            "usuarios"
+        ).select("*").eq(
+            "username",
+            username
+        ).execute()
 
+        if resposta.data:
 
-def validar_usuario(username, password):
+            return resposta.data[0]
 
-    resultado = supabase.table("usuarios").select("*").eq(
-        "username",
-        username
-    ).eq(
-        "password",
-        password
-    ).execute()
+        return None
 
-    return len(resultado.data) > 0
+    except Exception as erro:
+
+        print(erro)
+
+        return None
 
 # ==========================================
-# OPERAÇÕES
+# SALVAR OPERAÇÃO
 # ==========================================
 
 def salvar_operacao(
+
     ativo1,
     ativo2,
     zscore,
     score,
     sinal
+
 ):
 
-    supabase.table("operacoes").insert({
+    try:
 
-        "ativo1": ativo1,
-        "ativo2": ativo2,
-        "zscore": float(zscore),
-        "score": float(score),
-        "sinal": sinal
+        supabase.table(
+            "operacoes"
+        ).insert({
 
-    }).execute()
+            "ativo1": ativo1,
+            "ativo2": ativo2,
+            "zscore": zscore,
+            "score": score,
+            "sinal": sinal
+
+        }).execute()
+
+    except Exception as erro:
+
+        print(erro)
