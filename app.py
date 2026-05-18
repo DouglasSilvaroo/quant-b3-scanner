@@ -11,19 +11,26 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from scanner import executar_scanner
+<<<<<<< HEAD
 
 from backtest import executar_backtest
+=======
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
 from auth import (
     tela_login,
     tela_cadastro
 )
 
 from database import (
+<<<<<<< HEAD
 
     criar_tabela_operacoes,
     criar_tabela_usuarios,
     salvar_operacao
 
+=======
+    criar_tabela_usuarios
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
 )
 
 from statsmodels.tsa.stattools import coint
@@ -45,7 +52,10 @@ st.set_page_config(
 # ==========================================
 
 criar_tabela_usuarios()
+<<<<<<< HEAD
 criar_tabela_operacoes()
+=======
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
 
 # ==========================================
 # SESSÃO
@@ -412,6 +422,7 @@ try:
             round(ultimo_z, 2)
         )
 
+<<<<<<< HEAD
 # ======================================
 # SINAL
 # ======================================
@@ -420,21 +431,37 @@ try:
 
         sinal = "SHORT"
 
+=======
+    # ======================================
+    # SINAL
+    # ======================================
+
+    if ultimo_z > 2:
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         st.error("🔴 SHORT SPREAD")
 
     elif ultimo_z < -2:
 
+<<<<<<< HEAD
         sinal = "LONG"
 
+=======
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         st.success("🟢 LONG SPREAD")
 
     else:
 
+<<<<<<< HEAD
         sinal = "NEUTRO"
 
         st.warning("🟡 NEUTRO")
 
 
+=======
+        st.warning("🟡 NEUTRO")
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
     # ======================================
     # HISTOGRAMA
     # ======================================
@@ -974,6 +1001,7 @@ R$ {camada_inicio} → R$ {camada_fim}
     )
 
     # ======================================
+<<<<<<< HEAD
     # SALVAR OPERAÇÃO
     # ======================================
 
@@ -988,6 +1016,8 @@ R$ {camada_inicio} → R$ {camada_fim}
     )
 
     # ======================================
+=======
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
     # CARD SCORE INSTITUCIONAL
     # ======================================
 
@@ -1228,6 +1258,7 @@ R$ {camada_inicio} → R$ {camada_fim}
     )
 
     # ======================================
+<<<<<<< HEAD
     # BACKTEST INSTITUCIONAL
     # ======================================
 
@@ -1381,6 +1412,8 @@ R$ {camada_inicio} → R$ {camada_fim}
         )
 
     # ======================================
+=======
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
     # PREÇOS
     # ======================================
 

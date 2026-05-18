@@ -22,6 +22,12 @@ from statsmodels.tsa.stattools import coint
 
 def baixar_dados(lista_ativos, periodo="200d"):
 
+<<<<<<< HEAD
+=======
+    st.cache_data.clear()
+
+    yf.shared._DFS = {}
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
     dados = yf.download(
         lista_ativos,
         period=periodo,
@@ -30,6 +36,13 @@ def baixar_dados(lista_ativos, periodo="200d"):
         threads=True
     )
 
+<<<<<<< HEAD
+=======
+    # ======================================
+    # MULTI INDEX
+    # ======================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
     if isinstance(dados.columns, pd.MultiIndex):
 
         if "Close" in dados.columns.get_level_values(0):
@@ -129,12 +142,32 @@ def analisar_par(
 
         serie2 = df[ativo2]
 
+<<<<<<< HEAD
         correlacao = serie1.corr(serie2)
 
+=======
+        # ==================================
+        # CORRELAÇÃO
+        # ==================================
+
+        correlacao = serie1.corr(serie2)
+
+        # ==================================
+        # FILTRO PERFORMANCE
+        # ==================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         if correlacao < 0.70:
 
             return None
 
+<<<<<<< HEAD
+=======
+        # ==================================
+        # COINTEGRAÇÃO
+        # ==================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         resultado_coint = coint(
             serie1,
             serie2
@@ -142,6 +175,13 @@ def analisar_par(
 
         pvalue = resultado_coint[1]
 
+<<<<<<< HEAD
+=======
+        # ==================================
+        # HEDGE RATIO
+        # ==================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         modelo = OLS(
             serie1,
             add_constant(serie2)
@@ -149,6 +189,13 @@ def analisar_par(
 
         hedge_ratio = modelo.params.iloc[1]
 
+<<<<<<< HEAD
+=======
+        # ==================================
+        # SPREAD
+        # ==================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         spread = (
             serie1
             -
@@ -163,12 +210,26 @@ def analisar_par(
 
             return None
 
+<<<<<<< HEAD
+=======
+        # ==================================
+        # ZSCORE
+        # ==================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         zscore = (
             spread - media
         ) / desvio
 
         ultimo_z = zscore.iloc[-1]
 
+<<<<<<< HEAD
+=======
+        # ==================================
+        # HALF LIFE
+        # ==================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         half_life = calcular_half_life(
             spread
         )
@@ -177,6 +238,13 @@ def analisar_par(
 
             return None
 
+<<<<<<< HEAD
+=======
+        # ==================================
+        # SCORE
+        # ==================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         score = calcular_score(
             correlacao,
             pvalue,
@@ -184,6 +252,13 @@ def analisar_par(
             ultimo_z
         )
 
+<<<<<<< HEAD
+=======
+        # ==================================
+        # SINAL
+        # ==================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         if ultimo_z > 2:
 
             sinal = "SHORT SPREAD"
@@ -245,6 +320,13 @@ def executar_scanner(
                 )
             )
 
+<<<<<<< HEAD
+=======
+    # ======================================
+    # MULTI THREAD
+    # ======================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
     with ThreadPoolExecutor(max_workers=4) as executor:
 
         futuros = [
@@ -282,6 +364,13 @@ def executar_scanner(
                         resultado
                     )
 
+<<<<<<< HEAD
+=======
+    # ======================================
+    # DATAFRAME FINAL
+    # ======================================
+
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
     if len(resultados) == 0:
 
         return pd.DataFrame()

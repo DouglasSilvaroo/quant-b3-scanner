@@ -1,5 +1,6 @@
 
 import streamlit as st
+<<<<<<< HEAD
 import bcrypt
 
 from database import (
@@ -39,6 +40,17 @@ def verificar_senha(
     )
 
 # ==========================================
+=======
+
+from database import (
+
+    adicionar_usuario,
+    validar_usuario
+
+)
+
+# ==========================================
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
 # CADASTRO
 # ==========================================
 
@@ -59,6 +71,7 @@ def tela_cadastro():
 
     if st.button("Cadastrar"):
 
+<<<<<<< HEAD
         if len(nova_senha) < 6:
 
             st.error(
@@ -74,6 +87,11 @@ def tela_cadastro():
         sucesso = adicionar_usuario(
             novo_usuario,
             senha_hash
+=======
+        sucesso = adicionar_usuario(
+            novo_usuario,
+            nova_senha
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
         )
 
         if sucesso:
@@ -109,6 +127,7 @@ def tela_login():
 
     if st.button("Entrar"):
 
+<<<<<<< HEAD
         usuario_db = validar_usuario(
             usuario
         )
@@ -137,9 +156,31 @@ def tela_login():
                 st.error(
                     "Senha inválida."
                 )
+=======
+        validacao = validar_usuario(
+            usuario,
+            senha
+        )
+
+        if validacao:
+
+            st.session_state["logado"] = True
+
+            st.session_state["usuario"] = usuario
+
+            st.success(
+                "Login realizado!"
+            )
+
+            st.rerun()
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
 
         else:
 
             st.error(
+<<<<<<< HEAD
                 "Usuário não encontrado."
+=======
+                "Usuário ou senha inválidos."
+>>>>>>> cacc436634282f3814cff45df2c715a714d9f6f5
             )
