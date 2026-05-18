@@ -1,7 +1,7 @@
 
 from supabase_db import (
     criar_usuario,
-    validar_usuario,
+    buscar_usuario,
     salvar_operacao
 )
 
@@ -16,10 +16,13 @@ def criar_tabela_operacoes():
     pass
 
 # ==========================================
-# USUÁRIOS
+# ADICIONAR USUÁRIO
 # ==========================================
 
-def adicionar_usuario(username, password):
+def adicionar_usuario(
+    username,
+    password
+):
 
     return criar_usuario(
         username,
@@ -27,14 +30,15 @@ def adicionar_usuario(username, password):
     )
 
 # ==========================================
-# LOGIN
+# VALIDAR USUÁRIO
 # ==========================================
 
-def validar_login(username, password):
+def validar_usuario(
+    username
+):
 
-    return validar_usuario(
-        username,
-        password
+    return buscar_usuario(
+        username
     )
 
 # ==========================================

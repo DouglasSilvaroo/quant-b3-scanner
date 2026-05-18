@@ -1,10 +1,42 @@
 
 import streamlit as st
+import bcrypt
 
 from database import (
     adicionar_usuario,
-    validar_login
+    validar_usuario
 )
+
+# ==========================================
+# HASH SENHA
+# ==========================================
+
+def gerar_hash(senha):
+
+    senha_bytes = senha.encode("utf-8")
+
+    salt = bcrypt.gensalt()
+
+    hash_senha = bcrypt.hashpw(
+        senha_bytes,
+        salt
+    )
+
+    return hash_senha.decode("utf-8")
+
+# ==========================================
+# VERIFICAR SENHA
+# ==========================================
+
+def verificar_senha(
+    senha,
+    hash_senha
+):
+
+    return bcrypt.checkpw(
+        senha.encode("utf-8"),
+        hash_senha.encode("utf-8")
+    )
 
 # ==========================================
 # CADASTRO
@@ -27,9 +59,21 @@ def tela_cadastro():
 
     if st.button("Cadastrar"):
 
+        if len(nova_senha) < 6:
+
+            st.error(
+                "Senha deve ter pelo menos 6 caracteres."
+            )
+
+            return
+
+        senha_hash = gerar_hash(
+            nova_senha
+        )
+
         sucesso = adicionar_usuario(
             novo_usuario,
-            nova_senha
+            senha_hash
         )
 
         if sucesso:
@@ -65,25 +109,37 @@ def tela_login():
 
     if st.button("Entrar"):
 
-        validacao = validar_login(
-            usuario,
-            senha
+        usuario_db = validar_usuario(
+            usuario
         )
 
-        if validacao:
+        if usuario_db:
 
-            st.session_state["logado"] = True
+            senha_hash = usuario_db["password"]
 
-            st.session_state["usuario"] = usuario
+            if verificar_senha(
+                senha,
+                senha_hash
+            ):
 
-            st.success(
-                "Login realizado!"
-            )
+                st.session_state["logado"] = True
 
-            st.rerun()
+                st.session_state["usuario"] = usuario
+
+                st.success(
+                    "Login realizado!"
+                )
+
+                st.rerun()
+
+            else:
+
+                st.error(
+                    "Senha inválida."
+                )
 
         else:
 
             st.error(
-                "Usuário ou senha inválidos."
+                "Usuário não encontrado."
             )
