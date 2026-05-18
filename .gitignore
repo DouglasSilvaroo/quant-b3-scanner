@@ -1,0 +1,20 @@
+
+# Python
+__pycache__/
+*.pyc
+
+# Banco
+*.db
+
+# Logs
+*.txt
+
+# Colab
+sample_data/
+.config/
+
+# Cloudflare
+*.deb
+
+# Sistema
+.DS_Store
