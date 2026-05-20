@@ -1,9 +1,0 @@
-streamlit
-yfinance
-pandas
-plotly
-supabase
-bcrypt
-numpy
-scipy
-requests
