@@ -1,6 +1,7 @@
 
 import yfinance as yf
 import pandas as pd
+import numpy as np
 
 from statsmodels.tsa.stattools import coint
 
@@ -12,8 +13,16 @@ def executar_scanner(
 
     segmentos,
     lista_ativos,
+
     periodo="200d",
-    modo="Mesmo Setor"
+
+    modo="Mesmo Setor",
+
+    correlacao_min=0.95,
+
+    pvalue_max=0.05,
+
+    zscore_min=1.5
 
 ):
 
@@ -33,7 +42,9 @@ def executar_scanner(
 
             auto_adjust=True,
 
-            progress=False
+            progress=False,
+
+            threads=True
 
         )
 
@@ -76,7 +87,7 @@ def executar_scanner(
     pares = []
 
     # ==========================================
-    # MODO MESMO SETOR
+    # MESMO SETOR
     # ==========================================
 
     if modo == "Mesmo Setor":
@@ -85,7 +96,8 @@ def executar_scanner(
 
             ativos_filtrados = [
 
-                ativo for ativo in ativos
+                ativo
+                for ativo in ativos
 
                 if ativo in ativos_validos
 
@@ -124,7 +136,7 @@ def executar_scanner(
                 )
 
     # ==========================================
-    # LOOP DOS PARES
+    # LOOP PRINCIPAL
     # ==========================================
 
     for ativo1, ativo2 in pares:
@@ -167,7 +179,11 @@ def executar_scanner(
 
             )
 
-            if correlacao < 0.90:
+            if pd.isna(correlacao):
+
+                continue
+
+            if correlacao < correlacao_min:
 
                 continue
 
@@ -182,7 +198,11 @@ def executar_scanner(
 
             )
 
-            if pvalue > 0.05:
+            if pd.isna(pvalue):
+
+                continue
+
+            if pvalue > pvalue_max:
 
                 continue
 
@@ -201,7 +221,7 @@ def executar_scanner(
                 continue
 
             # ==================================
-            # ZSCORE
+            # Z-SCORE
             # ==================================
 
             zscore = (
@@ -212,8 +232,20 @@ def executar_scanner(
 
             ) / desvio
 
+            if pd.isna(zscore):
+
+                continue
+
             # ==================================
-            # STATUS
+            # FILTRO ZSCORE
+            # ==================================
+
+            if abs(zscore) < zscore_min:
+
+                continue
+
+            # ==================================
+            # STATUS OPERACIONAL
             # ==================================
 
             if zscore >= 2:
@@ -229,7 +261,7 @@ def executar_scanner(
                 status = "🟡 Neutro"
 
             # ==================================
-            # SCORE
+            # SCORE QUANT
             # ==================================
 
             score = 0
@@ -248,7 +280,7 @@ def executar_scanner(
 
                 score += 20
 
-            # P-Value
+            # Cointegração
 
             if pvalue <= 0.01:
 
@@ -262,7 +294,7 @@ def executar_scanner(
 
                 score += 20
 
-            # Z-Score
+            # Zscore
 
             if abs(zscore) >= 3:
 
@@ -279,27 +311,22 @@ def executar_scanner(
             resultados.append({
 
                 "Ativo 1": ativo1,
+
                 "Ativo 2": ativo2,
 
                 "Correlação": round(
-
                     correlacao,
                     4
-
                 ),
 
                 "P-Value": round(
-
                     pvalue,
                     4
-
                 ),
 
                 "Pontuação Z": round(
-
                     zscore,
                     2
-
                 ),
 
                 "Status": status,
@@ -319,10 +346,23 @@ def executar_scanner(
     df = pd.DataFrame(resultados)
 
     # ==========================================
-    # ORDENAÇÃO
+    # LIMPEZA FINAL
     # ==========================================
 
     if not df.empty:
+
+        df = df.replace(
+
+            [np.inf, -np.inf],
+            np.nan
+
+        )
+
+        df = df.dropna()
+
+        # ======================================
+        # ORDENAÇÃO
+        # ======================================
 
         df = df.sort_values(
 
@@ -334,6 +374,12 @@ def executar_scanner(
             ],
 
             ascending=False
+
+        )
+
+        df = df.reset_index(
+
+            drop=True
 
         )
 
