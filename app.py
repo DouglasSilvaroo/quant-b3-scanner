@@ -452,11 +452,14 @@ if menu == "Painel":
         # SPREAD
         # ==================================
 
+        fator1 = lote1 / 100
+        fator2 = lote2 / 100
+
         spread = (
 
-        (serie1 * lote1)
+        (serie1 * fator1)
         -
-        (serie2 * lote2)
+        (serie2 * fator2)
 
         )
         media = spread.mean()
