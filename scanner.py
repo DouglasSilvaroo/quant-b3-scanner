@@ -47,6 +47,14 @@ def executar_scanner(
                 )
 
                 # ==================================
+                # VALIDAÇÃO DOWNLOAD
+                # ==================================
+
+                if dados.empty:
+
+                    continue
+
+                # ==================================
                 # MULTIINDEX
                 # ==================================
 
@@ -58,6 +66,10 @@ def executar_scanner(
                     dados = dados["Close"]
 
                 dados = dados.dropna()
+
+                if len(dados) < 50:
+
+                    continue
 
                 # ==================================
                 # VALIDAÇÃO
