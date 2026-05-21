@@ -69,10 +69,6 @@ if not st.session_state["logado"]:
 
 SEGMENTOS = {
 
-    # ======================================
-    # BANCOS / FINANCEIRO
-    # ======================================
-
     "Bancos": [
 
         "ITUB3.SA",
@@ -91,10 +87,6 @@ SEGMENTOS = {
 
     ],
 
-    # ======================================
-    # PETRÓLEO / GÁS
-    # ======================================
-
     "Petroleo": [
 
         "PETR3.SA",
@@ -107,10 +99,6 @@ SEGMENTOS = {
         "UGPA3.SA"
 
     ],
-
-    # ======================================
-    # MINERAÇÃO / SIDERURGIA
-    # ======================================
 
     "Mineracao": [
 
@@ -127,10 +115,6 @@ SEGMENTOS = {
         "CMIN3.SA"
 
     ],
-
-    # ======================================
-    # ENERGIA
-    # ======================================
 
     "Energia": [
 
@@ -153,14 +137,9 @@ SEGMENTOS = {
         "AURE3.SA",
         "ALUP3.SA",
         "ALUP4.SA",
-        "ALUP11.SA",
-        "EQTL3.SA"
+        "ALUP11.SA"
 
     ],
-
-    # ======================================
-    # VAREJO / CONSUMO
-    # ======================================
 
     "Varejo": [
 
@@ -175,10 +154,6 @@ SEGMENTOS = {
 
     ],
 
-    # ======================================
-    # PAPEL / CELULOSE
-    # ======================================
-
     "Papel": [
 
         "SUZB3.SA",
@@ -188,10 +163,6 @@ SEGMENTOS = {
         "RANI3.SA"
 
     ],
-
-    # ======================================
-    # CONSTRUÇÃO
-    # ======================================
 
     "Construcao": [
 
@@ -204,10 +175,6 @@ SEGMENTOS = {
 
     ],
 
-    # ======================================
-    # TELECOM / TECNOLOGIA
-    # ======================================
-
     "Telecom": [
 
         "VIVT3.SA",
@@ -217,10 +184,6 @@ SEGMENTOS = {
 
     ],
 
-    # ======================================
-    # TRANSPORTE / LOGÍSTICA
-    # ======================================
-
     "Logistica": [
 
         "RAIL3.SA",
@@ -229,10 +192,6 @@ SEGMENTOS = {
 
     ],
 
-    # ======================================
-    # ALIMENTOS / BEBIDAS
-    # ======================================
-
     "Alimentos": [
 
         "ABEV3.SA",
@@ -240,10 +199,6 @@ SEGMENTOS = {
         "SLCE3.SA"
 
     ],
-
-    # ======================================
-    # SAÚDE
-    # ======================================
 
     "Saude": [
 
@@ -305,7 +260,9 @@ with st.sidebar:
 
         LISTA_ATIVOS,
 
-        index=0
+        index=0,
+
+        key="ativo1_select"
 
     )
 
@@ -315,11 +272,12 @@ with st.sidebar:
 
         LISTA_ATIVOS,
 
-        index=1
+        index=1,
+
+        key="ativo2_select"
 
     )
 
-    
     periodo_sidebar = st.selectbox(
 
         "Período",
@@ -333,31 +291,33 @@ with st.sidebar:
 
         ],
 
-        index=3
+        index=3,
+
+        key="periodo_select"
 
     )
 
     st.markdown("---")
 
     st.subheader("⚖️ Proporção Operacional")
-    
+
     lote1 = st.number_input(
 
-    f"Lote {ativo1_sidebar}",
+        f"Lote {ativo1_sidebar}",
 
-    min_value=100,
-    step=100,
-    value=100
+        min_value=100,
+        step=100,
+        value=100
 
     )
 
     lote2 = st.number_input(
 
-    f"Lote {ativo2_sidebar}",
+        f"Lote {ativo2_sidebar}",
 
-    min_value=100,
-    step=100,
-    value=100
+        min_value=100,
+        step=100,
+        value=100
 
     )
 
@@ -399,84 +359,108 @@ with st.sidebar:
 
 if menu == "Painel":
 
-    
     st.title("🏦 PAINEL SPREADS")
 
     ativo1 = ativo1_sidebar
     ativo2 = ativo2_sidebar
     periodo = periodo_sidebar
 
+    # ==========================================
+    # CONTROLE DE ATUALIZAÇÃO
+    # ==========================================
+
+    if "ultimo_ativo1" not in st.session_state:
+
+        st.session_state["ultimo_ativo1"] = ativo1
+
+    if "ultimo_ativo2" not in st.session_state:
+
+        st.session_state["ultimo_ativo2"] = ativo2
+
+    if "ultimo_periodo" not in st.session_state:
+
+        st.session_state["ultimo_periodo"] = periodo
+
+    alterou = (
+
+        ativo1 != st.session_state["ultimo_ativo1"]
+
+        or
+
+        ativo2 != st.session_state["ultimo_ativo2"]
+
+        or
+
+        periodo != st.session_state["ultimo_periodo"]
+
+    )
+
+    if alterou:
+
+        st.session_state["ultimo_ativo1"] = ativo1
+        st.session_state["ultimo_ativo2"] = ativo2
+        st.session_state["ultimo_periodo"] = periodo
+
+        st.rerun()
+
     try:
 
-        # ==================================
-        # DOWNLOAD INDIVIDUAL
-        # ==================================
+        # ==========================================
+        # DOWNLOAD CONJUNTO
+        # ==========================================
 
-        dados1 = yf.download(
+        dados = yf.download(
 
-            ativo1,
+            [ativo1, ativo2],
+
             period=periodo,
+
             auto_adjust=True,
+
             progress=False
 
         )
 
-        dados2 = yf.download(
+        # ==========================================
+        # CLOSE
+        # ==========================================
 
-            ativo2,
-            period=periodo,
-            auto_adjust=True,
-            progress=False
+        if isinstance(
+            dados.columns,
+            pd.MultiIndex
+        ):
 
-        )
+            dados = dados["Close"]
 
-        # ==================================
-        # FECHAMENTO
-        # ==================================
-
-        serie1 = dados1["Close"]
-
-        serie2 = dados2["Close"]
-
-        # ==================================
-        # ALINHAMENTO
-        # ==================================
-
-        dados = pd.concat(
-
-            [serie1, serie2],
-
-            axis=1
-
-        )
-
-        dados.columns = [
-
-        ativo1,
-        ativo2
-
-        ]
+        # ==========================================
+        # LIMPEZA
+        # ==========================================
 
         dados = dados.dropna()
+
+        # ==========================================
+        # SERIES
+        # ==========================================
 
         serie1 = dados[ativo1]
 
         serie2 = dados[ativo2]
 
-        # ==================================
+        # ==========================================
         # SPREAD
-        # ==================================
+        # ==========================================
 
         fator1 = lote1 / 100
         fator2 = lote2 / 100
 
         spread = (
 
-        (serie1 * fator1)
-        -
-        (serie2 * fator2)
+            (serie1 * fator1)
+            -
+            (serie2 * fator2)
 
         )
+
         media = spread.mean()
 
         desvio = spread.std()
@@ -493,9 +477,9 @@ if menu == "Painel":
             serie2
         )
 
-        # ==================================
-        # CARDS SUPERIORES
-        # ==================================
+        # ==========================================
+        # CARDS
+        # ==========================================
 
         col1, col2, col3, col4 = st.columns(4)
 
@@ -541,9 +525,9 @@ if menu == "Painel":
 
         st.markdown("---")
 
-        # ==================================
+        # ==========================================
         # MÉTRICAS
-        # ==================================
+        # ==========================================
 
         c1, c2, c3 = st.columns(3)
 
@@ -570,9 +554,9 @@ if menu == "Painel":
 
         st.markdown("---")
 
-        # ==================================
+        # ==========================================
         # HISTOGRAMA
-        # ==================================
+        # ==========================================
 
         st.subheader(
 
@@ -589,10 +573,6 @@ if menu == "Painel":
         spread_atual = float(abs(spread.iloc[-1]))
 
         media_hist = float(distancia.mean())
-
-        # ==================================
-        # CAMADAS
-        # ==================================
 
         bins = []
 
@@ -628,10 +608,6 @@ if menu == "Painel":
             f"{camada_dominante.right:.2f}"
 
         )
-
-        # ==================================
-        # MÉTRICAS HISTOGRAMA
-        # ==================================
 
         h1, h2, h3, h4 = st.columns(4)
 
@@ -675,10 +651,6 @@ if menu == "Painel":
 
             )
 
-        # ==================================
-        # BOX INFO
-        # ==================================
-
         st.info(f"""
 
 📅 PERÍODO ANALISADO: {spread.index[0].strftime('%d/%m/%Y')} até {spread.index[-1].strftime('%d/%m/%Y')}
@@ -697,9 +669,7 @@ if menu == "Painel":
 
 """)
 
-        # ==================================
-        # HISTOGRAMA PROFISSIONAL
-        # ==================================
+        fig_hist = go.Figure()
 
         x_labels = [
 
@@ -708,8 +678,6 @@ if menu == "Painel":
             for i in freq.index
 
         ]
-
-        fig_hist = go.Figure()
 
         fig_hist.add_trace(
 
@@ -727,8 +695,6 @@ if menu == "Painel":
 
         )
 
-        # MÉDIA
-
         fig_hist.add_vline(
 
             x=media_hist,
@@ -741,29 +707,6 @@ if menu == "Painel":
 
         )
 
-        fig_hist.add_annotation(
-
-            x=media_hist,
-
-            y=max(freq.values),
-
-            text="Média",
-
-            showarrow=False,
-
-            font=dict(
-
-                color="white",
-                size=14
-
-            ),
-
-            yshift=18
-
-        )
-
-        # ATUAL
-
         fig_hist.add_vline(
 
             x=spread_atual,
@@ -771,43 +714,6 @@ if menu == "Painel":
             line_width=3,
 
             line_color="yellow"
-
-        )
-
-        fig_hist.add_annotation(
-
-            x=spread_atual,
-
-            y=max(freq.values),
-
-            text="Atual",
-
-            showarrow=False,
-
-            font=dict(
-
-                color="white",
-                size=14
-
-            ),
-
-            yshift=18
-
-        )
-
-        # REGIÃO SOMBREADA
-
-        fig_hist.add_vrect(
-
-            x0=dist_min,
-
-            x1=media_hist,
-
-            fillcolor="orange",
-
-            opacity=0.08,
-
-            line_width=0
 
         )
 
@@ -835,749 +741,6 @@ if menu == "Painel":
 
         )
 
-        # ==========================================
-        # MAPA DE CONCENTRAÇÃO INSTITUCIONAL
-        # ==========================================
-
-        st.markdown("---")
-
-        st.subheader(
-            "🔥 Mapa de Concentração Institucional"
-        )
-
-        # ==========================================
-        # CÁLCULO CONCENTRAÇÃO
-        # ==========================================
-
-        concentracao_df = freq.reset_index()
-
-        concentracao_df.columns = [
-
-            "Zona",
-            "Ocorrencias"
-
-        ]
-
-        concentracao_df["Percentual"] = (
-
-            concentracao_df["Ocorrencias"]
-            /
-            concentracao_df["Ocorrencias"].sum()
-            * 100
-
-        ).round(2)
-
-        concentracao_df["Score"] = (
-
-            concentracao_df["Ocorrencias"]
-            *
-            concentracao_df["Percentual"]
-
-        ).round(2)
-
-        # ==========================================
-        # FORMATAÇÃO ZONA
-        # ==========================================
-
-        concentracao_df["Zona"] = (
-
-            concentracao_df["Zona"]
-            .apply(
-
-                lambda x:
-                f"{x.left:.2f} → {x.right:.2f}"
-
-            )
-
-        )
-
-        # ==========================================
-        # ORDENAÇÃO
-        # ==========================================
-
-        concentracao_df = concentracao_df.sort_values(
-
-            by="Score",
-            ascending=False
-
-        )
-
-        # ==========================================
-        # TABELA
-        # ==========================================
-
-        st.dataframe(
-
-            concentracao_df,
-
-            width="stretch",
-
-            height=380
-
-        )
-
-        # ==========================================
-        # GRÁFICO HORIZONTAL
-        # ==========================================
-
-        fig_concentracao = px.bar(
-
-            concentracao_df.sort_values("Percentual"),
-
-            x="Percentual",
-
-            y="Zona",
-
-            orientation="h",
-
-            text="Percentual",
-
-            title="Mapa de Concentração das Camadas",
-
-            color_discrete_sequence=["#1f77ff"]
-
-        )
-
-        fig_concentracao.update_layout(
-
-            template="plotly_dark",
-
-            height=600,
-
-            xaxis_title="% Concentração",
-
-            yaxis_title="Zonas"
-
-        )
-
-        fig_concentracao.update_traces(
-
-            textposition="outside"
-
-        )
-
-        st.plotly_chart(
-
-            fig_concentracao,
-
-            width="stretch"
-
-        )
-
-        # ==========================================
-        # PERMANÊNCIA TEMPORAL DAS CAMADAS
-        # ==========================================
-
-        st.markdown("---")
-
-        st.subheader(
-            "⏳ Permanência Temporal das Camadas"
-        )
-
-        # ==========================================
-        # DATAFRAME SPREAD
-        # ==========================================
-
-        spread_df = pd.DataFrame({
-
-            "spread": distancia
-
-        })
-
-        # ==========================================
-        # CÁLCULO DAS ZONAS
-        # ==========================================
-
-        spread_df["zona"] = pd.cut(
-
-            spread_df["spread"],
-
-            bins=bins,
-
-            include_lowest=True
-
-        )
-
-        # ==========================================
-        # IDENTIFICA BLOCOS CONTÍNUOS
-        # ==========================================
-
-        spread_df["grupo"] = (
-
-            spread_df["zona"]
-            !=
-            spread_df["zona"].shift()
-
-        ).cumsum()
-
-        tempo_df = (
-
-            spread_df
-            .groupby(["zona", "grupo"])
-            .size()
-            .reset_index(name="duracao")
-
-        )
-
-        # ==========================================
-        # MÉTRICAS TEMPORAIS
-        # ==========================================
-
-        tempo_stats = (
-
-            tempo_df
-            .groupby("zona")["duracao"]
-            .agg([
-
-                ("Tempo Médio", "mean"),
-                ("Tempo Máximo", "max"),
-                ("Ocorrências", "count")
-
-            ])
-            .reset_index()
-
-        )
-
-        tempo_stats["Score Temporal"] = (
-
-            tempo_stats["Tempo Médio"]
-            *
-            tempo_stats["Ocorrências"]
-
-        ).round(0)
-
-        tempo_stats = tempo_stats.sort_values(
-
-            by="Score Temporal",
-            ascending=False
-
-        )
-
-        tempo_stats["Tempo Médio"] = (
-
-            tempo_stats["Tempo Médio"]
-            .round(2)
-
-        )
-
-        # ==========================================
-        # FORMATAÇÃO DA ZONA
-        # ==========================================
-
-        tempo_stats["Zona"] = (
-
-            tempo_stats["zona"]
-            .apply(
-
-                lambda x:
-                f"{x.left:.2f} → {x.right:.2f}"
-
-            )
-
-        )
-
-        # ==========================================
-        # ORGANIZA COLUNAS
-        # ==========================================
-
-        tempo_stats = tempo_stats[[
-
-            "Zona",
-            "Tempo Médio",
-            "Tempo Máximo",
-            "Ocorrências",
-            "Score Temporal"
-
-        ]]
-
-        # ==========================================
-        # TABELA
-        # ==========================================
-
-        st.dataframe(
-
-            tempo_stats,
-
-            width="stretch",
-
-            height=380
-
-        )
-
-        # ==========================================
-        # GRÁFICO TEMPORAL
-        # ==========================================
-
-        import plotly.express as px
-
-        fig_tempo = px.bar(
-
-            tempo_stats.sort_values("Tempo Médio"),
-
-            x="Tempo Médio",
-
-            y="Zona",
-
-            orientation="h",
-
-            text="Tempo Médio",
-
-            title="Tempo Médio de Permanência por Zona",
-
-            color_discrete_sequence=["#1f77ff"]
-
-        )
-
-        fig_tempo.update_layout(
-
-            template="plotly_dark",
-
-            height=550,
-
-            xaxis_title="Tempo Médio",
-
-            yaxis_title="Zona"
-
-        )
-
-        fig_tempo.update_traces(
-
-            textposition="outside"
-
-        )
-
-        st.plotly_chart(
-
-            fig_tempo,
-
-            width="stretch"
-
-        )
-
-        # ==========================================
-        # PREÇOS DOS ATIVOS
-        # ==========================================
-
-        st.markdown("---")
-
-        st.subheader("📈 Preços dos Ativos")
-
-        fig_precos = go.Figure()
-
-        # ==========================================
-        # ATIVO 1
-        # ==========================================
-
-        fig_precos.add_trace(
-
-            go.Scatter(
-
-                x=serie1.index,
-
-                y=serie1,
-
-                mode="lines",
-
-                name=ativo1,
-
-                line=dict(
-
-                    color="#f2a900",
-                    width=2
-
-                )
-
-            )
-
-        )
-
-        # ==========================================
-        # ATIVO 2
-        # ==========================================
-
-        fig_precos.add_trace(
-
-            go.Scatter(
-
-                x=serie2.index,
-
-                y=serie2,
-
-                mode="lines",
-
-                name=ativo2,
-
-                line=dict(
-
-                    color="#ff4b4b",
-                    width=2
-
-                )
-
-            )
-
-        )
-
-        # ==========================================
-        # LAYOUT
-        # ==========================================
-
-        fig_precos.update_layout(
-
-            template="plotly_dark",
-
-            height=600,
-
-            hovermode="x unified",
-
-            title="Preços",
-
-            xaxis_title="Data",
-
-            yaxis_title="Preço",
-
-            legend=dict(
-
-                orientation="v",
-
-                yanchor="top",
-
-                y=1,
-
-                xanchor="left",
-
-                x=1.02
-
-            )
-
-        )
-
-        st.plotly_chart(
-
-            fig_precos,
-
-            width="stretch"
-
-        )
-
-        # ==========================================
-        # DISTÂNCIA ENTRE OS ATIVOS
-        # ==========================================
-
-        st.markdown("---")
-
-        st.subheader("📊 Distância entre os Ativos")
-
-        fig_distancia = go.Figure()
-
-        # ==========================================
-        # LINHA PRINCIPAL
-        # ==========================================
-
-        fig_distancia.add_trace(
-
-            go.Scatter(
-
-                x=spread.index,
-
-                y=distancia,
-
-                mode="lines",
-
-                name="Distância",
-
-                line=dict(
-
-                    color="#f2a900",
-                    width=2
-
-                )
-
-            )
-
-        )
-
-        # ==========================================
-        # LINHA MÉDIA
-        # ==========================================
-
-        fig_distancia.add_hline(
-
-            y=media_hist,
-
-            line_dash="dash",
-
-            line_color="yellow",
-
-            annotation_text="Média",
-
-            annotation_position="top left"
-
-        )
-
-        # ==========================================
-        # LINHA ATUAL
-        # ==========================================
-
-        fig_distancia.add_hline(
-
-            y=spread_atual,
-
-            line_dash="dot",
-
-            line_color="red",
-
-            annotation_text="Atual",
-
-            annotation_position="bottom left"
-
-        )
-
-        # ==========================================
-        # LAYOUT
-        # ==========================================
-
-        fig_distancia.update_layout(
-
-            template="plotly_dark",
-
-            height=600,
-
-            hovermode="x unified",
-
-            title="Distância entre os Ativos",
-
-            xaxis_title="Data",
-
-            yaxis_title="Distância (R$)"
-
-        )
-
-        st.plotly_chart(
-
-            fig_distancia,
-
-            width="stretch"
-
-        )
-
-        # ==========================================
-        # Z-SCORE PROFISSIONAL
-        # ==========================================
-
-        st.markdown("---")
-
-        st.subheader("🎯 Z-Score")
-
-        # ==========================================
-        # SÉRIE Z-SCORE
-        # ==========================================
-
-        zscore_series = (
-
-            spread - media
-
-        ) / desvio
-
-        # ==========================================
-        # FIGURA
-        # ==========================================
-
-        fig_z = go.Figure()
-
-        # ==========================================
-        # LINHA ZSCORE
-        # ==========================================
-
-        fig_z.add_trace(
-
-            go.Scatter(
-
-                x=zscore_series.index,
-
-                y=zscore_series,
-
-                mode="lines",
-
-                name="Z-Score",
-
-                line=dict(
-
-                    color="#00d4ff",
-                    width=2
-
-                )
-
-            )
-
-        )
-
-        # ==========================================
-        # LINHA ZERO
-        # ==========================================
-
-        fig_z.add_hline(
-
-            y=0,
-
-            line_dash="solid",
-
-            line_color="white",
-
-            annotation_text="Média",
-
-            annotation_position="top left"
-
-        )
-
-        # ==========================================
-        # LINHA +2
-        # ==========================================
-
-        fig_z.add_hline(
-
-            y=2,
-
-            line_dash="dash",
-
-            line_color="red",
-
-            annotation_text="+2",
-
-            annotation_position="top left"
-
-        )
-
-        # ==========================================
-        # LINHA -2
-        # ==========================================
-
-        fig_z.add_hline(
-
-            y=-2,
-
-            line_dash="dash",
-
-            line_color="lime",
-
-            annotation_text="-2",
-
-            annotation_position="bottom left"
-
-        )
-
-        # ==========================================
-        # REGIÕES SOMBREADAS
-        # ==========================================
-
-        fig_z.add_hrect(
-
-            y0=2,
-            y1=5,
-
-            fillcolor="red",
-
-            opacity=0.08,
-
-            line_width=0
-
-        )
-
-        fig_z.add_hrect(
-
-            y0=-5,
-            y1=-2,
-
-            fillcolor="green",
-
-            opacity=0.08,
-
-            line_width=0
-
-        )
-
-        # ==========================================
-        # LAYOUT
-        # ==========================================
-
-        fig_z.update_layout(
-
-            template="plotly_dark",
-
-            height=600,
-
-            hovermode="x unified",
-
-            title="Z-Score do Spread",
-
-            xaxis_title="Data",
-
-            yaxis_title="Z-Score"
-
-        )
-
-        st.plotly_chart(
-
-            fig_z,
-
-            width="stretch"
-
-        )
-
-        # ==================================
-        # SPREAD
-        # ==================================
-
-        st.markdown("---")
-
-        st.subheader("📈 Spread entre Ativos")
-
-        fig = go.Figure()
-
-        fig.add_trace(
-
-            go.Scatter(
-
-                x=spread.index,
-
-                y=spread,
-
-                name="Spread",
-
-                line=dict(
-                    color="cyan",
-                    width=2
-                )
-
-            )
-
-        )
-
-        fig.add_hline(
-
-            y=media,
-
-            line_dash="dash",
-
-            line_color="white"
-
-        )
-
-        fig.update_layout(
-
-            template="plotly_dark",
-
-            height=600
-
-        )
-
-        st.plotly_chart(
-
-            fig,
-            width="stretch",
-
-        )
-
     except Exception as erro:
 
         st.error(f"Erro: {erro}")
@@ -1601,17 +764,9 @@ elif menu == "Scanner":
     - Spread operacional utilizável
     """)
 
-    # ==========================================
-    # FILTROS
-    # ==========================================
-
     st.markdown("---")
 
     st.subheader("⚙️ Filtros do Scanner")
-
-    # ==========================================
-    # MODO SCANNER
-    # ==========================================
 
     modo_scanner = st.radio(
 
@@ -1676,12 +831,14 @@ elif menu == "Scanner":
             "Período",
 
             [
+
                 "90d",
                 "120d",
                 "180d",
                 "200d",
                 "250d",
                 "1y"
+
             ],
 
             index=3
@@ -1689,10 +846,6 @@ elif menu == "Scanner":
         )
 
     st.markdown("---")
-
-    # ==========================================
-    # EXECUTAR SCANNER
-    # ==========================================
 
     if st.button("🚀 Executar Scanner"):
 
@@ -1712,10 +865,6 @@ elif menu == "Scanner":
 
                 )
 
-                # ==========================================
-                # VALIDAÇÃO
-                # ==========================================
-
                 if df.empty:
 
                     st.warning(
@@ -1723,10 +872,6 @@ elif menu == "Scanner":
                     )
 
                 else:
-
-                    # ==========================================
-                    # FILTROS
-                    # ==========================================
 
                     if "Correlação" in df.columns:
 
@@ -1746,178 +891,35 @@ elif menu == "Scanner":
                             abs(df["Pontuação Z"]) >= zscore_min
                         ]
 
-                    # ==========================================
-                    # STATUS OPERACIONAL
-                    # ==========================================
-
-                    if "Pontuação Z" in df.columns:
-
-                        status_lista = []
-
-                        for _, row in df.iterrows():
-
-                            z = row["Pontuação Z"]
-
-                            if z >= 2:
-
-                                status_lista.append(
-                                    "🟢 Entrar Crédito"
-                                )
-
-                            elif z <= -2:
-
-                                status_lista.append(
-                                    "🔴 Entrar Débito"
-                                )
-
-                            else:
-
-                                status_lista.append(
-                                    "🟡 Neutro"
-                                )
-
-                        df["Status"] = status_lista
-
-                    # ==========================================
-                    # SCORE QUANT
-                    # ==========================================
-
-                    score_lista = []
+                    status_lista = []
 
                     for _, row in df.iterrows():
 
-                        score = 0
+                        z = row["Pontuação Z"]
 
-                        # ==================================
-                        # CORRELAÇÃO
-                        # ==================================
+                        if z >= 2:
 
-                        corr = row["Correlação"]
-
-                        if corr >= 0.99:
-
-                            score += 40
-
-                        elif corr >= 0.97:
-
-                            score += 30
-
-                        elif corr >= 0.95:
-
-                            score += 20
-
-                        # ==================================
-                        # P-VALUE
-                        # ==================================
-
-                        pv = row["P-Value"]
-
-                        if pv <= 0.01:
-
-                            score += 40
-
-                        elif pv <= 0.03:
-
-                            score += 30
-
-                        elif pv <= 0.05:
-
-                            score += 20
-
-                        # ==================================
-                        # Z-SCORE
-                        # ==================================
-
-                        if "Pontuação Z" in df.columns:
-
-                            zscore = abs(
-                                row["Pontuação Z"]
+                            status_lista.append(
+                                "🟢 Entrar Crédito"
                             )
 
-                            if zscore >= 3:
+                        elif z <= -2:
 
-                                score += 20
+                            status_lista.append(
+                                "🔴 Entrar Débito"
+                            )
 
-                            elif zscore >= 2:
+                        else:
 
-                                score += 10
+                            status_lista.append(
+                                "🟡 Neutro"
+                            )
 
-                        score_lista.append(score)
-
-                    df["Score Quant"] = score_lista
-
-                    # ==========================================
-                    # ORDENAÇÃO
-                    # ==========================================
-
-                    df = df.sort_values(
-
-                        by=[
-                            "Score Quant",
-                            "Correlação"
-                        ],
-
-                        ascending=False
-
-                    )
-
-                    # ==========================================
-                    # KPIs
-                    # ==========================================
+                    df["Status"] = status_lista
 
                     st.success(
                         f"{len(df)} pares encontrados"
                     )
-
-                    k1, k2, k3, k4 = st.columns(4)
-
-                    with k1:
-
-                        st.metric(
-
-                            "Pares",
-
-                            len(df)
-
-                        )
-
-                    with k2:
-
-                        st.metric(
-
-                            "Maior Correlação",
-
-                            f"{df['Correlação'].max():.4f}"
-
-                        )
-
-                    with k3:
-
-                        if "Pontuação Z" in df.columns:
-
-                            st.metric(
-
-                                "Maior Z-Score",
-
-                                f"{df['Pontuação Z'].abs().max():.2f}"
-
-                            )
-
-                    with k4:
-
-                        st.metric(
-
-                            "Melhor Score",
-
-                            int(df["Score Quant"].max())
-
-                        )
-
-                    st.markdown("---")
-
-                    # ==========================================
-                    # TABELA
-                    # ==========================================
 
                     st.dataframe(
 
@@ -1927,34 +929,6 @@ elif menu == "Scanner":
                         height=700
 
                     )
-
-                    # ==========================================
-                    # TOP 10
-                    # ==========================================
-
-                    st.markdown("---")
-
-                    st.subheader(
-                        "🏆 TOP 10 Oportunidades"
-                    )
-
-                    top10 = df.head(10)
-
-                    for _, row in top10.iterrows():
-
-                        st.markdown(f"""
-
-### {row['Ativo 1']} x {row['Ativo 2']}
-
-- Status: {row.get('Status', 'N/A')}
-- Correlação: {row['Correlação']:.4f}
-- P-Value: {row['P-Value']:.4f}
-- Z-Score: {row.get('Pontuação Z', 0):.2f}
-- Score Quant: {row['Score Quant']}
-
----
-
-""")
 
             except Exception as erro:
 
