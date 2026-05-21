@@ -1609,6 +1609,25 @@ elif menu == "Scanner":
 
     st.subheader("⚙️ Filtros do Scanner")
 
+    # ==========================================
+    # MODO SCANNER
+    # ==========================================
+
+    modo_scanner = st.radio(
+
+        "Modo do Scanner",
+
+        [
+
+            "Mesmo Setor",
+            "Todos os Setores"
+
+        ],
+
+        horizontal=True
+
+    )
+
     col1, col2, col3, col4 = st.columns(4)
 
     with col1:
@@ -1683,8 +1702,13 @@ elif menu == "Scanner":
 
                 df = executar_scanner(
 
-                    LISTA_ATIVOS,
-                    periodo=periodo_scanner
+                    segmentos=SEGMENTOS,
+
+                    lista_ativos=LISTA_ATIVOS,
+
+                    periodo=periodo_scanner,
+
+                    modo=modo_scanner
 
                 )
 
