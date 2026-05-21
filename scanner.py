@@ -6,7 +6,7 @@ import numpy as np
 from statsmodels.tsa.stattools import coint
 
 # ==========================================
-# SCANNER QUANTITATIVO
+# SCANNER QUANTITATIVO INSTITUCIONAL
 # ==========================================
 
 def executar_scanner(
@@ -64,7 +64,7 @@ def executar_scanner(
         dados = dados["Close"]
 
     # ==========================================
-    # REMOVE COLUNAS VAZIAS
+    # LIMPEZA
     # ==========================================
 
     dados = dados.dropna(
@@ -170,6 +170,20 @@ def executar_scanner(
             serie2 = df_temp.iloc[:, 1]
 
             # ==================================
+            # REMOVE VALORES INVÁLIDOS
+            # ==================================
+
+            if (
+
+                serie1.std() == 0
+                or
+                serie2.std() == 0
+
+            ):
+
+                continue
+
+            # ==================================
             # CORRELAÇÃO
             # ==================================
 
@@ -211,6 +225,12 @@ def executar_scanner(
             # ==================================
 
             spread = serie1 - serie2
+
+            spread = spread.dropna()
+
+            if len(spread) < 50:
+
+                continue
 
             media = spread.mean()
 
@@ -305,6 +325,12 @@ def executar_scanner(
                 score += 10
 
             # ==================================
+            # VOLATILIDADE DO SPREAD
+            # ==================================
+
+            vol_spread = spread.std()
+
+            # ==================================
             # RESULTADO
             # ==================================
 
@@ -326,6 +352,11 @@ def executar_scanner(
 
                 "Pontuação Z": round(
                     zscore,
+                    2
+                ),
+
+                "Vol Spread": round(
+                    vol_spread,
                     2
                 ),
 
@@ -369,7 +400,8 @@ def executar_scanner(
             by=[
 
                 "Score Quant",
-                "Correlação"
+                "Correlação",
+                "Pontuação Z"
 
             ],
 
