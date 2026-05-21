@@ -319,6 +319,22 @@ with st.sidebar:
 
     )
 
+    # ==========================================
+    # CONTROLE DE TROCA DE ATIVOS
+    # ==========================================
+
+    par_atual = f"{ativo1_sidebar}_{ativo2_sidebar}"
+
+    if "ultimo_par" not in st.session_state:
+
+        st.session_state["ultimo_par"] = par_atual
+
+    if st.session_state["ultimo_par"] != par_atual:
+
+         st.session_state["ultimo_par"] = par_atual
+
+         st.rerun()
+
     periodo_sidebar = st.selectbox(
 
         "Período",
@@ -397,6 +413,8 @@ with st.sidebar:
 # ==========================================
 
 if menu == "Painel":
+
+    st.cache_data.clear()
 
     st.title("🏦 PAINEL SPREADS")
 
