@@ -343,6 +343,30 @@ with st.sidebar:
 
     st.markdown("---")
 
+    st.subheader("⚖️ Proporção Operacional")
+    
+    lote1 = st.number_input(
+
+    f"Lote {ativo1_sidebar}",
+
+    min_value=100,
+    step=100,
+    value=100
+
+    )
+
+    lote2 = st.number_input(
+
+    f"Lote {ativo2_sidebar}",
+
+    min_value=100,
+    step=100,
+    value=100
+
+    )
+
+    st.markdown("---")
+
     st.subheader("📊 Camadas de Spread")
 
     camada = st.number_input(
@@ -428,8 +452,13 @@ if menu == "Painel":
         # SPREAD
         # ==================================
 
-        spread = serie1 - serie2
+        spread = (
 
+        (serie1 * lote1)
+        -
+        (serie2 * lote2)
+
+        )
         media = spread.mean()
 
         desvio = spread.std()
