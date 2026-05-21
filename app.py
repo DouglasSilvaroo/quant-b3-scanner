@@ -101,7 +101,7 @@ SEGMENTOS = {
         "PETR4.SA",
         "PRIO3.SA",
         "RECV3.SA",
-        "RRRP3.SA",
+        "BRAV3.SA",
         "CSAN3.SA",
         "VBBR3.SA",
         "UGPA3.SA"
@@ -140,7 +140,7 @@ SEGMENTOS = {
         "CMIG3.SA",
         "CMIG4.SA",
         "TAEE3.SA",
-        "TAEE5.SA",
+        "TAEE4.SA",
         "TAEE11.SA",
         "EGIE3.SA",
         "ENGI11.SA",
@@ -166,13 +166,13 @@ SEGMENTOS = {
 
         "MGLU3.SA",
         "LREN3.SA",
-        "VIIA3.SA",
+        "BHIA3.SA",
         "ASAI3.SA",
         "PCAR3.SA",
         "CRFB3.SA",
         "RADL3.SA",
         "CEAB3.SA",
-        "PETZ3.SA"
+        "AUAU3.SA"
 
     ],
 
@@ -225,9 +225,7 @@ SEGMENTOS = {
     "Logistica": [
 
         "RAIL3.SA",
-        "AZUL4.SA",
-        "GOLL4.SA",
-        "CCRO3.SA",
+        "MOTV3.SA",
         "ECOR3.SA"
 
     ],
@@ -239,9 +237,8 @@ SEGMENTOS = {
     "Alimentos": [
 
         "ABEV3.SA",
-        "JBSS3.SA",
         "BRFS3.SA",
-        "MRFG3.SA",
+        "MBRF3.SA",
         "SLCE3.SA"
 
     ],
