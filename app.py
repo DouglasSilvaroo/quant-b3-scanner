@@ -319,22 +319,7 @@ with st.sidebar:
 
     )
 
-    # ==========================================
-    # CONTROLE DE TROCA DE ATIVOS
-    # ==========================================
-
-    par_atual = f"{ativo1_sidebar}_{ativo2_sidebar}"
-
-    if "ultimo_par" not in st.session_state:
-
-        st.session_state["ultimo_par"] = par_atual
-
-    if st.session_state["ultimo_par"] != par_atual:
-
-         st.session_state["ultimo_par"] = par_atual
-
-         st.rerun()
-
+    
     periodo_sidebar = st.selectbox(
 
         "Período",
@@ -414,8 +399,7 @@ with st.sidebar:
 
 if menu == "Painel":
 
-    st.cache_data.clear()
-
+    
     st.title("🏦 PAINEL SPREADS")
 
     ativo1 = ativo1_sidebar
@@ -425,37 +409,55 @@ if menu == "Painel":
     try:
 
         # ==================================
-        # DOWNLOAD
+        # DOWNLOAD INDIVIDUAL
         # ==================================
 
-        dados = yf.download(
+        dados1 = yf.download(
 
-            [ativo1, ativo2],
-
+            ativo1,
             period=periodo,
-
             auto_adjust=True,
+            progress=False
 
+        )
+
+        dados2 = yf.download(
+
+            ativo2,
+            period=periodo,
+            auto_adjust=True,
             progress=False
 
         )
 
         # ==================================
-        # MULTIINDEX
+        # FECHAMENTO
         # ==================================
 
-        if isinstance(
-            dados.columns,
-            pd.MultiIndex
-        ):
+        serie1 = dados1["Close"]
 
-            dados = dados["Close"]
+        serie2 = dados2["Close"]
+
+        # ==================================
+        # ALINHAMENTO
+        # ==================================
+
+        dados = pd.concat(
+
+            [serie1, serie2],
+
+            axis=1
+
+        )
+
+        dados.columns = [
+
+        ativo1,
+        ativo2
+
+        ]
 
         dados = dados.dropna()
-
-        # ==================================
-        # SERIES
-        # ==================================
 
         serie1 = dados[ativo1]
 
