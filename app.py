@@ -169,7 +169,6 @@ SEGMENTOS = {
         "BHIA3.SA",
         "ASAI3.SA",
         "PCAR3.SA",
-        "CRFB3.SA",
         "RADL3.SA",
         "CEAB3.SA",
         "AUAU3.SA"
@@ -237,7 +236,6 @@ SEGMENTOS = {
     "Alimentos": [
 
         "ABEV3.SA",
-        "BRFS3.SA",
         "MBRF3.SA",
         "SLCE3.SA"
 
