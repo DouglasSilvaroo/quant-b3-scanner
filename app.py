@@ -809,7 +809,7 @@ if menu == "Painel":
 
         st.plotly_chart(
 
-            fig,
+            fig_hist,
 
             width="stretch"
 
