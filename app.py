@@ -1346,7 +1346,7 @@ if menu == "Painel":
 
         )
 
-                # ==========================================
+        # ==========================================
         # Z-SCORE PROFISSIONAL
         # ==========================================
 
@@ -1575,20 +1575,107 @@ elif menu == "Scanner":
 
     st.title("🚀 Scanner Quantitativo")
 
-    if st.button("Executar Scanner"):
+    st.markdown("""
+    ### 🎯 Objetivo do Scanner
 
-        with st.spinner(
-            "Analisando pares..."
-        ):
+    Encontrar pares com:
+
+    - Alta correlação
+    - Cointegração estatística
+    - Boa reversão à média
+    - Spread operacional utilizável
+    """)
+
+    # ==========================================
+    # FILTROS
+    # ==========================================
+
+    st.markdown("---")
+
+    st.subheader("⚙️ Filtros do Scanner")
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+
+        correlacao_min = st.slider(
+
+            "Correlação mínima",
+
+            0.50,
+            1.00,
+            0.95,
+            0.01
+
+        )
+
+    with col2:
+
+        pvalue_max = st.slider(
+
+            "P-Value máximo",
+
+            0.001,
+            0.10,
+            0.05,
+            0.001
+
+        )
+
+    with col3:
+
+        zscore_min = st.slider(
+
+            "Z-Score mínimo",
+
+            0.0,
+            5.0,
+            1.5,
+            0.1
+
+        )
+
+    with col4:
+
+        periodo_scanner = st.selectbox(
+
+            "Período",
+
+            [
+                "90d",
+                "120d",
+                "180d",
+                "200d",
+                "250d",
+                "1y"
+            ],
+
+            index=3
+
+        )
+
+    st.markdown("---")
+
+    # ==========================================
+    # EXECUTAR SCANNER
+    # ==========================================
+
+    if st.button("🚀 Executar Scanner"):
+
+        with st.spinner("Analisando pares..."):
 
             try:
 
                 df = executar_scanner(
 
                     LISTA_ATIVOS,
-                    periodo="200d"
+                    periodo=periodo_scanner
 
                 )
+
+                # ==========================================
+                # VALIDAÇÃO
+                # ==========================================
 
                 if df.empty:
 
@@ -1598,17 +1685,237 @@ elif menu == "Scanner":
 
                 else:
 
+                    # ==========================================
+                    # FILTROS
+                    # ==========================================
+
+                    if "Correlação" in df.columns:
+
+                        df = df[
+                            df["Correlação"] >= correlacao_min
+                        ]
+
+                    if "P-Value" in df.columns:
+
+                        df = df[
+                            df["P-Value"] <= pvalue_max
+                        ]
+
+                    if "Pontuação Z" in df.columns:
+
+                        df = df[
+                            abs(df["Pontuação Z"]) >= zscore_min
+                        ]
+
+                    # ==========================================
+                    # STATUS OPERACIONAL
+                    # ==========================================
+
+                    if "Pontuação Z" in df.columns:
+
+                        status_lista = []
+
+                        for _, row in df.iterrows():
+
+                            z = row["Pontuação Z"]
+
+                            if z >= 2:
+
+                                status_lista.append(
+                                    "🟢 Entrar Crédito"
+                                )
+
+                            elif z <= -2:
+
+                                status_lista.append(
+                                    "🔴 Entrar Débito"
+                                )
+
+                            else:
+
+                                status_lista.append(
+                                    "🟡 Neutro"
+                                )
+
+                        df["Status"] = status_lista
+
+                    # ==========================================
+                    # SCORE QUANT
+                    # ==========================================
+
+                    score_lista = []
+
+                    for _, row in df.iterrows():
+
+                        score = 0
+
+                        # ==================================
+                        # CORRELAÇÃO
+                        # ==================================
+
+                        corr = row["Correlação"]
+
+                        if corr >= 0.99:
+
+                            score += 40
+
+                        elif corr >= 0.97:
+
+                            score += 30
+
+                        elif corr >= 0.95:
+
+                            score += 20
+
+                        # ==================================
+                        # P-VALUE
+                        # ==================================
+
+                        pv = row["P-Value"]
+
+                        if pv <= 0.01:
+
+                            score += 40
+
+                        elif pv <= 0.03:
+
+                            score += 30
+
+                        elif pv <= 0.05:
+
+                            score += 20
+
+                        # ==================================
+                        # Z-SCORE
+                        # ==================================
+
+                        if "Pontuação Z" in df.columns:
+
+                            zscore = abs(
+                                row["Pontuação Z"]
+                            )
+
+                            if zscore >= 3:
+
+                                score += 20
+
+                            elif zscore >= 2:
+
+                                score += 10
+
+                        score_lista.append(score)
+
+                    df["Score Quant"] = score_lista
+
+                    # ==========================================
+                    # ORDENAÇÃO
+                    # ==========================================
+
+                    df = df.sort_values(
+
+                        by=[
+                            "Score Quant",
+                            "Correlação"
+                        ],
+
+                        ascending=False
+
+                    )
+
+                    # ==========================================
+                    # KPIs
+                    # ==========================================
+
                     st.success(
                         f"{len(df)} pares encontrados"
                     )
+
+                    k1, k2, k3, k4 = st.columns(4)
+
+                    with k1:
+
+                        st.metric(
+
+                            "Pares",
+
+                            len(df)
+
+                        )
+
+                    with k2:
+
+                        st.metric(
+
+                            "Maior Correlação",
+
+                            f"{df['Correlação'].max():.4f}"
+
+                        )
+
+                    with k3:
+
+                        if "Pontuação Z" in df.columns:
+
+                            st.metric(
+
+                                "Maior Z-Score",
+
+                                f"{df['Pontuação Z'].abs().max():.2f}"
+
+                            )
+
+                    with k4:
+
+                        st.metric(
+
+                            "Melhor Score",
+
+                            int(df["Score Quant"].max())
+
+                        )
+
+                    st.markdown("---")
+
+                    # ==========================================
+                    # TABELA
+                    # ==========================================
 
                     st.dataframe(
 
                         df,
 
-                        use_container_width=True
+                        use_container_width=True,
+                        height=700
 
                     )
+
+                    # ==========================================
+                    # TOP 10
+                    # ==========================================
+
+                    st.markdown("---")
+
+                    st.subheader(
+                        "🏆 TOP 10 Oportunidades"
+                    )
+
+                    top10 = df.head(10)
+
+                    for _, row in top10.iterrows():
+
+                        st.markdown(f"""
+
+### {row['Ativo 1']} x {row['Ativo 2']}
+
+- Status: {row.get('Status', 'N/A')}
+- Correlação: {row['Correlação']:.4f}
+- P-Value: {row['P-Value']:.4f}
+- Z-Score: {row.get('Pontuação Z', 0):.2f}
+- Score Quant: {row['Score Quant']}
+
+---
+
+""")
 
             except Exception as erro:
 
