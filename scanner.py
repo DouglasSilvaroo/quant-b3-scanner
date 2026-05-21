@@ -18,66 +18,61 @@ def executar_scanner(
     resultados = []
 
     # ==========================================
-    # LOOP PRINCIPAL
+    # DOWNLOAD ÚNICO
     # ==========================================
 
-    for i in range(len(lista_ativos)):
+    try:
 
-        for j in range(i + 1, len(lista_ativos)):
+        dados = yf.download(
 
-            ativo1 = lista_ativos[i]
-            ativo2 = lista_ativos[j]
+            lista_ativos,
+
+            period=periodo,
+
+            auto_adjust=True,
+
+            progress=False
+
+        )
+
+    except:
+
+        return pd.DataFrame()
+
+    # ==========================================
+    # MULTIINDEX
+    # ==========================================
+
+    if isinstance(
+        dados.columns,
+        pd.MultiIndex
+    ):
+
+        dados = dados["Close"]
+
+    # ==========================================
+    # REMOVE COLUNAS VAZIAS
+    # ==========================================
+
+    dados = dados.dropna(
+        axis=1,
+        how="all"
+    )
+
+    # ==========================================
+    # LOOP PARES
+    # ==========================================
+
+    ativos_validos = list(dados.columns)
+
+    for i in range(len(ativos_validos)):
+
+        for j in range(i + 1, len(ativos_validos)):
+
+            ativo1 = ativos_validos[i]
+            ativo2 = ativos_validos[j]
 
             try:
-
-                # ==================================
-                # DOWNLOAD
-                # ==================================
-
-                dados = yf.download(
-
-                    [ativo1, ativo2],
-
-                    period=periodo,
-
-                    auto_adjust=True,
-
-                    progress=False
-
-                )
-
-                # ==================================
-                # VALIDAÇÃO DOWNLOAD
-                # ==================================
-
-                if dados.empty:
-
-                    continue
-
-                # ==================================
-                # MULTIINDEX
-                # ==================================
-
-                if isinstance(
-                    dados.columns,
-                    pd.MultiIndex
-                ):
-
-                    dados = dados["Close"]
-
-                dados = dados.dropna()
-
-                if len(dados) < 50:
-
-                    continue
-
-                # ==================================
-                # VALIDAÇÃO
-                # ==================================
-
-                if len(dados) < 50:
-
-                    continue
 
                 # ==================================
                 # SÉRIES
@@ -86,6 +81,25 @@ def executar_scanner(
                 serie1 = dados[ativo1]
                 serie2 = dados[ativo2]
 
+                df_temp = pd.concat(
+
+                    [serie1, serie2],
+
+                    axis=1
+
+                ).dropna()
+
+                # ==================================
+                # VALIDAÇÃO
+                # ==================================
+
+                if len(df_temp) < 80:
+
+                    continue
+
+                serie1 = df_temp.iloc[:, 0]
+                serie2 = df_temp.iloc[:, 1]
+
                 # ==================================
                 # CORRELAÇÃO
                 # ==================================
@@ -93,6 +107,10 @@ def executar_scanner(
                 correlacao = serie1.corr(
                     serie2
                 )
+
+                if correlacao < 0.90:
+
+                    continue
 
                 # ==================================
                 # COINTEGRAÇÃO
@@ -105,6 +123,10 @@ def executar_scanner(
 
                 )
 
+                if pvalue > 0.05:
+
+                    continue
+
                 # ==================================
                 # SPREAD
                 # ==================================
@@ -115,8 +137,12 @@ def executar_scanner(
 
                 desvio = spread.std()
 
+                if desvio == 0:
+
+                    continue
+
                 # ==================================
-                # Z-SCORE
+                # ZSCORE
                 # ==================================
 
                 zscore = (
@@ -128,19 +154,7 @@ def executar_scanner(
                 ) / desvio
 
                 # ==================================
-                # FILTROS
-                # ==================================
-
-                if correlacao < 0.90:
-
-                    continue
-
-                if pvalue > 0.05:
-
-                    continue
-
-                # ==================================
-                # STATUS OPERACIONAL
+                # STATUS
                 # ==================================
 
                 if zscore >= 2:
@@ -156,12 +170,10 @@ def executar_scanner(
                     status = "🟡 Neutro"
 
                 # ==================================
-                # SCORE QUANT
+                # SCORE
                 # ==================================
 
                 score = 0
-
-                # Correlação
 
                 if correlacao >= 0.99:
 
@@ -175,8 +187,6 @@ def executar_scanner(
 
                     score += 20
 
-                # P-Value
-
                 if pvalue <= 0.01:
 
                     score += 40
@@ -188,8 +198,6 @@ def executar_scanner(
                 elif pvalue <= 0.05:
 
                     score += 20
-
-                # Z-Score
 
                 if abs(zscore) >= 3:
 
@@ -234,14 +242,10 @@ def executar_scanner(
                 continue
 
     # ==========================================
-    # DATAFRAME
+    # DATAFRAME FINAL
     # ==========================================
 
     df = pd.DataFrame(resultados)
-
-    # ==========================================
-    # ORDENAÇÃO
-    # ==========================================
 
     if not df.empty:
 
