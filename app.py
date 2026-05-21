@@ -809,9 +809,9 @@ if menu == "Painel":
 
         st.plotly_chart(
 
-            fig_hist,
+            fig,
 
-            use_container_width=True
+            width="stretch"
 
         )
 
@@ -890,7 +890,7 @@ if menu == "Painel":
 
             concentracao_df,
 
-            use_container_width=True,
+            width="stretch",
 
             height=380
 
@@ -940,7 +940,7 @@ if menu == "Painel":
 
             fig_concentracao,
 
-            use_container_width=True
+            width="stretch"
 
         )
 
@@ -1078,7 +1078,7 @@ if menu == "Painel":
 
             tempo_stats,
 
-            use_container_width=True,
+            width="stretch",
 
             height=380
 
@@ -1130,7 +1130,7 @@ if menu == "Painel":
 
             fig_tempo,
 
-            use_container_width=True
+            width="stretch"
 
         )
 
@@ -1236,7 +1236,7 @@ if menu == "Painel":
 
             fig_precos,
 
-            use_container_width=True
+            width="stretch"
 
         )
 
@@ -1337,7 +1337,7 @@ if menu == "Painel":
 
             fig_distancia,
 
-            use_container_width=True
+            width="stretch"
 
         )
 
@@ -1500,7 +1500,7 @@ if menu == "Painel":
 
             fig_z,
 
-            use_container_width=True
+            width="stretch"
 
         )
 
@@ -1554,7 +1554,7 @@ if menu == "Painel":
         st.plotly_chart(
 
             fig,
-            use_container_width=True
+            width="stretch",
 
         )
 
@@ -1879,7 +1879,7 @@ elif menu == "Scanner":
 
                         df,
 
-                        use_container_width=True,
+                        width="stretch",
                         height=700
 
                     )
