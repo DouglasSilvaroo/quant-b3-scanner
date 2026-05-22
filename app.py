@@ -419,16 +419,16 @@ if st.session_state["menu"] == "Painel":
 
         )
 
-    if isinstance(
+        if isinstance(
         dados.columns,
         pd.MultiIndex
-    ):
+        ):
 
         dados = dados["Close"]
 
-    dados = dados.dropna()
+        dados = dados.dropna()
 
-    if dados.empty:
+        if dados.empty:
 
         st.warning(
             "Sem dados disponíveis."
