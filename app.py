@@ -543,23 +543,23 @@ if st.session_state["menu"] == "Painel":
 
         st.subheader(
 
-        f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
+    f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
 
     )
 
-    distancia = spread.abs()
+        distancia = spread.abs()
 
-    dist_max = float(distancia.max())
+        dist_max = float(distancia.max())
 
-    dist_min = float(distancia.min())
+        dist_min = float(distancia.min())
 
-    spread_atual = float(abs(spread.iloc[-1]))
+        spread_atual = float(abs(spread.iloc[-1]))
 
-    media_hist = float(distancia.mean())
+        media_hist = float(distancia.mean())
 
-    bins = []
+        bins = []
 
-    inicio = 0
+        inicio = 0
 
     while inicio <= dist_max + camada:
 
