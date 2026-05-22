@@ -249,13 +249,13 @@ with st.sidebar:
 
     st.title("🏦 PAINEL SPREADS")
 
-st.success(
+    st.success(
     f"👤 {st.session_state['usuario']}"
 )
 
-st.markdown("---")
+    st.markdown("---")
 
-menu = st.radio(
+    menu = st.radio(
 
     "Navegação",
 
@@ -401,11 +401,11 @@ if st.session_state["menu"] == "Painel":
 
     st.title("🏦 PAINEL SPREADS")
 
-ativo1 = ativo1_sidebar
-ativo2 = ativo2_sidebar
-periodo = periodo_sidebar
+    ativo1 = ativo1_sidebar
+    ativo2 = ativo2_sidebar
+    periodo = periodo_sidebar
 
-try:
+    try:
 
     dados = yf.download(
 
@@ -738,7 +738,7 @@ elif st.session_state["menu"] == "Scanner":
 
     st.title("🚀 Scanner Quantitativo")
 
-st.markdown("""
+    st.markdown("""
 
 ### 🎯 Objetivo do Scanner
 
@@ -966,6 +966,6 @@ if st.button("🚀 Executar Scanner"):
 
                     st.divider()
 
-        except Exception as erro:
+            except Exception as erro:
 
             st.error(f"Erro: {erro}")
