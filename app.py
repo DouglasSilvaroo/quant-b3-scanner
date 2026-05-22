@@ -6,637 +6,651 @@ import plotly.graph_objects as go
 import plotly.express as px
 
 from auth import (
-    tela_login,
-    tela_cadastro
+tela_login,
+tela_cadastro
 )
 
 from scanner import (
-    executar_scanner
+executar_scanner
 )
 
 # ==========================================
+
 # CONFIG STREAMLIT
+
 # ==========================================
 
 st.set_page_config(
 
-    page_title="PAINEL SPREADS",
-    page_icon="📈",
-    layout="wide"
+```
+page_title="PAINEL SPREADS",
+page_icon="📈",
+layout="wide"
+```
 
 )
 
 # ==========================================
+
 # SESSION
+
 # ==========================================
 
 if "logado" not in st.session_state:
 
-    st.session_state["logado"] = False
+```
+st.session_state["logado"] = False
+```
 
 if "usuario" not in st.session_state:
 
-    st.session_state["usuario"] = ""
+```
+st.session_state["usuario"] = ""
+```
 
 if "menu" not in st.session_state:
 
-    st.session_state["menu"] = "Painel"
+```
+st.session_state["menu"] = "Painel"
+```
 
 # ==========================================
+
 # LOGIN
+
 # ==========================================
 
 if not st.session_state["logado"]:
 
-    st.title("🏦 PAINEL SPREADS")
+```
+st.title("🏦 PAINEL SPREADS")
 
-    aba1, aba2 = st.tabs([
+aba1, aba2 = st.tabs([
 
-        "Login",
-        "Cadastro"
+    "Login",
+    "Cadastro"
 
-    ])
+])
 
-    with aba1:
+with aba1:
 
-        tela_login()
+    tela_login()
 
-    with aba2:
+with aba2:
 
-        tela_cadastro()
+    tela_cadastro()
 
-    st.stop()
+st.stop()
+```
 
 # ==========================================
+
 # ATIVOS B3 POR SEGMENTO
+
 # ==========================================
 
 SEGMENTOS = {
 
-    "Bancos": [
+```
+"Bancos": [
 
-        "ITUB3.SA",
-        "ITUB4.SA",
-        "BBDC3.SA",
-        "BBDC4.SA",
-        "BBAS3.SA",
-        "SANB3.SA",
-        "SANB4.SA",
-        "SANB11.SA",
-        "BPAC11.SA",
-        "ABCB4.SA",
-        "BRSR3.SA",
-        "BRSR6.SA",
-        "BMGB4.SA"
+    "ITUB3.SA",
+    "ITUB4.SA",
+    "BBDC3.SA",
+    "BBDC4.SA",
+    "BBAS3.SA",
+    "SANB3.SA",
+    "SANB4.SA",
+    "SANB11.SA",
+    "BPAC11.SA",
+    "ABCB4.SA",
+    "BRSR3.SA",
+    "BRSR6.SA",
+    "BMGB4.SA"
 
-    ],
+],
 
-    "Petroleo": [
+"Petroleo": [
 
-        "PETR3.SA",
-        "PETR4.SA",
-        "PRIO3.SA",
-        "RECV3.SA",
-        "BRAV3.SA",
-        "CSAN3.SA",
-        "VBBR3.SA",
-        "UGPA3.SA"
+    "PETR3.SA",
+    "PETR4.SA",
+    "PRIO3.SA",
+    "RECV3.SA",
+    "BRAV3.SA",
+    "CSAN3.SA",
+    "VBBR3.SA",
+    "UGPA3.SA"
 
-    ],
+],
 
-    "Mineracao": [
+"Mineracao": [
 
-        "VALE3.SA",
-        "BRAP3.SA",
-        "BRAP4.SA",
-        "CSNA3.SA",
-        "GGBR3.SA",
-        "GGBR4.SA",
-        "GOAU3.SA",
-        "GOAU4.SA",
-        "USIM3.SA",
-        "USIM5.SA",
-        "CMIN3.SA"
+    "VALE3.SA",
+    "BRAP3.SA",
+    "BRAP4.SA",
+    "CSNA3.SA",
+    "GGBR3.SA",
+    "GGBR4.SA",
+    "GOAU3.SA",
+    "GOAU4.SA",
+    "USIM3.SA",
+    "USIM5.SA",
+    "CMIN3.SA"
 
-    ],
+],
 
-    "Energia": [
+"Energia": [
 
-        "AXIA3.SA",
-        "AXIA6.SA",
-        "CPFE3.SA",
-        "CMIG3.SA",
-        "CMIG4.SA",
-        "TAEE3.SA",
-        "TAEE4.SA",
-        "TAEE11.SA",
-        "EGIE3.SA",
-        "ENGI11.SA",
-        "EQTL3.SA",
-        "ENEV3.SA",
-        "CPLE3.SA",
-        "NEOE3.SA",
-        "ISAE3.SA",
-        "ISAE4.SA",
-        "AURE3.SA",
-        "ALUP3.SA",
-        "ALUP4.SA",
-        "ALUP11.SA"
+    "AXIA3.SA",
+    "AXIA6.SA",
+    "CPFE3.SA",
+    "CMIG3.SA",
+    "CMIG4.SA",
+    "TAEE3.SA",
+    "TAEE4.SA",
+    "TAEE11.SA",
+    "EGIE3.SA",
+    "ENGI11.SA",
+    "EQTL3.SA",
+    "ENEV3.SA",
+    "CPLE3.SA",
+    "NEOE3.SA",
+    "ISAE3.SA",
+    "ISAE4.SA",
+    "AURE3.SA",
+    "ALUP3.SA",
+    "ALUP4.SA",
+    "ALUP11.SA"
 
-    ],
+],
 
-    "Varejo": [
+"Varejo": [
 
-        "MGLU3.SA",
-        "LREN3.SA",
-        "BHIA3.SA",
-        "ASAI3.SA",
-        "PCAR3.SA",
-        "RADL3.SA",
-        "CEAB3.SA",
-        "AUAU3.SA"
+    "MGLU3.SA",
+    "LREN3.SA",
+    "BHIA3.SA",
+    "ASAI3.SA",
+    "PCAR3.SA",
+    "RADL3.SA",
+    "CEAB3.SA",
+    "AUAU3.SA"
 
-    ],
+],
 
-    "Papel": [
+"Papel": [
 
-        "SUZB3.SA",
-        "KLBN3.SA",
-        "KLBN4.SA",
-        "KLBN11.SA",
-        "RANI3.SA"
+    "SUZB3.SA",
+    "KLBN3.SA",
+    "KLBN4.SA",
+    "KLBN11.SA",
+    "RANI3.SA"
 
-    ],
+],
 
-    "Construcao": [
+"Construcao": [
 
-        "CYRE3.SA",
-        "EZTC3.SA",
-        "MRVE3.SA",
-        "DIRR3.SA",
-        "TEND3.SA",
-        "LAVV3.SA"
+    "CYRE3.SA",
+    "EZTC3.SA",
+    "MRVE3.SA",
+    "DIRR3.SA",
+    "TEND3.SA",
+    "LAVV3.SA"
 
-    ],
+],
 
-    "Telecom": [
+"Telecom": [
 
-        "VIVT3.SA",
-        "TIMS3.SA",
-        "POSI3.SA",
-        "TOTS3.SA"
+    "VIVT3.SA",
+    "TIMS3.SA",
+    "POSI3.SA",
+    "TOTS3.SA"
 
-    ],
+],
 
-    "Logistica": [
+"Logistica": [
 
-        "RAIL3.SA",
-        "MOTV3.SA",
-        "ECOR3.SA"
+    "RAIL3.SA",
+    "MOTV3.SA",
+    "ECOR3.SA"
 
-    ],
+],
 
-    "Alimentos": [
+"Alimentos": [
 
-        "ABEV3.SA",
-        "MBRF3.SA",
-        "SLCE3.SA"
+    "ABEV3.SA",
+    "MBRF3.SA",
+    "SLCE3.SA"
 
-    ],
+],
 
-    "Saude": [
+"Saude": [
 
-        "HAPV3.SA",
-        "QUAL3.SA",
-        "FLRY3.SA",
-        "RDOR3.SA"
+    "HAPV3.SA",
+    "QUAL3.SA",
+    "FLRY3.SA",
+    "RDOR3.SA"
 
-    ]
+]
+```
 
 }
 
 # ==========================================
+
 # LISTA CONSOLIDADA
+
 # ==========================================
 
 LISTA_ATIVOS = []
 
 for setor in SEGMENTOS.values():
 
-    LISTA_ATIVOS.extend(setor)
+```
+LISTA_ATIVOS.extend(setor)
+```
 
 LISTA_ATIVOS = sorted(list(set(LISTA_ATIVOS)))
 
 # ==========================================
+
 # SIDEBAR
+
 # ==========================================
 
 with st.sidebar:
 
-    st.title("🏦 PAINEL SPREADS")
+```
+st.title("🏦 PAINEL SPREADS")
 
-    st.success(
-        f"👤 {st.session_state['usuario']}"
-    )
+st.success(
+    f"👤 {st.session_state['usuario']}"
+)
 
-    st.markdown("---")
+st.markdown("---")
 
-    menu = st.radio(
+menu = st.radio(
 
-        "Navegação",
+    "Navegação",
 
-        [
-            "Painel",
-            "Scanner"
-        ],
+    [
+        "Painel",
+        "Scanner"
+    ],
 
-        key="menu"
+    index=0 if st.session_state["menu"] == "Painel" else 1
 
-    )
+)
 
-    st.markdown("---")
+st.session_state["menu"] = menu
 
-    st.subheader("⚙️ Configurações")
+st.markdown("---")
 
-    ativo1_sidebar = st.selectbox(
+st.subheader("⚙️ Configurações")
 
-        "Ativo 1",
+ativo1_sidebar = st.selectbox(
 
-        LISTA_ATIVOS,
+    "Ativo 1",
 
-        index=LISTA_ATIVOS.index(
+    LISTA_ATIVOS,
 
-            st.session_state.get(
+    index=LISTA_ATIVOS.index(
 
-                "ativo1",
+        st.session_state.get(
 
-                LISTA_ATIVOS[0]
+            "ativo1",
 
-            )
+            LISTA_ATIVOS[0]
 
-        ),
+        )
 
-        key="ativo1_select"
+    ),
 
-    )
+    key="ativo1_select"
 
-    ativo2_sidebar = st.selectbox(
+)
 
-        "Ativo 2",
+ativo2_sidebar = st.selectbox(
 
-        LISTA_ATIVOS,
+    "Ativo 2",
 
-        index=LISTA_ATIVOS.index(
+    LISTA_ATIVOS,
 
-            st.session_state.get(
+    index=LISTA_ATIVOS.index(
 
-                "ativo2",
+        st.session_state.get(
 
-                LISTA_ATIVOS[1]
+            "ativo2",
 
-            )
+            LISTA_ATIVOS[1]
 
-        ),
+        )
 
-        key="ativo2_select"
+    ),
 
-    )
+    key="ativo2_select"
 
-    periodo_sidebar = st.selectbox(
+)
 
-        "Período",
+periodo_sidebar = st.selectbox(
 
-        [
-            "3mo",
-            "6mo",
-            "1y",
-            "200d"
-        ],
+    "Período",
 
-        index=3,
+    [
+        "3mo",
+        "6mo",
+        "1y",
+        "200d"
+    ],
 
-        key="periodo_select"
+    index=3,
 
-    )
+    key="periodo_select"
 
-    st.markdown("---")
+)
 
-    st.subheader("⚖️ Proporção Operacional")
+st.markdown("---")
 
-    lote1 = st.number_input(
+st.subheader("⚖️ Proporção Operacional")
 
-        f"Lote {ativo1_sidebar}",
+lote1 = st.number_input(
 
-        min_value=100,
-        step=100,
-        value=100
+    f"Lote {ativo1_sidebar}",
 
-    )
+    min_value=100,
+    step=100,
+    value=100
 
-    lote2 = st.number_input(
+)
 
-        f"Lote {ativo2_sidebar}",
+lote2 = st.number_input(
 
-        min_value=100,
-        step=100,
-        value=100
+    f"Lote {ativo2_sidebar}",
 
-    )
+    min_value=100,
+    step=100,
+    value=100
 
-    st.markdown("---")
+)
 
-    st.subheader("📊 Camadas de Spread")
+st.markdown("---")
 
-    camada = st.number_input(
+st.subheader("📊 Camadas de Spread")
 
-        "Tamanho da Camada",
+camada = st.number_input(
 
-        value=0.50,
+    "Tamanho da Camada",
 
-        step=0.10
+    value=0.50,
 
-    )
+    step=0.10
 
-    tolerancia = st.number_input(
+)
 
-        "Tolerância",
+tolerancia = st.number_input(
 
-        value=0.10,
+    "Tolerância",
 
-        step=0.10
+    value=0.10,
 
-    )
+    step=0.10
 
-    st.markdown("---")
+)
 
-    if st.button("Logout"):
+st.markdown("---")
 
-        st.session_state["logado"] = False
+if st.button("Logout"):
 
-        st.rerun()
+    st.session_state["logado"] = False
+
+    st.rerun()
+```
 
 # ==========================================
+
 # PAINEL
+
 # ==========================================
 
-if menu == "Painel":
+if st.session_state["menu"] == "Painel":
 
-    st.title("🏦 PAINEL SPREADS")
+```
+st.title("🏦 PAINEL SPREADS")
 
-    ativo1 = ativo1_sidebar
-    ativo2 = ativo2_sidebar
-    periodo = periodo_sidebar
+ativo1 = ativo1_sidebar
+ativo2 = ativo2_sidebar
+periodo = periodo_sidebar
 
-    try:
+try:
 
-        # ==========================================
-        # DOWNLOAD
-        # ==========================================
+    dados = yf.download(
 
-        dados = yf.download(
+        [ativo1, ativo2],
 
-            [ativo1, ativo2],
+        period=periodo,
 
-            period=periodo,
+        auto_adjust=True,
 
-            auto_adjust=True,
+        progress=False
 
-            progress=False
+    )
 
+    if isinstance(
+        dados.columns,
+        pd.MultiIndex
+    ):
+
+        dados = dados["Close"]
+
+    dados = dados.dropna()
+
+    if dados.empty:
+
+        st.warning(
+            "Sem dados disponíveis."
         )
 
-        if isinstance(
-            dados.columns,
-            pd.MultiIndex
-        ):
+        st.stop()
 
-            dados = dados["Close"]
+    serie1 = dados[ativo1]
+    serie2 = dados[ativo2]
 
-        dados = dados.dropna()
+    fator1 = lote1 / 100
+    fator2 = lote2 / 100
 
-        if dados.empty:
+    spread = (
 
-            st.warning(
-                "Sem dados disponíveis."
-            )
+        (serie1 * fator1)
+        -
+        (serie2 * fator2)
 
-            st.stop()
+    )
 
-        serie1 = dados[ativo1]
-        serie2 = dados[ativo2]
+    media = spread.mean()
 
-        # ==========================================
-        # PROPORÇÃO
-        # ==========================================
+    desvio = spread.std()
 
-        fator1 = lote1 / 100
-        fator2 = lote2 / 100
+    if desvio == 0:
 
-        spread = (
+        zscore = 0
 
-            (serie1 * fator1)
+    else:
+
+        zscore = (
+
+            spread.iloc[-1]
             -
-            (serie2 * fator2)
+            media
+
+        ) / desvio
+
+    correlacao = serie1.corr(
+        serie2
+    )
+
+    col1, col2, col3, col4 = st.columns(4)
+
+    with col1:
+
+        st.metric(
+
+            ativo1,
+
+            f"{serie1.iloc[-1]:.2f}"
 
         )
 
-        media = spread.mean()
+    with col2:
 
-        desvio = spread.std()
+        st.metric(
 
-        if desvio == 0:
+            ativo2,
 
-            zscore = 0
-
-        else:
-
-            zscore = (
-
-                spread.iloc[-1]
-                -
-                media
-
-            ) / desvio
-
-        correlacao = serie1.corr(
-            serie2
-        )
-
-        # ==========================================
-        # CARDS
-        # ==========================================
-
-        col1, col2, col3, col4 = st.columns(4)
-
-        with col1:
-
-            st.metric(
-
-                ativo1,
-
-                f"{serie1.iloc[-1]:.2f}"
-
-            )
-
-        with col2:
-
-            st.metric(
-
-                ativo2,
-
-                f"{serie2.iloc[-1]:.2f}"
-
-            )
-
-        with col3:
-
-            st.metric(
-
-                "DISTÂNCIA ATUAL",
-
-                f"{spread.iloc[-1]:.2f}"
-
-            )
-
-        with col4:
-
-            st.metric(
-
-                "Pontuação Z",
-
-                f"{zscore:.2f}"
-
-            )
-
-        st.markdown("---")
-
-        # ==========================================
-        # MÉTRICAS
-        # ==========================================
-
-        c1, c2, c3 = st.columns(3)
-
-        with c1:
-
-            st.metric(
-                "Correlação",
-                f"{correlacao:.4f}"
-            )
-
-        with c2:
-
-            st.metric(
-                "Spread Médio",
-                f"{media:.2f}"
-            )
-
-        with c3:
-
-            st.metric(
-                "Desvio",
-                f"{desvio:.2f}"
-            )
-
-        st.markdown("---")
-
-        # ==========================================
-        # HISTOGRAMA
-        # ==========================================
-
-        st.subheader(
-
-            f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
+            f"{serie2.iloc[-1]:.2f}"
 
         )
 
-        distancia = spread.abs()
+    with col3:
 
-        dist_max = float(distancia.max())
+        st.metric(
 
-        dist_min = float(distancia.min())
+            "DISTÂNCIA ATUAL",
 
-        spread_atual = float(abs(spread.iloc[-1]))
-
-        media_hist = float(distancia.mean())
-
-        bins = []
-
-        inicio = 0
-
-        while inicio <= dist_max + camada:
-
-            bins.append(round(inicio, 2))
-
-            inicio += camada
-
-        if bins[-1] < dist_max:
-
-            bins.append(round(dist_max + camada, 2))
-
-        hist = pd.cut(
-
-            distancia,
-
-            bins=bins,
-
-            include_lowest=True
+            f"{spread.iloc[-1]:.2f}"
 
         )
 
-        freq = hist.value_counts().sort_index()
+    with col4:
 
-        camada_dominante = freq.idxmax()
+        st.metric(
 
-        camada_texto = (
+            "Pontuação Z",
 
-            f"{camada_dominante.left:.2f} → "
-            f"{camada_dominante.right:.2f}"
+            f"{zscore:.2f}"
 
         )
 
-        h1, h2, h3, h4 = st.columns(4)
+    st.markdown("---")
 
-        with h1:
+    c1, c2, c3 = st.columns(3)
 
-            st.metric(
+    with c1:
 
-                "Distância Máxima",
+        st.metric(
+            "Correlação",
+            f"{correlacao:.4f}"
+        )
 
-                f"R$ {dist_max:.2f}"
+    with c2:
 
-            )
+        st.metric(
+            "Spread Médio",
+            f"{media:.2f}"
+        )
 
-        with h2:
+    with c3:
 
-            st.metric(
+        st.metric(
+            "Desvio",
+            f"{desvio:.2f}"
+        )
 
-                "Distância Mínima",
+    st.markdown("---")
 
-                f"R$ {dist_min:.2f}"
+    st.subheader(
 
-            )
+        f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
 
-        with h3:
+    )
 
-            st.metric(
+    distancia = spread.abs()
 
-                "Camada Dominante",
+    dist_max = float(distancia.max())
 
-                camada_texto
+    dist_min = float(distancia.min())
 
-            )
+    spread_atual = float(abs(spread.iloc[-1]))
 
-        with h4:
+    media_hist = float(distancia.mean())
 
-            st.metric(
+    bins = []
 
-                "Ocorrências",
+    inicio = 0
 
-                int(freq.max())
+    while inicio <= dist_max + camada:
 
-            )
+        bins.append(round(inicio, 2))
 
-        st.info(f"""
+        inicio += camada
+
+    if bins[-1] < dist_max:
+
+        bins.append(round(dist_max + camada, 2))
+
+    hist = pd.cut(
+
+        distancia,
+
+        bins=bins,
+
+        include_lowest=True
+
+    )
+
+    freq = hist.value_counts().sort_index()
+
+    camada_dominante = freq.idxmax()
+
+    camada_texto = (
+
+        f"{camada_dominante.left:.2f} → "
+        f"{camada_dominante.right:.2f}"
+
+    )
+
+    h1, h2, h3, h4 = st.columns(4)
+
+    with h1:
+
+        st.metric(
+
+            "Distância Máxima",
+
+            f"R$ {dist_max:.2f}"
+
+        )
+
+    with h2:
+
+        st.metric(
+
+            "Distância Mínima",
+
+            f"R$ {dist_min:.2f}"
+
+        )
+
+    with h3:
+
+        st.metric(
+
+            "Camada Dominante",
+
+            camada_texto
+
+        )
+
+    with h4:
+
+        st.metric(
+
+            "Ocorrências",
+
+            int(freq.max())
+
+        )
+
+    st.info(f"""
+```
 
 📅 PERÍODO ANALISADO: {spread.index[0].strftime('%d/%m/%Y')} até {spread.index[-1].strftime('%d/%m/%Y')}
 
@@ -654,326 +668,324 @@ if menu == "Painel":
 
 """)
 
-        fig_hist = go.Figure()
+```
+    fig_hist = go.Figure()
 
-        x_labels = [
+    x_labels = [
 
-            round(i.mid, 2)
+        round(i.mid, 2)
 
-            for i in freq.index
+        for i in freq.index
 
-        ]
+    ]
 
-        fig_hist.add_trace(
+    fig_hist.add_trace(
 
-            go.Bar(
+        go.Bar(
 
-                x=x_labels,
+            x=x_labels,
 
-                y=freq.values,
+            y=freq.values,
 
-                marker_color="#d89500",
+            marker_color="#d89500",
 
-                opacity=0.90
-
-            )
-
-        )
-
-        fig_hist.add_vline(
-
-            x=media_hist,
-
-            line_width=3,
-
-            line_dash="dash",
-
-            line_color="red"
+            opacity=0.90
 
         )
-
-        fig_hist.add_vline(
-
-            x=spread_atual,
-
-            line_width=3,
-
-            line_color="yellow"
-
-        )
-
-        fig_hist.update_layout(
-
-            template="plotly_dark",
-
-            height=600,
-
-            title="Distribuição da Distância entre os Ativos",
-
-            xaxis_title="Faixas de Distância (R$)",
-
-            yaxis_title="Ocorrências",
-
-            bargap=0.03
-
-        )
-
-        st.plotly_chart(
-
-            fig_hist,
-
-            use_container_width=True
-
-        )
-
-    except Exception as erro:
-
-        st.error(f"Erro: {erro}")
-
-# ==========================================
-# SCANNER
-# ==========================================
-
-elif menu == "Scanner":
-
-    st.title("🚀 Scanner Quantitativo")
-
-    st.markdown("""
-
-    ### 🎯 Objetivo do Scanner
-
-    Encontrar pares com:
-
-    - Alta correlação
-    - Cointegração estatística
-    - Boa reversão à média
-    - Spread operacional utilizável
-
-    """)
-
-    st.markdown("---")
-
-    st.subheader("⚙️ Filtros do Scanner")
-
-    modo_scanner = st.radio(
-
-        "Modo do Scanner",
-
-        [
-            "Mesmo Setor",
-            "Todos os Setores"
-        ],
-
-        horizontal=True
 
     )
 
-    col1, col2, col3, col4 = st.columns(4)
+    fig_hist.add_vline(
 
-    with col1:
+        x=media_hist,
 
-        correlacao_min = st.slider(
+        line_width=3,
 
-            "Correlação mínima",
+        line_dash="dash",
 
-            0.50,
-            1.00,
-            0.95,
-            0.01
+        line_color="red"
 
-        )
+    )
 
-    with col2:
+    fig_hist.add_vline(
 
-        pvalue_max = st.slider(
+        x=spread_atual,
 
-            "P-Value máximo",
+        line_width=3,
 
-            0.001,
-            0.10,
-            0.05,
-            0.001
+        line_color="yellow"
 
-        )
+    )
 
-    with col3:
+    fig_hist.update_layout(
 
-        zscore_min = st.slider(
+        template="plotly_dark",
 
-            "Z-Score mínimo",
+        height=600,
 
-            0.0,
-            5.0,
-            1.5,
-            0.1
+        title="Distribuição da Distância entre os Ativos",
 
-        )
+        xaxis_title="Faixas de Distância (R$)",
 
-    with col4:
+        yaxis_title="Ocorrências",
 
-        periodo_scanner = st.selectbox(
+        bargap=0.03
 
-            "Período",
+    )
 
-            [
-                "90d",
-                "120d",
-                "180d",
-                "200d",
-                "250d",
-                "1y"
-            ],
+    st.plotly_chart(
 
-            index=3
+        fig_hist,
 
-        )
+        use_container_width=True
 
-    st.markdown("---")
+    )
 
-    if st.button("🚀 Executar Scanner"):
+except Exception as erro:
 
-        with st.spinner("Analisando pares..."):
+    st.error(f"Erro: {erro}")
+```
 
-            try:
+# ==========================================
 
-                df = executar_scanner(
+# SCANNER
 
-                    segmentos=SEGMENTOS,
+# ==========================================
 
-                    lista_ativos=LISTA_ATIVOS,
+elif st.session_state["menu"] == "Scanner":
 
-                    periodo=periodo_scanner,
+```
+st.title("🚀 Scanner Quantitativo")
 
-                    modo=modo_scanner,
+st.markdown("""
 
-                    correlacao_min=correlacao_min,
+### 🎯 Objetivo do Scanner
 
-                    pvalue_max=pvalue_max,
+Encontrar pares com:
 
-                    zscore_min=zscore_min
+- Alta correlação
+- Cointegração estatística
+- Boa reversão à média
+- Spread operacional utilizável
 
+""")
+
+st.markdown("---")
+
+st.subheader("⚙️ Filtros do Scanner")
+
+modo_scanner = st.radio(
+
+    "Modo do Scanner",
+
+    [
+        "Mesmo Setor",
+        "Todos os Setores"
+    ],
+
+    horizontal=True
+
+)
+
+col1, col2, col3, col4 = st.columns(4)
+
+with col1:
+
+    correlacao_min = st.slider(
+
+        "Correlação mínima",
+
+        0.50,
+        1.00,
+        0.95,
+        0.01
+
+    )
+
+with col2:
+
+    pvalue_max = st.slider(
+
+        "P-Value máximo",
+
+        0.001,
+        0.10,
+        0.05,
+        0.001
+
+    )
+
+with col3:
+
+    zscore_min = st.slider(
+
+        "Z-Score mínimo",
+
+        0.0,
+        5.0,
+        1.5,
+        0.1
+
+    )
+
+with col4:
+
+    periodo_scanner = st.selectbox(
+
+        "Período",
+
+        [
+            "90d",
+            "120d",
+            "180d",
+            "200d",
+            "250d",
+            "1y"
+        ],
+
+        index=3
+
+    )
+
+st.markdown("---")
+
+if st.button("🚀 Executar Scanner"):
+
+    with st.spinner("Analisando pares..."):
+
+        try:
+
+            df = executar_scanner(
+
+                segmentos=SEGMENTOS,
+
+                lista_ativos=LISTA_ATIVOS,
+
+                periodo=periodo_scanner,
+
+                modo=modo_scanner,
+
+                correlacao_min=correlacao_min,
+
+                pvalue_max=pvalue_max,
+
+                zscore_min=zscore_min
+
+            )
+
+            if df.empty:
+
+                st.warning(
+                    "Nenhum par encontrado"
                 )
 
-                if df.empty:
+            else:
 
-                    st.warning(
-                        "Nenhum par encontrado"
-                    )
+                st.success(
+                    f"{len(df)} pares encontrados"
+                )
 
-                else:
+                h1, h2, h3, h4, h5, h6, h7, h8 = st.columns(
+                    [2, 2, 1, 1, 1, 1, 1, 1]
+                )
 
-                    st.success(
-                        f"{len(df)} pares encontrados"
-                    )
+                with h1:
+                    st.markdown("### Ativo 1")
 
-                    # ==========================================
-                    # CABEÇALHO
-                    # ==========================================
+                with h2:
+                    st.markdown("### Ativo 2")
 
-                    h1, h2, h3, h4, h5, h6, h7, h8 = st.columns(
-                        [2, 2, 1, 1, 1, 1, 1, 1]
-                    )
+                with h3:
+                    st.markdown("### Corr")
 
-                    with h1:
-                        st.markdown("### Ativo 1")
+                with h4:
+                    st.markdown("### P-Val")
 
-                    with h2:
-                        st.markdown("### Ativo 2")
+                with h5:
+                    st.markdown("### Z")
 
-                    with h3:
-                        st.markdown("### Corr")
+                with h6:
+                    st.markdown("### Vol")
 
-                    with h4:
-                        st.markdown("### P-Val")
+                with h7:
+                    st.markdown("### Status")
 
-                    with h5:
-                        st.markdown("### Z")
+                with h8:
+                    st.markdown("### Painel")
 
-                    with h6:
-                        st.markdown("### Vol")
+                st.divider()
 
-                    with h7:
-                        st.markdown("### Status")
+                for idx, row in df.iterrows():
 
-                    with h8:
-                        st.markdown("### Painel")
+                    with st.container():
+
+                        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(
+                            [2, 2, 1, 1, 1, 1, 1, 1]
+                        )
+
+                        with col1:
+
+                            st.write(
+                                row["Ativo 1"]
+                            )
+
+                        with col2:
+
+                            st.write(
+                                row["Ativo 2"]
+                            )
+
+                        with col3:
+
+                            st.write(
+                                f"{row['Correlação']:.4f}"
+                            )
+
+                        with col4:
+
+                            st.write(
+                                f"{row['P-Value']:.4f}"
+                            )
+
+                        with col5:
+
+                            st.write(
+                                f"{row['Pontuação Z']:.2f}"
+                            )
+
+                        with col6:
+
+                            st.write(
+                                f"{row['Vol Spread']:.2f}"
+                            )
+
+                        with col7:
+
+                            st.write(
+                                row["Status"]
+                            )
+
+                        with col8:
+
+                            if st.button(
+
+                                "📂 Abrir",
+
+                                key=f"abrir_{idx}"
+
+                            ):
+
+                                st.session_state["ativo1"] = row["Ativo 1"]
+
+                                st.session_state["ativo2"] = row["Ativo 2"]
+
+                                st.session_state["menu"] = "Painel"
+
+                                st.rerun()
 
                     st.divider()
 
-                    # ==========================================
-                    # RESULTADOS INTERATIVOS
-                    # ==========================================
+        except Exception as erro:
 
-                    for idx, row in df.iterrows():
-
-                        with st.container():
-
-                            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(
-                                [2, 2, 1, 1, 1, 1, 1, 1]
-                            )
-
-                            with col1:
-
-                                st.write(
-                                    row["Ativo 1"]
-                                )
-
-                            with col2:
-
-                                st.write(
-                                    row["Ativo 2"]
-                                )
-
-                            with col3:
-
-                                st.write(
-                                    f"{row['Correlação']:.4f}"
-                                )
-
-                            with col4:
-
-                                st.write(
-                                    f"{row['P-Value']:.4f}"
-                                )
-
-                            with col5:
-
-                                st.write(
-                                    f"{row['Pontuação Z']:.2f}"
-                                )
-
-                            with col6:
-
-                                st.write(
-                                    f"{row['Vol Spread']:.2f}"
-                                )
-
-                            with col7:
-
-                                st.write(
-                                    row["Status"]
-                                )
-
-                            with col8:
-
-                                if st.button(
-
-                                    "📂 Abrir",
-
-                                    key=f"abrir_{idx}"
-
-                                ):
-
-                                    st.session_state["ativo1"] = row["Ativo 1"]
-
-                                    st.session_state["ativo2"] = row["Ativo 2"]
-
-                                    st.session_state["menu"] = "Painel"
-
-                                    st.rerun()
-
-                        st.divider()
-
-            except Exception as erro:
-
-                st.error(f"Erro: {erro}")
+            st.error(f"Erro: {erro}")
+```
