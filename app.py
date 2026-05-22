@@ -494,7 +494,7 @@ if st.session_state["menu"] == "Painel":
 
             )
 
-       with col3:
+        with col3:
 
            st.metric(
 
