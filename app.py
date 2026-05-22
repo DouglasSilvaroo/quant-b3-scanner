@@ -476,7 +476,7 @@ if st.session_state["menu"] == "Painel":
 
         with col1:
 
-        st.metric(
+            st.metric(
 
             ativo1,
 
@@ -486,7 +486,7 @@ if st.session_state["menu"] == "Painel":
 
         with col2:
 
-        st.metric(
+            st.metric(
 
             ativo2,
 
@@ -496,7 +496,7 @@ if st.session_state["menu"] == "Painel":
 
        with col3:
 
-        st.metric(
+           st.metric(
 
             "DISTÂNCIA ATUAL",
 
@@ -506,7 +506,7 @@ if st.session_state["menu"] == "Painel":
 
         with col4:
 
-        st.metric(
+            st.metric(
 
             "Pontuação Z",
 
