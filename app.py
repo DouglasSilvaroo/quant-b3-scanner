@@ -56,24 +56,24 @@ if "menu" not in st.session_state:
 
 if not st.session_state["logado"]:
 
-st.title("🏦 PAINEL SPREADS")
+    st.title("🏦 PAINEL SPREADS")
 
-aba1, aba2 = st.tabs([
+    aba1, aba2 = st.tabs([
 
     "Login",
     "Cadastro"
 
-])
+    ])
 
-with aba1:
+    with aba1:
 
     tela_login()
 
-with aba2:
+    with aba2:
 
     tela_cadastro()
 
-st.stop()
+    st.stop()
 
 # ==========================================
 
