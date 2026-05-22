@@ -38,6 +38,10 @@ if "usuario" not in st.session_state:
 
     st.session_state["usuario"] = ""
 
+if "menu" not in st.session_state:
+
+    st.session_state["menu"] = "Painel"
+
 # ==========================================
 # LOGIN
 # ==========================================
@@ -242,11 +246,11 @@ with st.sidebar:
         "Navegação",
 
         [
-
             "Painel",
             "Scanner"
+        ],
 
-        ]
+        key="menu"
 
     )
 
@@ -260,7 +264,17 @@ with st.sidebar:
 
         LISTA_ATIVOS,
 
-        index=0,
+        index=LISTA_ATIVOS.index(
+
+            st.session_state.get(
+
+                "ativo1",
+
+                LISTA_ATIVOS[0]
+
+            )
+
+        ),
 
         key="ativo1_select"
 
@@ -272,7 +286,17 @@ with st.sidebar:
 
         LISTA_ATIVOS,
 
-        index=1,
+        index=LISTA_ATIVOS.index(
+
+            st.session_state.get(
+
+                "ativo2",
+
+                LISTA_ATIVOS[1]
+
+            )
+
+        ),
 
         key="ativo2_select"
 
@@ -283,12 +307,10 @@ with st.sidebar:
         "Período",
 
         [
-
             "3mo",
             "6mo",
             "1y",
             "200d"
-
         ],
 
         index=3,
@@ -365,48 +387,10 @@ if menu == "Painel":
     ativo2 = ativo2_sidebar
     periodo = periodo_sidebar
 
-    # ==========================================
-    # CONTROLE DE ATUALIZAÇÃO
-    # ==========================================
-
-    if "ultimo_ativo1" not in st.session_state:
-
-        st.session_state["ultimo_ativo1"] = ativo1
-
-    if "ultimo_ativo2" not in st.session_state:
-
-        st.session_state["ultimo_ativo2"] = ativo2
-
-    if "ultimo_periodo" not in st.session_state:
-
-        st.session_state["ultimo_periodo"] = periodo
-
-    alterou = (
-
-        ativo1 != st.session_state["ultimo_ativo1"]
-
-        or
-
-        ativo2 != st.session_state["ultimo_ativo2"]
-
-        or
-
-        periodo != st.session_state["ultimo_periodo"]
-
-    )
-
-    if alterou:
-
-        st.session_state["ultimo_ativo1"] = ativo1
-        st.session_state["ultimo_ativo2"] = ativo2
-        st.session_state["ultimo_periodo"] = periodo
-
-        st.rerun()
-
     try:
 
         # ==========================================
-        # DOWNLOAD CONJUNTO
+        # DOWNLOAD
         # ==========================================
 
         dados = yf.download(
@@ -421,10 +405,6 @@ if menu == "Painel":
 
         )
 
-        # ==========================================
-        # CLOSE
-        # ==========================================
-
         if isinstance(
             dados.columns,
             pd.MultiIndex
@@ -432,22 +412,21 @@ if menu == "Painel":
 
             dados = dados["Close"]
 
-        # ==========================================
-        # LIMPEZA
-        # ==========================================
-
         dados = dados.dropna()
 
-        # ==========================================
-        # SERIES
-        # ==========================================
+        if dados.empty:
+
+            st.warning(
+                "Sem dados disponíveis."
+            )
+
+            st.stop()
 
         serie1 = dados[ativo1]
-
         serie2 = dados[ativo2]
 
         # ==========================================
-        # SPREAD
+        # PROPORÇÃO
         # ==========================================
 
         fator1 = lote1 / 100
@@ -465,13 +444,19 @@ if menu == "Painel":
 
         desvio = spread.std()
 
-        zscore = (
+        if desvio == 0:
 
-            spread.iloc[-1]
-            -
-            media
+            zscore = 0
 
-        ) / desvio
+        else:
+
+            zscore = (
+
+                spread.iloc[-1]
+                -
+                media
+
+            ) / desvio
 
         correlacao = serie1.corr(
             serie2
@@ -507,7 +492,7 @@ if menu == "Painel":
 
             st.metric(
 
-                "SPREAD ATUAL",
+                "DISTÂNCIA ATUAL",
 
                 f"{spread.iloc[-1]:.2f}"
 
@@ -737,7 +722,7 @@ if menu == "Painel":
 
             fig_hist,
 
-            width="stretch"
+            use_container_width=True
 
         )
 
@@ -754,6 +739,7 @@ elif menu == "Scanner":
     st.title("🚀 Scanner Quantitativo")
 
     st.markdown("""
+
     ### 🎯 Objetivo do Scanner
 
     Encontrar pares com:
@@ -762,6 +748,7 @@ elif menu == "Scanner":
     - Cointegração estatística
     - Boa reversão à média
     - Spread operacional utilizável
+
     """)
 
     st.markdown("---")
@@ -773,10 +760,8 @@ elif menu == "Scanner":
         "Modo do Scanner",
 
         [
-
             "Mesmo Setor",
             "Todos os Setores"
-
         ],
 
         horizontal=True
@@ -831,14 +816,12 @@ elif menu == "Scanner":
             "Período",
 
             [
-
                 "90d",
                 "120d",
                 "180d",
                 "200d",
                 "250d",
                 "1y"
-
             ],
 
             index=3
@@ -861,7 +844,13 @@ elif menu == "Scanner":
 
                     periodo=periodo_scanner,
 
-                    modo=modo_scanner
+                    modo=modo_scanner,
+
+                    correlacao_min=correlacao_min,
+
+                    pvalue_max=pvalue_max,
+
+                    zscore_min=zscore_min
 
                 )
 
@@ -873,62 +862,117 @@ elif menu == "Scanner":
 
                 else:
 
-                    if "Correlação" in df.columns:
-
-                        df = df[
-                            df["Correlação"] >= correlacao_min
-                        ]
-
-                    if "P-Value" in df.columns:
-
-                        df = df[
-                            df["P-Value"] <= pvalue_max
-                        ]
-
-                    if "Pontuação Z" in df.columns:
-
-                        df = df[
-                            abs(df["Pontuação Z"]) >= zscore_min
-                        ]
-
-                    status_lista = []
-
-                    for _, row in df.iterrows():
-
-                        z = row["Pontuação Z"]
-
-                        if z >= 2:
-
-                            status_lista.append(
-                                "🟢 Entrar Crédito"
-                            )
-
-                        elif z <= -2:
-
-                            status_lista.append(
-                                "🔴 Entrar Débito"
-                            )
-
-                        else:
-
-                            status_lista.append(
-                                "🟡 Neutro"
-                            )
-
-                    df["Status"] = status_lista
-
                     st.success(
                         f"{len(df)} pares encontrados"
                     )
 
-                    st.dataframe(
+                    # ==========================================
+                    # CABEÇALHO
+                    # ==========================================
 
-                        df,
-
-                        width="stretch",
-                        height=700
-
+                    h1, h2, h3, h4, h5, h6, h7, h8 = st.columns(
+                        [2, 2, 1, 1, 1, 1, 1, 1]
                     )
+
+                    with h1:
+                        st.markdown("### Ativo 1")
+
+                    with h2:
+                        st.markdown("### Ativo 2")
+
+                    with h3:
+                        st.markdown("### Corr")
+
+                    with h4:
+                        st.markdown("### P-Val")
+
+                    with h5:
+                        st.markdown("### Z")
+
+                    with h6:
+                        st.markdown("### Vol")
+
+                    with h7:
+                        st.markdown("### Status")
+
+                    with h8:
+                        st.markdown("### Painel")
+
+                    st.divider()
+
+                    # ==========================================
+                    # RESULTADOS INTERATIVOS
+                    # ==========================================
+
+                    for idx, row in df.iterrows():
+
+                        with st.container():
+
+                            col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(
+                                [2, 2, 1, 1, 1, 1, 1, 1]
+                            )
+
+                            with col1:
+
+                                st.write(
+                                    row["Ativo 1"]
+                                )
+
+                            with col2:
+
+                                st.write(
+                                    row["Ativo 2"]
+                                )
+
+                            with col3:
+
+                                st.write(
+                                    f"{row['Correlação']:.4f}"
+                                )
+
+                            with col4:
+
+                                st.write(
+                                    f"{row['P-Value']:.4f}"
+                                )
+
+                            with col5:
+
+                                st.write(
+                                    f"{row['Pontuação Z']:.2f}"
+                                )
+
+                            with col6:
+
+                                st.write(
+                                    f"{row['Vol Spread']:.2f}"
+                                )
+
+                            with col7:
+
+                                st.write(
+                                    row["Status"]
+                                )
+
+                            with col8:
+
+                                if st.button(
+
+                                    "📂 Abrir",
+
+                                    key=f"abrir_{idx}"
+
+                                ):
+
+                                    st.session_state["ativo1"] = row["Ativo 1"]
+
+                                    st.session_state["ativo2"] = row["Ativo 2"]
+
+                                    st.session_state["menu"] = "Painel"
+
+                                    st.rerun()
+
+                        st.divider()
 
             except Exception as erro:
 
