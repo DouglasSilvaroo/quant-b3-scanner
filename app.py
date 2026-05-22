@@ -67,11 +67,11 @@ if not st.session_state["logado"]:
 
     with aba1:
 
-    tela_login()
+        tela_login()
 
     with aba2:
 
-    tela_cadastro()
+        tela_cadastro()
 
     st.stop()
 
@@ -235,7 +235,7 @@ LISTA_ATIVOS = []
 
 for setor in SEGMENTOS.values():
 
-LISTA_ATIVOS.extend(setor)
+    LISTA_ATIVOS.extend(setor)
 
 LISTA_ATIVOS = sorted(list(set(LISTA_ATIVOS)))
 
@@ -247,7 +247,7 @@ LISTA_ATIVOS = sorted(list(set(LISTA_ATIVOS)))
 
 with st.sidebar:
 
-st.title("🏦 PAINEL SPREADS")
+    st.title("🏦 PAINEL SPREADS")
 
 st.success(
     f"👤 {st.session_state['usuario']}"
@@ -399,7 +399,7 @@ if st.button("Logout"):
 
 if st.session_state["menu"] == "Painel":
 
-st.title("🏦 PAINEL SPREADS")
+    st.title("🏦 PAINEL SPREADS")
 
 ativo1 = ativo1_sidebar
 ativo2 = ativo2_sidebar
@@ -736,7 +736,7 @@ except Exception as erro:
 
 elif st.session_state["menu"] == "Scanner":
 
-st.title("🚀 Scanner Quantitativo")
+    st.title("🚀 Scanner Quantitativo")
 
 st.markdown("""
 
