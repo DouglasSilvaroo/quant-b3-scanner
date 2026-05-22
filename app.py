@@ -516,7 +516,7 @@ if st.session_state["menu"] == "Painel":
 
         st.markdown("---")
 
-    c1, c2, c3 = st.columns(3)
+        c1, c2, c3 = st.columns(3)
 
     with c1:
 
