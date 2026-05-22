@@ -968,4 +968,4 @@ if st.button("🚀 Executar Scanner"):
 
             except Exception as erro:
 
-            st.error(f"Erro: {erro}")
+                st.error(f"Erro: {erro}")
