@@ -132,6 +132,14 @@ if st.session_state["menu"] == "Painel":
 
         dados = dados.dropna()
 
+        if dados.empty:
+
+           st.warning(
+               "Sem dados disponíveis para este par."
+           )
+
+           st.stop()
+
         serie1 = dados[ativo1_sidebar]
         serie2 = dados[ativo2_sidebar]
 
