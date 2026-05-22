@@ -444,37 +444,37 @@ if st.session_state["menu"] == "Painel":
 
         spread = (
 
-        (serie1 * fator1)
-        -
-        (serie2 * fator2)
+            (serie1 * fator1)
+            -
+            (serie2 * fator2)
 
-    )
+        )
 
         media = spread.mean()
 
         desvio = spread.std()
 
-       if desvio == 0:
+        if desvio == 0:
 
             zscore = 0
 
-       else:
+        else:
 
-           zscore = (
+            zscore = (
 
-            spread.iloc[-1]
-            -
-            media
+                spread.iloc[-1]
+                -
+                media
 
-           ) / desvio
+            ) / desvio
 
-    correlacao = serie1.corr(
-        serie2
-    )
+        correlacao = serie1.corr(
+                serie2
+        ) 
 
-    col1, col2, col3, col4 = st.columns(4)
+        col1, col2, col3, col4 = st.columns(4)
 
-    with col1:
+        with col1:
 
         st.metric(
 
@@ -484,7 +484,7 @@ if st.session_state["menu"] == "Painel":
 
         )
 
-    with col2:
+        with col2:
 
         st.metric(
 
@@ -494,7 +494,7 @@ if st.session_state["menu"] == "Painel":
 
         )
 
-    with col3:
+       with col3:
 
         st.metric(
 
@@ -504,7 +504,7 @@ if st.session_state["menu"] == "Painel":
 
         )
 
-    with col4:
+        with col4:
 
         st.metric(
 
