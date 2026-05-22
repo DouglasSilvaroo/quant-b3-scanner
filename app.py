@@ -478,41 +478,41 @@ if st.session_state["menu"] == "Painel":
 
             st.metric(
 
-            ativo1,
+                ativo1,
 
-            f"{serie1.iloc[-1]:.2f}"
+                f"{serie1.iloc[-1]:.2f}"
 
-        )
+            )
 
         with col2:
 
             st.metric(
 
-            ativo2,
+                ativo2,
 
-            f"{serie2.iloc[-1]:.2f}"
+                f"{serie2.iloc[-1]:.2f}"
 
-        )
+            )
 
        with col3:
 
            st.metric(
 
-            "DISTÂNCIA ATUAL",
+               "DISTÂNCIA ATUAL",
 
-            f"{spread.iloc[-1]:.2f}"
+               f"{spread.iloc[-1]:.2f}"
 
-        )
+            )
 
         with col4:
 
             st.metric(
 
-            "Pontuação Z",
+                "Pontuação Z",
 
-            f"{zscore:.2f}"
+                f"{zscore:.2f}"
 
-        )
+            )
 
     st.markdown("---")
 
