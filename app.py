@@ -518,30 +518,30 @@ if st.session_state["menu"] == "Painel":
 
         c1, c2, c3 = st.columns(3)
 
-    with c1:
+        with c1:
 
-        st.metric(
-            "Correlação",
-            f"{correlacao:.4f}"
-        )
+            st.metric(
+                "Correlação",
+                f"{correlacao:.4f}"
+            )
+  
+        with c2:
 
-    with c2:
+            st.metric(
+                "Spread Médio",
+                f"{media:.2f}"
+            )
 
-        st.metric(
-            "Spread Médio",
-            f"{media:.2f}"
-        )
+        with c3:
 
-    with c3:
+            st.metric(
+                "Desvio",
+                f"{desvio:.2f}"
+            )
 
-        st.metric(
-            "Desvio",
-            f"{desvio:.2f}"
-        )
+        st.markdown("---")
 
-    st.markdown("---")
-
-    st.subheader(
+        st.subheader(
 
         f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
 
