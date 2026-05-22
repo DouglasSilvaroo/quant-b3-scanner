@@ -405,19 +405,19 @@ if st.session_state["menu"] == "Painel":
     ativo2 = ativo2_sidebar
     periodo = periodo_sidebar
 
-        try:
+     try:
 
-    dados = yf.download(
+        dados = yf.download(
 
-        [ativo1, ativo2],
+            [ativo1, ativo2],
 
-        period=periodo,
+            period=periodo,
 
-        auto_adjust=True,
+            auto_adjust=True,
 
-        progress=False
+            progress=False
 
-    )
+        )
 
     if isinstance(
         dados.columns,
