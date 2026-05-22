@@ -22,11 +22,9 @@ executar_scanner
 
 st.set_page_config(
 
-```
 page_title="PAINEL SPREADS",
 page_icon="📈",
 layout="wide"
-```
 
 )
 
@@ -38,21 +36,15 @@ layout="wide"
 
 if "logado" not in st.session_state:
 
-```
 st.session_state["logado"] = False
-```
 
 if "usuario" not in st.session_state:
 
-```
 st.session_state["usuario"] = ""
-```
 
 if "menu" not in st.session_state:
 
-```
 st.session_state["menu"] = "Painel"
-```
 
 # ==========================================
 
@@ -62,7 +54,6 @@ st.session_state["menu"] = "Painel"
 
 if not st.session_state["logado"]:
 
-```
 st.title("🏦 PAINEL SPREADS")
 
 aba1, aba2 = st.tabs([
@@ -81,7 +72,6 @@ with aba2:
     tela_cadastro()
 
 st.stop()
-```
 
 # ==========================================
 
@@ -91,7 +81,6 @@ st.stop()
 
 SEGMENTOS = {
 
-```
 "Bancos": [
 
     "ITUB3.SA",
@@ -245,9 +234,7 @@ LISTA_ATIVOS = []
 
 for setor in SEGMENTOS.values():
 
-```
 LISTA_ATIVOS.extend(setor)
-```
 
 LISTA_ATIVOS = sorted(list(set(LISTA_ATIVOS)))
 
@@ -259,7 +246,6 @@ LISTA_ATIVOS = sorted(list(set(LISTA_ATIVOS)))
 
 with st.sidebar:
 
-```
 st.title("🏦 PAINEL SPREADS")
 
 st.success(
@@ -413,7 +399,6 @@ if st.button("Logout"):
 
 if st.session_state["menu"] == "Painel":
 
-```
 st.title("🏦 PAINEL SPREADS")
 
 ativo1 = ativo1_sidebar
@@ -650,7 +635,6 @@ try:
         )
 
     st.info(f"""
-```
 
 📅 PERÍODO ANALISADO: {spread.index[0].strftime('%d/%m/%Y')} até {spread.index[-1].strftime('%d/%m/%Y')}
 
@@ -668,7 +652,6 @@ try:
 
 """)
 
-```
     fig_hist = go.Figure()
 
     x_labels = [
@@ -744,7 +727,6 @@ try:
 except Exception as erro:
 
     st.error(f"Erro: {erro}")
-```
 
 # ==========================================
 
@@ -754,7 +736,6 @@ except Exception as erro:
 
 elif st.session_state["menu"] == "Scanner":
 
-```
 st.title("🚀 Scanner Quantitativo")
 
 st.markdown("""
@@ -988,4 +969,4 @@ if st.button("🚀 Executar Scanner"):
         except Exception as erro:
 
             st.error(f"Erro: {erro}")
-```
+
