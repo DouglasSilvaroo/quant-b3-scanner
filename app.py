@@ -420,29 +420,29 @@ if st.session_state["menu"] == "Painel":
         )
 
         if isinstance(
-        dados.columns,
-        pd.MultiIndex
+            dados.columns,
+            pd.MultiIndex
         ):
 
-        dados = dados["Close"]
+            dados = dados["Close"]
 
         dados = dados.dropna()
 
         if dados.empty:
 
-        st.warning(
-            "Sem dados disponíveis."
-        )
+            st.warning(
+                "Sem dados disponíveis."
+            )
 
-        st.stop()
+            st.stop()
 
-    serie1 = dados[ativo1]
-    serie2 = dados[ativo2]
+        serie1 = dados[ativo1]
+        serie2 = dados[ativo2]
 
-    fator1 = lote1 / 100
-    fator2 = lote2 / 100
+        fator1 = lote1 / 100
+        fator2 = lote2 / 100
 
-    spread = (
+        spread = (
 
         (serie1 * fator1)
         -
@@ -450,23 +450,23 @@ if st.session_state["menu"] == "Painel":
 
     )
 
-    media = spread.mean()
+        media = spread.mean()
 
-    desvio = spread.std()
+       desvio = spread.std()
 
-    if desvio == 0:
+       if desvio == 0:
 
-        zscore = 0
+            zscore = 0
 
-    else:
+       else:
 
-        zscore = (
+           zscore = (
 
             spread.iloc[-1]
             -
             media
 
-        ) / desvio
+           ) / desvio
 
     correlacao = serie1.corr(
         serie2
