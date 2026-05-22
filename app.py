@@ -452,7 +452,7 @@ if st.session_state["menu"] == "Painel":
 
         media = spread.mean()
 
-       desvio = spread.std()
+        desvio = spread.std()
 
        if desvio == 0:
 
