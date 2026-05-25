@@ -748,19 +748,24 @@ if st.session_state["menu"] == "Painel":
 
         tabela_heatmap = []
 
-        total_ocorrencias = freq.sum()
+        total_ocorrencias = int(freq.sum())
 
-        for i in range(len(freq)):
+        for faixa, ocorrencias in freq.items():
 
-            zona = f"{bins[i]:.2f} ➜ {bins[i+1]:.2f}"
+            zona = (
+                f"{faixa.left:.2f} ➜ "
+                f"{faixa.right:.2f}"
+            )
 
-            ocorrencias = int(freq.iloc[i])
+            ocorrencias = int(ocorrencias)
 
-            percentual = (
-                ocorrencias / total_ocorrencias
-            ) * 100
+            percentual = float(
+                (ocorrencias / total_ocorrencias) * 100
+            )
 
-            score = percentual * ocorrencias
+            score = float(
+                percentual * ocorrencias
+            )
 
             tabela_heatmap.append({
 
@@ -833,7 +838,7 @@ if st.session_state["menu"] == "Painel":
         )
 
         st.markdown("---")
-
+        
         # ==========================================
         # PERMANÊNCIA TEMPORAL
         # ==========================================
@@ -842,11 +847,14 @@ if st.session_state["menu"] == "Painel":
 
         permanencia = []
 
-        for i in range(len(freq)):
+        for faixa, ocorrencias in freq.items():
 
-            zona = f"{bins[i]:.2f} ➜ {bins[i+1]:.2f}"
+            zona = (
+                f"{faixa.left:.2f} ➜ "
+                f"{faixa.right:.2f}"
+            )
 
-            ocorrencias = int(freq.iloc[i])
+            ocorrencias = int(ocorrencias)
 
             tempo_medio = round(
                 ocorrencias / len(spread),
@@ -927,7 +935,7 @@ if st.session_state["menu"] == "Painel":
         )
 
         st.markdown("---")
-
+        
         # ==========================================
         # PREÇOS DOS ATIVOS
         # ==========================================
