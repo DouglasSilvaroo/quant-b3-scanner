@@ -20,7 +20,7 @@ st.set_page_config(
 page_title="PAINEL SPREADS",
 page_icon="📈",
 layout="wide"
-
+F
 
 )
 
@@ -392,19 +392,29 @@ if st.session_state["menu"] == "Painel":
 
         )
 
+        # ==========================================
+        # AJUSTE YFINANCE
+        # ==========================================
+
         if isinstance(
             dados.columns,
             pd.MultiIndex
         ):
 
-            dados = dados["Close"]
+            if "Close" in dados.columns.levels[0]:
 
-        dados = dados.dropna()
+                dados = dados["Close"]
 
-        if dados.empty:
+    # ==========================================
+    # REMOVE NAN
+    # ==========================================
 
-            st.warning(
-                "Sem dados disponíveis."
+    dados = dados.dropna()
+
+    if dados.empty:
+
+        st.warning(
+            "Sem dados disponíveis."
             )
 
             st.stop()
