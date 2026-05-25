@@ -286,6 +286,14 @@ with st.sidebar:
         key="ativo2_select"
     )
 
+    if ativo1_sidebar == ativo2_sidebar:
+
+        st.warning(
+        "Selecione ativos diferentes."
+        )
+
+        st.stop()
+
     periodo_sidebar = st.selectbox(
         "Período",
         ["3mo", "6mo", "1y", "200d"],
