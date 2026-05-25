@@ -408,15 +408,15 @@ if st.session_state["menu"] == "Painel":
     # REMOVE NAN
     # ==========================================
 
-    dados = dados.dropna()
+        dados = dados.dropna()
 
-    if dados.empty:
+        if dados.empty:
 
-        st.warning(
-            "Sem dados disponíveis."
-            )
+            st.warning(
+                "Sem dados disponíveis."
+                )
 
-            st.stop()
+                st.stop()
 
         serie1 = dados[ativo1]
         serie2 = dados[ativo2]
