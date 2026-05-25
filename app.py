@@ -400,10 +400,15 @@ if st.session_state["menu"] == "Painel":
             pd.MultiIndex
         ):
 
-            if "Close" in dados.columns.levels[0]:
+            dados = dados.xs(
 
-                dados = dados["Close"]
+                "Close",
 
+                axis=1,
+
+                level=0
+
+            )
         # ==========================================
         # REMOVE NAN
         # ==========================================
