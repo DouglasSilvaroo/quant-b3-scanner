@@ -297,17 +297,27 @@ with st.sidebar:
     st.subheader("⚖️ Proporção Operacional")
 
     lote1 = st.number_input(
+
         f"Lote {ativo1_sidebar}",
+
         min_value=100,
         step=100,
-        value=100
+        value=100,
+
+        key="lote1"
+
     )
 
     lote2 = st.number_input(
+
         f"Lote {ativo2_sidebar}",
+
         min_value=100,
         step=100,
-        value=100
+        value=100,
+
+        key="lote2"
+
     )
 
     st.markdown("---")
