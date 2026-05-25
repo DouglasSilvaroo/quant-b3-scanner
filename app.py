@@ -748,7 +748,7 @@ if st.session_state["menu"] == "Painel":
 
         tabela_heatmap = []
 
-        total_ocorrencias = hist.sum()
+        total_ocorrencias = freq.sum()
 
         for i in range(len(freq)):
 
