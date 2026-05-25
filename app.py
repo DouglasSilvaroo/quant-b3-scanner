@@ -718,7 +718,7 @@ if st.session_state["menu"] == "Painel":
 
         st.plotly_chart(
 
-        f    ig_hist,
+            fig_hist,
 
             width="stretch"
 
