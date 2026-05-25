@@ -247,150 +247,93 @@ LISTA_ATIVOS = sorted(list(set(LISTA_ATIVOS)))
 
 with st.sidebar:
 
-    st.title("🏦 PAINEL SPREADS")
+    st.title("🏦 PASTAS DE PAINEL")
 
     st.success(
-    f"👤 {st.session_state['usuario']}"
-)
+        f"👤 {st.session_state['usuario']}"
+    )
 
     st.markdown("---")
 
     menu = st.radio(
 
-    "Navegação",
+        "Navegação",
 
-    [
-        "Painel",
-        "Scanner"
-    ],
+        [
+            "Painel",
+            "Scanner"
+        ],
 
-    index=0 if st.session_state["menu"] == "Painel" else 1
+        index=0 if st.session_state["menu"] == "Painel" else 1
 
-)
+    )
 
-st.session_state["menu"] = menu
+    st.session_state["menu"] = menu
 
-st.markdown("---")
+    st.markdown("---")
 
-st.subheader("⚙️ Configurações")
+    st.subheader("⚙️ Configurações")
 
-ativo1_sidebar = st.selectbox(
+    ativo1_sidebar = st.selectbox(
+        "Ativo 1",
+        LISTA_ATIVOS,
+        key="ativo1_select"
+    )
 
-    "Ativo 1",
+    ativo2_sidebar = st.selectbox(
+        "Ativo 2",
+        LISTA_ATIVOS,
+        key="ativo2_select"
+    )
 
-    LISTA_ATIVOS,
+    periodo_sidebar = st.selectbox(
+        "Período",
+        ["3mo", "6mo", "1y", "200d"],
+        key="periodo_select"
+    )
 
-    index=LISTA_ATIVOS.index(
+    st.markdown("---")
 
-        st.session_state.get(
+    st.subheader("⚖️ Proporção Operacional")
 
-            "ativo1",
+    lote1 = st.number_input(
+        f"Lote {ativo1_sidebar}",
+        min_value=100,
+        step=100,
+        value=100
+    )
 
-            LISTA_ATIVOS[0]
+    lote2 = st.number_input(
+        f"Lote {ativo2_sidebar}",
+        min_value=100,
+        step=100,
+        value=100
+    )
 
-        )
+    st.markdown("---")
 
-    ),
+    st.subheader("📊 Camadas de Spread")
 
-    key="ativo1_select"
+    camada = st.number_input(
+        "Tamanho da Camada",
+        value=0.50,
+        step=0.10
+    )
 
-)
+    tolerancia = st.number_input(
+        "Tolerância",
+        value=0.10,
+        step=0.10
+    )
 
-ativo2_sidebar = st.selectbox(
+    st.markdown("---")
 
-    "Ativo 2",
+    if st.button("Sair"):
 
-    LISTA_ATIVOS,
+        st.session_state["logado"] = False
 
-    index=LISTA_ATIVOS.index(
-
-        st.session_state.get(
-
-            "ativo2",
-
-            LISTA_ATIVOS[1]
-
-        )
-
-    ),
-
-    key="ativo2_select"
-
-)
-
-periodo_sidebar = st.selectbox(
-
-    "Período",
-
-    [
-        "3mo",
-        "6mo",
-        "1y",
-        "200d"
-    ],
-
-    index=3,
-
-    key="periodo_select"
-
-)
-
-st.markdown("---")
-
-st.subheader("⚖️ Proporção Operacional")
-
-lote1 = st.number_input(
-
-    f"Lote {ativo1_sidebar}",
-
-    min_value=100,
-    step=100,
-    value=100
-
-)
-
-lote2 = st.number_input(
-
-    f"Lote {ativo2_sidebar}",
-
-    min_value=100,
-    step=100,
-    value=100
-
-)
-
-st.markdown("---")
-
-st.subheader("📊 Camadas de Spread")
-
-camada = st.number_input(
-
-    "Tamanho da Camada",
-
-    value=0.50,
-
-    step=0.10
-
-)
-
-tolerancia = st.number_input(
-
-    "Tolerância",
-
-    value=0.10,
-
-    step=0.10
-
-)
-
-st.markdown("---")
-
-if st.button("Logout"):
-
-    st.session_state["logado"] = False
-
-    st.rerun()
-
+        st.rerun()
+        
 # ==========================================
 
 # PAINEL
