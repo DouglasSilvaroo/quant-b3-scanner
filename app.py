@@ -280,23 +280,35 @@ with st.sidebar:
         key="ativo1_select"
     )
 
+    # ==========================================
+    # REMOVE ATIVO JÁ SELECIONADO
+    # ==========================================
+
+    LISTA_ATIVOS_2 = [
+
+        ativo for ativo in LISTA_ATIVOS
+
+        if ativo != ativo1_sidebar
+
+    ]
+
+    # ==========================================
+    # ATIVO 2
+    # ==========================================
+
     ativo2_sidebar = st.selectbox(
+
         "Ativo 2",
-        LISTA_ATIVOS,
+
+        LISTA_ATIVOS_2,
+
         key="ativo2_select"
+
     )
-
-    if ativo1_sidebar == ativo2_sidebar:
-
-        st.warning(
-        "Selecione ativos diferentes."
-        )
-
-        st.stop()
 
     periodo_sidebar = st.selectbox(
         "Período",
-        ["3mo", "6mo", "1y", "200d"],
+        ["3mo", "6mo", "1y", "2y", "3y"],
         key="periodo_select"
     )
 
