@@ -818,150 +818,142 @@ elif st.session_state["menu"] == "Scanner":
 
     st.markdown("---")
 
-    if st.button("🚀 Executar Scanner"):
+        if st.button("🚀 Executar Scanner"):
 
-        with st.spinner("Analisando pares..."):
+            with st.spinner("Analisando pares..."):
 
-            try:
+                try:
 
-                df = executar_scanner(
-                    
-if st.button("🚀 Executar Scanner"):
+                    df = executar_scanner(
 
-    with st.spinner("Analisando pares..."):
+                        segmentos=SEGMENTOS,
 
-        try:
+                        lista_ativos=LISTA_ATIVOS,
 
-            df = executar_scanner(
+                        periodo=periodo_scanner,
 
-                segmentos=SEGMENTOS,
+                        modo=modo_scanner,
 
-                lista_ativos=LISTA_ATIVOS,
+                        correlacao_min=correlacao_min,
 
-                periodo=periodo_scanner,
+                        pvalue_max=pvalue_max,
 
-                modo=modo_scanner,
+                        zscore_min=zscore_min
 
-                correlacao_min=correlacao_min,
+                    )
 
-                pvalue_max=pvalue_max,
+                    if df.empty:
 
-                zscore_min=zscore_min
+                        st.warning(
+                            "Nenhum par encontrado"
+                        )
 
-            )
+                    else:
 
-            if df.empty:
+                        st.success(
+                            f"{len(df)} pares encontrados"
+                        )
 
-                st.warning(
-                    "Nenhum par encontrado"
-                )
-
-            else:
-
-                st.success(
-                    f"{len(df)} pares encontrados"
-                )
-
-                h1, h2, h3, h4, h5, h6, h7, h8 = st.columns(
-                    [2, 2, 1, 1, 1, 1, 1, 1]
-                )
-
-                with h1:
-                    st.markdown("### Ativo 1")
-
-                with h2:
-                    st.markdown("### Ativo 2")
-
-                with h3:
-                    st.markdown("### Corr")
-
-                with h4:
-                    st.markdown("### P-Val")
-
-                with h5:
-                    st.markdown("### Z")
-
-                with h6:
-                    st.markdown("### Vol")
-
-                with h7:
-                    st.markdown("### Status")
-
-                with h8:
-                    st.markdown("### Painel")
-
-                st.divider()
-
-                for idx, row in df.iterrows():
-
-                    with st.container():
-
-                        col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(
+                        h1, h2, h3, h4, h5, h6, h7, h8 = st.columns(
                             [2, 2, 1, 1, 1, 1, 1, 1]
                         )
 
-                        with col1:
+                        with h1:
+                            st.markdown("### Ativo 1")
 
-                            st.write(
-                                row["Ativo 1"]
-                            )
+                        with h2:
+                            st.markdown("### Ativo 2")
 
-                        with col2:
+                        with h3:
+                            st.markdown("### Corr")
 
-                            st.write(
-                                row["Ativo 2"]
-                            )
+                        with h4:
+                            st.markdown("### P-Val")
 
-                        with col3:
+                        with h5:
+                            st.markdown("### Z")
 
-                            st.write(
-                                f"{row['Correlação']:.4f}"
-                            )
+                        with h6:
+                            st.markdown("### Vol")
 
-                        with col4:
+                        with h7:
+                            st.markdown("### Status")
 
-                            st.write(
-                                f"{row['P-Value']:.4f}"
-                            )
+                        with h8:
+                            st.markdown("### Painel")
 
-                        with col5:
+                        st.divider()
 
-                            st.write(
-                                f"{row['Pontuação Z']:.2f}"
-                            )
+                        for idx, row in df.iterrows():
 
-                        with col6:
+                            with st.container():
 
-                            st.write(
-                                f"{row['Vol Spread']:.2f}"
-                            )
+                                col1, col2, col3, col4, col5, col6, col7, col8 = st.columns(
+                                    [2, 2, 1, 1, 1, 1, 1, 1]
+                                )
 
-                        with col7:
+                                with col1:
 
-                            st.write(
-                                row["Status"]
-                            )
+                                    st.write(
+                                        row["Ativo 1"]
+                                    )
 
-                        with col8:
+                                with col2:
 
-                            if st.button(
+                                    st.write(
+                                        row["Ativo 2"]
+                                    )
 
-                                "📂 Abrir",
+                                with col3:
 
-                                key=f"abrir_{idx}"
+                                    st.write(
+                                        f"{row['Correlação']:.4f}"
+                                    )
 
-                            ):
+                                with col4:
 
-                                st.session_state["ativo1"] = row["Ativo 1"]
+                                    st.write(
+                                        f"{row['P-Value']:.4f}"
+                                    )
 
-                                st.session_state["ativo2"] = row["Ativo 2"]
+                                with col5:
 
-                                st.session_state["menu"] = "Painel"
+                                    st.write(
+                                        f"{row['Pontuação Z']:.2f}"
+                                    )
 
-                                st.rerun()
+                                with col6:
 
-                    st.divider()
+                                    st.write(
+                                        f"{row['Vol Spread']:.2f}"
+                                    )
 
-        except Exception as erro:
+                                with col7:
 
-            st.error(f"Erro: {erro}")
+                                    st.write(
+                                        row["Status"]
+                                    )
+
+                                with col8:
+
+                                    if st.button(
+
+                                        "📂 Abrir",
+
+                                        key=f"abrir_{idx}"
+
+                                    ):
+
+                                        st.session_state["ativo1"] = row["Ativo 1"]
+
+                                        st.session_state["ativo2"] = row["Ativo 2"]
+
+                                        st.session_state["menu"] = "Painel"
+
+                                        st.rerun()
+
+                            st.divider()
+
+                except Exception as erro:
+
+                    st.error(f"Erro: {erro}")
