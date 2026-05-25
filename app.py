@@ -652,9 +652,9 @@ if st.session_state["menu"] == "Painel":
 
 """)
 
-    fig_hist = go.Figure()
+        fig_hist = go.Figure()
 
-    x_labels = [
+        x_labels = [
 
         round(i.mid, 2)
 
