@@ -369,6 +369,28 @@ with st.sidebar:
 
 # ==========================================
 
+@st.cache_data(ttl=300)
+
+def baixar_dados(
+    ativos,
+    periodo
+):
+
+    return yf.download(
+
+        ativos,
+
+        period=periodo,
+
+        auto_adjust=True,
+
+        progress=False,
+
+        threads=False
+
+    )
+
+
 if st.session_state["menu"] == "Painel":
 
     st.title("🏦 PAINEL SPREADS")
@@ -379,15 +401,11 @@ if st.session_state["menu"] == "Painel":
 
     try:
 
-        dados = yf.download(
+        dados = baixar_dados(
 
             [ativo1, ativo2],
 
-            period=periodo,
-
-            auto_adjust=True,
-
-            progress=False
+            periodo
 
         )
 
