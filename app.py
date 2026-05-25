@@ -543,9 +543,9 @@ if st.session_state["menu"] == "Painel":
 
         st.subheader(
 
-    f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
+            f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
 
-    )
+        )
 
         distancia = spread.abs()
 
@@ -561,80 +561,80 @@ if st.session_state["menu"] == "Painel":
 
         inicio = 0
 
-    while inicio <= dist_max + camada:
+        while inicio <= dist_max + camada:
 
-        bins.append(round(inicio, 2))
+            bins.append(round(inicio, 2))
 
-        inicio += camada
+            inicio += camada
 
-    if bins[-1] < dist_max:
+        if bins[-1] < dist_max:
 
-        bins.append(round(dist_max + camada, 2))
+            bins.append(round(dist_max + camada, 2))
 
-    hist = pd.cut(
+        hist = pd.cut(
 
-        distancia,
+            distancia,
 
-        bins=bins,
+            bins=bins,
 
-        include_lowest=True
-
-    )
-
-    freq = hist.value_counts().sort_index()
-
-    camada_dominante = freq.idxmax()
-
-    camada_texto = (
-
-        f"{camada_dominante.left:.2f} → "
-        f"{camada_dominante.right:.2f}"
-
-    )
-
-    h1, h2, h3, h4 = st.columns(4)
-
-    with h1:
-
-        st.metric(
-
-            "Distância Máxima",
-
-            f"R$ {dist_max:.2f}"
+            include_lowest=True
 
         )
 
-    with h2:
+        freq = hist.value_counts().sort_index()
 
-        st.metric(
+        camada_dominante = freq.idxmax()
 
-            "Distância Mínima",
+        camada_texto = (
 
-            f"R$ {dist_min:.2f}"
-
-        )
-
-    with h3:
-
-        st.metric(
-
-            "Camada Dominante",
-
-            camada_texto
+            f"{camada_dominante.left:.2f} → "
+            f"{camada_dominante.right:.2f}"
 
         )
 
-    with h4:
+        h1, h2, h3, h4 = st.columns(4)
 
-        st.metric(
+        with h1:
 
-            "Ocorrências",
+            st.metric(
 
-            int(freq.max())
+                "Distância Máxima",
 
-        )
+                f"R$ {dist_max:.2f}"
 
-    st.info(f"""
+            )
+
+        with h2:
+
+            st.metric(
+
+                "Distância Mínima",
+
+                f"R$ {dist_min:.2f}"
+
+            )
+
+        with h3:
+
+            st.metric(
+
+                "Camada Dominante",
+
+                camada_texto
+
+            )
+
+        with h4:
+
+            st.metric(
+
+                "Ocorrências",
+
+                int(freq.max())
+
+            )
+
+        st.info(f"""
 
 📅 PERÍODO ANALISADO: {spread.index[0].strftime('%d/%m/%Y')} até {spread.index[-1].strftime('%d/%m/%Y')}
 
