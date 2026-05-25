@@ -714,7 +714,7 @@ if st.session_state["menu"] == "Painel":
 
             bargap=0.03
 
-        )
+         )
 
         st.plotly_chart(
 
@@ -727,7 +727,6 @@ if st.session_state["menu"] == "Painel":
     except Exception as erro:
 
         st.error(f"Erro: {erro}")
-
 # ==========================================
 
 # SCANNER
