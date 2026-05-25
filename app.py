@@ -656,77 +656,77 @@ if st.session_state["menu"] == "Painel":
 
         x_labels = [
 
-        round(i.mid, 2)
+            round(i.mid, 2)
 
-        for i in freq.index
+            for i in freq.index
 
-    ]
+        ]
 
-    fig_hist.add_trace(
+        fig_hist.add_trace(
 
-        go.Bar(
+            go.Bar(
 
-            x=x_labels,
+                x=x_labels,
 
-            y=freq.values,
+                y=freq.values,
 
-            marker_color="#d89500",
+                marker_color="#d89500",
 
-            opacity=0.90
+                opacity=0.90
+
+            )
 
         )
 
-    )
+        fig_hist.add_vline(
 
-    fig_hist.add_vline(
+            x=media_hist,
 
-        x=media_hist,
+            line_width=3,
+ 
+            line_dash="dash",
 
-        line_width=3,
+            line_color="red"
 
-        line_dash="dash",
+        )
 
-        line_color="red"
+        fig_hist.add_vline(
 
-    )
+            x=spread_atual,
 
-    fig_hist.add_vline(
+            line_width=3,
 
-        x=spread_atual,
+            line_color="yellow"
 
-        line_width=3,
+        )
 
-        line_color="yellow"
+        fig_hist.update_layout(
 
-    )
+            template="plotly_dark",
 
-    fig_hist.update_layout(
+            height=600,
 
-        template="plotly_dark",
+            title="Distribuição da Distância entre os Ativos",
 
-        height=600,
+            xaxis_title="Faixas de Distância (R$)",
 
-        title="Distribuição da Distância entre os Ativos",
+            yaxis_title="Ocorrências",
 
-        xaxis_title="Faixas de Distância (R$)",
+            bargap=0.03
 
-        yaxis_title="Ocorrências",
+        )
 
-        bargap=0.03
+        st.plotly_chart(
 
-    )
+        f    ig_hist,
 
-    st.plotly_chart(
+            width="stretch"
 
-        fig_hist,
+        )
 
-        width="stretch"
+    except Exception as erro:
 
-    )
-
-except Exception as erro:
-
-    st.error(f"Erro: {erro}")
+        st.error(f"Erro: {erro}")
 
 # ==========================================
 
