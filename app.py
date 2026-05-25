@@ -19,8 +19,7 @@ st.set_page_config(
 
 page_title="PAINEL SPREADS",
 page_icon="📈",
-layout="wide"
-F
+layout="wide",
 
 )
 
