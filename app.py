@@ -1,12 +1,21 @@
 
-import streamlit as st 
-import yfinance as yf 
-import pandas as pd 
-import plotly.graph_objects as go 
-import plotly.express as px
-from auth import ( tela_login, tela_cadastro )
+import streamlit as st
 
-from scanner import ( executar_scanner )
+import pandas as pd
+
+import yfinance as yf
+
+import plotly.express as px
+import plotly.graph_objects as go
+
+from auth import (
+    tela_login,
+    tela_cadastro
+)
+
+from scanner import (
+    executar_scanner
+)
 
 # ==========================================
 
@@ -729,6 +738,430 @@ if st.session_state["menu"] == "Painel":
 
         )
 
+        st.markdown("---")
+
+        # ==========================================
+        # MAPA INSTITUCIONAL
+        # ==========================================
+
+        st.subheader("🔥 Mapa de Concentração Institucional")
+
+        tabela_heatmap = []
+
+        total_ocorrencias = hist.sum()
+
+        for i in range(len(freq)):
+
+            zona = f"{bins[i]:.2f} ➜ {bins[i+1]:.2f}"
+
+            ocorrencias = int(freq.iloc[i])
+
+            percentual = (
+                ocorrencias / total_ocorrencias
+            ) * 100
+
+            score = percentual * ocorrencias
+
+            tabela_heatmap.append({
+
+                "Zona": zona,
+
+                "Ocorrencias": ocorrencias,
+
+                "Percentual": round(
+                    percentual,
+                    2
+                ),
+
+                "Score": round(
+                    score,
+                    2
+                )
+
+            })
+
+        df_heatmap = pd.DataFrame(
+            tabela_heatmap
+        )
+
+        df_heatmap = df_heatmap.sort_values(
+
+            by="Score",
+
+            ascending=False
+
+        )
+
+        st.dataframe(
+
+            df_heatmap,
+
+            width="stretch"
+
+        )
+
+        fig_heat = px.bar(
+
+            df_heatmap,
+
+            x="Percentual",
+
+            y="Zona",
+
+            orientation="h",
+
+            text="Percentual",
+
+            template="plotly_dark"
+
+        )
+
+        fig_heat.update_layout(
+
+            title="Mapa de Concentração das Camadas",
+
+            height=700
+
+        )
+
+        st.plotly_chart(
+
+            fig_heat,
+
+            width="stretch"
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # PERMANÊNCIA TEMPORAL
+        # ==========================================
+
+        st.subheader("⏳ Permanência Temporal das Camadas")
+
+        permanencia = []
+
+        for i in range(len(freq)):
+
+            zona = f"{bins[i]:.2f} ➜ {bins[i+1]:.2f}"
+
+            ocorrencias = int(freq.iloc[i])
+
+            tempo_medio = round(
+                ocorrencias / len(spread),
+                2
+            )
+
+            tempo_max = ocorrencias
+
+            score_temp = round(
+                tempo_medio * ocorrencias,
+                2
+            )
+
+            permanencia.append({
+
+                "Zona": zona,
+
+                "Tempo Médio": tempo_medio,
+
+                "Tempo Máximo": tempo_max,
+
+                "Ocorrencias": ocorrencias,
+
+                "Score Temporal": score_temp
+
+            })
+
+        df_perm = pd.DataFrame(
+            permanencia
+        )
+
+        df_perm = df_perm.sort_values(
+
+            by="Tempo Médio",
+
+            ascending=False
+
+        )
+
+        st.dataframe(
+
+            df_perm,
+
+            width="stretch"
+
+        )
+
+        fig_perm = px.bar(
+
+            df_perm,
+
+            x="Tempo Médio",
+
+            y="Zona",
+
+            orientation="h",
+
+            text="Tempo Médio",
+
+            template="plotly_dark"
+
+        )
+
+        fig_perm.update_layout(
+
+            title="Tempo Médio de Permanência por Zona",
+
+            height=700
+
+        )
+
+        st.plotly_chart(
+
+            fig_perm,
+
+            width="stretch"
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # PREÇOS DOS ATIVOS
+        # ==========================================
+
+        st.subheader("📈 Preços dos Ativos")
+
+        fig_preco = go.Figure()
+
+        fig_preco.add_trace(
+
+            go.Scatter(
+
+                x=dados.index,
+
+                y=serie1,
+
+                name=ativo1
+
+            )
+
+        )
+
+        fig_preco.add_trace(
+
+            go.Scatter(
+
+                x=dados.index,
+
+                y=serie2,
+
+                name=ativo2
+
+            )
+
+        )
+
+        fig_preco.update_layout(
+
+            template="plotly_dark",
+
+            height=600
+
+        )
+
+        st.plotly_chart(
+
+            fig_preco,
+
+            width="stretch"
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # DISTÂNCIA
+        # ==========================================
+
+        st.subheader("📊 Distância entre os Ativos")
+
+        fig_dist = go.Figure()
+
+        fig_dist.add_trace(
+
+            go.Scatter(
+
+                x=spread.index,
+
+                y=spread,
+
+                name="Distância"
+
+            )
+
+        )
+
+        fig_dist.add_hline(
+
+            y=spread.mean(),
+
+            line_dash="dash",
+
+            annotation_text="Média"
+
+        )
+
+        fig_dist.add_hline(
+
+            y=spread.iloc[-1],
+
+            line_dash="dot",
+
+            annotation_text="Atual"
+
+        )
+
+        fig_dist.update_layout(
+
+            template="plotly_dark",
+
+            height=600
+
+        )
+
+        st.plotly_chart(
+
+            fig_dist,
+
+            width="stretch"
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # ZSCORE
+        # ==========================================
+
+        st.subheader("📉 Z-Score do Spread")
+
+        zscore_serie = (
+
+            spread - spread.mean()
+
+        ) / spread.std()
+
+        fig_z = go.Figure()
+
+        fig_z.add_trace(
+
+            go.Scatter(
+
+                x=spread.index,
+
+                y=zscore_serie,
+
+                name="Z-Score"
+
+            )
+
+        )
+
+        fig_z.add_hline(
+
+            y=0,
+
+            line_color="white"
+
+        )
+
+        fig_z.add_hline(
+
+            y=2,
+
+            line_dash="dash",
+
+            line_color="red"
+
+        )
+
+        fig_z.add_hline(
+
+            y=-2,
+
+            line_dash="dash",
+
+            line_color="green"
+
+        )
+
+        fig_z.update_layout(
+
+            template="plotly_dark",
+
+            height=600
+
+        )
+
+        st.plotly_chart(
+
+            fig_z,
+
+            width="stretch"
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # SPREAD
+        # ==========================================
+
+        st.subheader("📈 Spread entre Ativos")
+
+        fig_spread = go.Figure()
+
+        fig_spread.add_trace(
+
+            go.Scatter(
+
+                x=spread.index,
+
+                y=spread,
+
+                name="Spread"
+
+            )
+
+        )
+
+        fig_spread.add_hline(
+
+            y=spread.mean(),
+
+            line_dash="dash"
+
+        )
+
+        fig_spread.update_layout(
+
+            template="plotly_dark",
+
+            height=600
+
+        )
+
+        st.plotly_chart(
+
+            fig_spread,
+
+            width="stretch"
+
+        )        
+    
     except Exception as erro:
 
         st.error(f"Erro: {erro}")
@@ -754,8 +1187,6 @@ Encontrar pares com:
 - Spread operacional utilizável
 
 """)
-
-elif st.session_state["menu"] == "Scanner":
 
     st.markdown("---")
 
