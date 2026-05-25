@@ -737,85 +737,95 @@ Encontrar pares com:
 
 """)
 
-st.markdown("---")
+elif st.session_state["menu"] == "Scanner":
 
-st.subheader("⚙️ Filtros do Scanner")
+    st.markdown("---")
 
-modo_scanner = st.radio(
+    st.subheader("⚙️ Filtros do Scanner")
 
-    "Modo do Scanner",
+    modo_scanner = st.radio(
 
-    [
-        "Mesmo Setor",
-        "Todos os Setores"
-    ],
-
-    horizontal=True
-
-)
-
-col1, col2, col3, col4 = st.columns(4)
-
-with col1:
-
-    correlacao_min = st.slider(
-
-        "Correlação mínima",
-
-        0.50,
-        1.00,
-        0.95,
-        0.01
-
-    )
-
-with col2:
-
-    pvalue_max = st.slider(
-
-        "P-Value máximo",
-
-        0.001,
-        0.10,
-        0.05,
-        0.001
-
-    )
-
-with col3:
-
-    zscore_min = st.slider(
-
-        "Z-Score mínimo",
-
-        0.0,
-        5.0,
-        1.5,
-        0.1
-
-    )
-
-with col4:
-
-    periodo_scanner = st.selectbox(
-
-        "Período",
+        "Modo do Scanner",
 
         [
-            "90d",
-            "120d",
-            "180d",
-            "200d",
-            "250d",
-            "1y"
+            "Mesmo Setor",
+            "Todos os Setores"
         ],
 
-        index=3
+        horizontal=True
 
     )
 
-st.markdown("---")
+    col1, col2, col3, col4 = st.columns(4)
 
+    with col1:
+
+        correlacao_min = st.slider(
+
+            "Correlação mínima",
+
+            0.50,
+            1.00,
+            0.95,
+            0.01
+
+        )
+
+    with col2:
+
+        pvalue_max = st.slider(
+
+            "P-Value máximo",
+
+            0.001,
+            0.10,
+            0.05,
+            0.001
+
+        )
+
+    with col3:
+
+        zscore_min = st.slider(
+
+            "Z-Score mínimo",
+
+            0.0,
+            5.0,
+            1.5,
+            0.1
+
+        )
+
+    with col4:
+
+        periodo_scanner = st.selectbox(
+
+            "Período",
+
+            [
+                "90d",
+                "120d",
+                "180d",
+                "200d",
+                "250d",
+                "1y"
+            ],
+
+            index=3
+
+        )
+
+    st.markdown("---")
+
+    if st.button("🚀 Executar Scanner"):
+
+        with st.spinner("Analisando pares..."):
+
+            try:
+
+                df = executar_scanner(
+                    
 if st.button("🚀 Executar Scanner"):
 
     with st.spinner("Analisando pares..."):
