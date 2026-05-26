@@ -511,15 +511,32 @@ if (
 
         )
 
-        except Exception as erro:
+        if dados.empty:
 
             st.error(
-                f"ERRO REAL: {erro}"
+                "Nenhum dado retornado pela API."
             )
 
-            print(erro)
-
             st.stop()
+
+        st.success(
+            "Dados carregados com sucesso."
+        )
+
+        st.write(
+            dados.tail()
+        )
+
+    except Exception as erro:
+
+        st.error(
+            f"ERRO REAL: {erro}"
+        )
+
+        print("ERRO REAL:")
+        print(erro)
+
+        st.stop()
                
         # ==========================================
         # REMOVE NAN
