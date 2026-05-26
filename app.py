@@ -435,7 +435,6 @@ with st.sidebar:
 # PAINEL
 # ==========================================
 
-@st.cache_data(ttl=300)
 
 def baixar_dados(
 
