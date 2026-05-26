@@ -1401,9 +1401,9 @@ Encontrar pares com:
 
                                 ):
 
-                                    st.session_state["ativo1"] = row["Ativo 1"]
+                                    st.session_state["ativo1_select"] = row["Ativo 1"]
 
-                                    st.session_state["ativo2"] = row["Ativo 2"]
+                                    st.session_state["ativo2_select"] = row["Ativo 2"]
 
                                     st.session_state["menu"] = "Painel"
 
