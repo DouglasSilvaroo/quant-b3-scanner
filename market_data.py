@@ -30,10 +30,7 @@ def baixar_dados_finnhub(
 
         try:
 
-            ticker = ativo.replace(
-                ".SA",
-                ""
-            ) + ".BVMF"
+            ticker = ativo
 
             url = (
 
