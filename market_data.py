@@ -57,6 +57,8 @@ def baixar_dados_finnhub(
                 ""
             )
 
+            ticker = f"BVMF:{ticker}"
+
             url = (
 
                 f"https://finnhub.io/api/v1/stock/candle"
