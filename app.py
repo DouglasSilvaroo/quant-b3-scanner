@@ -3,11 +3,8 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
-import yfinance as yf
 
-import requests
-import os
-import time
+import yfinance as yf
 
 from auth import (
     tela_login,
@@ -16,6 +13,10 @@ from auth import (
 
 from scanner import (
     executar_scanner
+)
+
+from market_data import (
+    baixar_dados_finnhub
 )
 
 # ==========================================
@@ -433,12 +434,10 @@ with st.sidebar:
         st.rerun()      
         
 # ==========================================
-
 # PAINEL
-
 # ==========================================
 
-@st.cache_data(ttl=3600)
+@st.cache_data(ttl=300)
 
 def baixar_dados(
 
@@ -448,40 +447,15 @@ def baixar_dados(
 
 ):
 
-    import time
+    return baixar_dados_finnhub(
 
-    tentativas = 3
+        ativos,
 
-    for tentativa in range(tentativas):
+        periodo
 
-        try:
+    )
 
-            time.sleep(1)
 
-            dados = yf.download(
-
-                ativos,
-
-                period=periodo,
-
-                auto_adjust=True,
-
-                progress=False,
-
-                threads=False
-
-            )
-
-            if not dados.empty:
-
-                return dados
-
-        except Exception:
-
-            time.sleep(5)
-
-    return pd.DataFrame()
-    
 if (
 
     st.session_state["menu"] == "Painel"
