@@ -437,7 +437,7 @@ with st.sidebar:
 
 # ==========================================
 
-@st.cache_data(ttl=300)
+@st.cache_data(ttl=3600)
 
 def baixar_dados(
 
@@ -454,6 +454,8 @@ def baixar_dados(
     for tentativa in range(tentativas):
 
         try:
+
+            time.sleep(1)
 
             dados = yf.download(
 
@@ -475,10 +477,10 @@ def baixar_dados(
 
         except Exception:
 
-            time.sleep(2)
+            time.sleep(5)
 
     return pd.DataFrame()
-
+    
 if (
 
     st.session_state["menu"] == "Painel"
@@ -492,7 +494,9 @@ if (
     st.title("🏦 PAINEL SPREADS")
 
     ativo1 = ativo1_sidebar
+
     ativo2 = ativo2_sidebar
+
     periodo = periodo_sidebar
 
     if (
@@ -513,6 +517,20 @@ if (
 
     try:
 
+        import time
+
+        agora = time.time()
+
+        if "ultima_execucao" not in st.session_state:
+
+            st.session_state["ultima_execucao"] = 0
+
+        if agora - st.session_state["ultima_execucao"] < 3:
+
+            st.stop()
+
+        st.session_state["ultima_execucao"] = agora
+
         dados = baixar_dados(
 
             [ativo1, ativo2],
@@ -528,7 +546,6 @@ if (
             )
 
             st.stop()
-
        
         # ==========================================
         # AJUSTE YFINANCE
