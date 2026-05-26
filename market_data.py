@@ -34,7 +34,12 @@ def baixar_dados_finnhub(
 
         try:
 
-            ticker = ativo
+            ticker = ativo.replace(
+                ".SA",
+                ""
+            )
+
+            ticker = f"{ticker}/BVMF"
 
             print(f"BAIXANDO: {ticker}")
 
