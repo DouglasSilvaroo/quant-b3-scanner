@@ -358,7 +358,10 @@ def executar_scanner(
 
             })
 
-        except Exception:
+        except Exception as erro:
+
+            print("ERRO SCANNER:")
+            print(erro)
 
             continue
 
