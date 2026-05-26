@@ -357,7 +357,7 @@ with st.sidebar:
 
             st.session_state["menu"] = "Painel"
 
-            st.rerun()
+            # st.rerun()
 
         else:
 
@@ -429,7 +429,7 @@ with st.sidebar:
 
         st.session_state["painel_pronto"] = False
 
-        st.rerun()      
+        # st.rerun()     
         
 # ==========================================
 # PAINEL
@@ -511,11 +511,13 @@ if (
 
         )
 
-        if dados.empty:
+        except Exception as erro:
 
             st.error(
-                "Dados temporariamente indisponíveis. Tente novamente em alguns segundos."
+                f"ERRO REAL: {erro}"
             )
+
+            print(erro)
 
             st.stop()
                
@@ -1510,7 +1512,7 @@ Encontrar pares com:
 
                                     st.session_state["painel_pronto"] = True
 
-                                    st.rerun()                                    
+                                    # st.rerun()                           
                         st.divider()
 
             except Exception as erro:
