@@ -263,7 +263,7 @@ with st.sidebar:
 
     st.markdown("---")
 
-    menu = st.radio(
+    st.radio(
 
         "Navegação",
 
@@ -272,20 +272,22 @@ with st.sidebar:
             "Scanner"
         ],
 
-        index=0 if st.session_state["menu"] == "Painel" else 1
+        key="menu"
 
     )
-
-    st.session_state["menu"] = menu
 
     st.markdown("---")
 
     st.subheader("⚙️ Configurações")
 
     ativo1_sidebar = st.selectbox(
+
         "Ativo 1",
+
         LISTA_ATIVOS,
+
         key="ativo1_select"
+
     )
 
     # ==========================================
@@ -385,6 +387,37 @@ def baixar_dados(
     periodo
 ):
 
+    import time
+
+    tentativas = 3
+
+    for tentativa in range(tentativas):
+
+        try:
+
+            dados = yf.download(
+
+                ativos,
+
+                period=periodo,
+
+                auto_adjust=True,
+
+                progress=False,
+
+                threads=False
+
+            )
+
+            if not dados.empty:
+
+                return dados
+
+        except Exception:
+
+            time.sleep(2)
+
+    return pd.DataFrame()
     return yf.download(
 
         ativos,
