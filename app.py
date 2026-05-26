@@ -40,22 +40,23 @@ layout="wide",
 
 if "logado" not in st.session_state:
 
-
     st.session_state["logado"] = False
 
 
 if "usuario" not in st.session_state:
-
 
     st.session_state["usuario"] = ""
 
 
 if "menu" not in st.session_state:
 
-
     st.session_state["menu"] = "Painel"
 
 
+if "painel_pronto" not in st.session_state:
+
+    st.session_state["painel_pronto"] = False
+    
 # ==========================================
 
 # LOGIN
@@ -255,7 +256,7 @@ LISTA_ATIVOS = sorted(list(set(LISTA_ATIVOS)))
 
 with st.sidebar:
 
-    st.title("🏦 PASTAS DE PAINEL")
+    st.title("🏦 PAINEL SPREAD")
 
     st.success(
         f"👤 {st.session_state['usuario']}"
@@ -263,7 +264,7 @@ with st.sidebar:
 
     st.markdown("---")
 
-    st.radio(
+    menu = st.radio(
 
         "Navegação",
 
@@ -272,9 +273,15 @@ with st.sidebar:
             "Scanner"
         ],
 
-        key="menu"
+        index=0 if st.session_state["menu"] == "Painel" else 1
 
     )
+
+    st.session_state["menu"] = menu
+
+    if menu == "Scanner":
+
+        st.session_state["painel_pronto"] = False
 
     st.markdown("---")
 
@@ -284,7 +291,7 @@ with st.sidebar:
 
         "Ativo 1",
 
-        LISTA_ATIVOS,
+        ["Selecione"] + LISTA_ATIVOS,
 
         key="ativo1_select"
 
@@ -302,6 +309,8 @@ with st.sidebar:
 
     ]
 
+    LISTA_ATIVOS_2 = ["Selecione"] + LISTA_ATIVOS_2
+
     # ==========================================
     # ATIVO 2
     # ==========================================
@@ -317,10 +326,44 @@ with st.sidebar:
     )
 
     periodo_sidebar = st.selectbox(
+
         "Período",
-        ["3mo", "6mo", "1y", "2y", "3y"],
+
+        [
+            "3mo",
+            "6mo",
+            "1y",
+            "2y",
+            "3y"
+        ],
+
         key="periodo_select"
+
     )
+
+    if st.button("📊 Carregar Painel"):
+
+        if (
+
+            ativo1_sidebar != "Selecione"
+
+            and
+
+            ativo2_sidebar != "Selecione"
+
+        ):
+
+            st.session_state["painel_pronto"] = True
+
+            st.session_state["menu"] = "Painel"
+
+            st.rerun()
+
+        else:
+
+            st.warning(
+                "Selecione os dois ativos."
+            )
 
     st.markdown("---")
 
@@ -331,7 +374,9 @@ with st.sidebar:
         f"Lote {ativo1_sidebar}",
 
         min_value=100,
+
         step=100,
+
         value=100,
 
         key="lote1"
@@ -343,7 +388,9 @@ with st.sidebar:
         f"Lote {ativo2_sidebar}",
 
         min_value=100,
+
         step=100,
+
         value=100,
 
         key="lote2"
@@ -355,15 +402,23 @@ with st.sidebar:
     st.subheader("📊 Camadas de Spread")
 
     camada = st.number_input(
+
         "Tamanho da Camada",
+
         value=0.50,
+
         step=0.10
+
     )
 
     tolerancia = st.number_input(
+
         "Tolerância",
+
         value=0.10,
+
         step=0.10
+
     )
 
     st.markdown("---")
@@ -372,7 +427,9 @@ with st.sidebar:
 
         st.session_state["logado"] = False
 
-        st.rerun()
+        st.session_state["painel_pronto"] = False
+
+        st.rerun()      
         
 # ==========================================
 
@@ -383,8 +440,11 @@ with st.sidebar:
 @st.cache_data(ttl=300)
 
 def baixar_dados(
+
     ativos,
+
     periodo
+
 ):
 
     import time
@@ -418,28 +478,38 @@ def baixar_dados(
             time.sleep(2)
 
     return pd.DataFrame()
-    return yf.download(
 
-        ativos,
+if (
 
-        period=periodo,
+    st.session_state["menu"] == "Painel"
 
-        auto_adjust=True,
+    and
 
-        progress=False,
+    st.session_state["painel_pronto"]
 
-        threads=False
-
-    )
-
-
-if st.session_state["menu"] == "Painel":
-
+):
+    
     st.title("🏦 PAINEL SPREADS")
 
     ativo1 = ativo1_sidebar
     ativo2 = ativo2_sidebar
     periodo = periodo_sidebar
+
+    if (
+
+        ativo1 == "Selecione"
+
+        or
+
+        ativo2 == "Selecione"
+
+    ):
+
+        st.info(
+            "Selecione os ativos e clique em 📊 Carregar Painel."
+        )
+
+        st.stop()
 
     try:
 
@@ -451,6 +521,15 @@ if st.session_state["menu"] == "Painel":
 
         )
 
+        if dados.empty:
+
+            st.error(
+                "Yahoo Finance temporariamente indisponível. Tente novamente em alguns segundos."
+            )
+
+            st.stop()
+
+       
         # ==========================================
         # AJUSTE YFINANCE
         # ==========================================
@@ -484,15 +563,19 @@ if st.session_state["menu"] == "Painel":
             st.stop()
 
         serie1 = dados[ativo1]
+
         serie2 = dados[ativo2]
 
         fator1 = lote1 / 100
+
         fator2 = lote2 / 100
 
         spread = (
 
             (serie1 * fator1)
+
             -
+
             (serie2 * fator2)
 
         )
@@ -510,17 +593,21 @@ if st.session_state["menu"] == "Painel":
             zscore = (
 
                 spread.iloc[-1]
+
                 -
+
                 media
 
             ) / desvio
 
         correlacao = serie1.corr(
-                serie2
-        ) 
+
+            serie2
+
+        )
 
         col1, col2, col3, col4 = st.columns(4)
-
+        
         with col1:
 
             st.metric(
@@ -1089,12 +1176,18 @@ if st.session_state["menu"] == "Painel":
 
         st.subheader("📉 Z-Score do Spread")
 
-        zscore_serie = (
+        if spread.std() == 0:
 
-            spread - spread.mean()
+            zscore_serie = spread * 0
 
-        ) / spread.std()
+        else:
 
+            zscore_serie = (
+
+                spread - spread.mean()
+
+            ) / spread.std()
+            
         fig_z = go.Figure()
 
         fig_z.add_trace(
@@ -1438,10 +1531,15 @@ Encontrar pares com:
 
                                     st.session_state["ativo2_select"] = row["Ativo 2"]
 
+                                    ativo1_sidebar = row["Ativo 1"]
+
+                                    ativo2_sidebar = row["Ativo 2"]
+
                                     st.session_state["menu"] = "Painel"
 
-                                    st.rerun()
+                                    st.session_state["painel_pronto"] = True
 
+                                    st.rerun()                                    
                         st.divider()
 
             except Exception as erro:
