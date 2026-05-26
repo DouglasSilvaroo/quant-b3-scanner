@@ -16,7 +16,11 @@ def baixar_dados_finnhub(
         "TWELVEDATA_API_KEY"
     )
 
+    print("API KEY:", api_key)
+
     if not api_key:
+
+        print("API KEY NÃO ENCONTRADA")
 
         return pd.DataFrame()
 
@@ -32,6 +36,8 @@ def baixar_dados_finnhub(
 
             ticker = ativo
 
+            print(f"BAIXANDO: {ticker}")
+
             url = (
 
                 f"https://api.twelvedata.com/time_series"
@@ -46,6 +52,8 @@ def baixar_dados_finnhub(
 
             )
 
+            print("URL:", url)
+
             response = requests.get(
 
                 url,
@@ -54,19 +62,34 @@ def baixar_dados_finnhub(
 
             )
 
+            print("STATUS CODE:", response.status_code)
+
             data = response.json()
 
+            print("RESPOSTA API:")
             print(data)
+
+            # ======================================
+            # VALIDAÇÃO
+            # ======================================
 
             if "values" not in data:
 
+                print(f"SEM DADOS PARA {ticker}")
+
                 continue
+
+            # ======================================
+            # DATAFRAME
+            # ======================================
 
             df = pd.DataFrame(
 
                 data["values"]
 
             )
+
+            print(df.head())
 
             df["datetime"] = pd.to_datetime(
 
@@ -94,10 +117,14 @@ def baixar_dados_finnhub(
 
             df = df[[ativo]]
 
+            # ======================================
+            # JOIN
+            # ======================================
+
             if df_final.empty:
 
                 df_final = df
-                
+
             else:
 
                 df_final = df_final.join(
@@ -110,8 +137,14 @@ def baixar_dados_finnhub(
 
             time.sleep(1)
 
-        except Exception:
+        except Exception as erro:
+
+            print("ERRO:")
+            print(erro)
 
             continue
+
+    print("DATAFRAME FINAL:")
+    print(df_final.head())
 
     return df_final
