@@ -515,7 +515,7 @@ if (
         if dados.empty:
 
             st.error(
-                "Dados temporariamente indisponíveis.". Tente novamente em alguns segundos."
+                "Dados temporariamente indisponíveis. Tente novamente em alguns segundos."
             )
 
             st.stop()
