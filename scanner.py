@@ -1,9 +1,13 @@
 
-import yfinance as yf
 import pandas as pd
 import numpy as np
+import time
 
 from statsmodels.tsa.stattools import coint
+
+from market_data import (
+    baixar_dados_finnhub
+)
 
 # ==========================================
 # SCANNER QUANTITATIVO INSTITUCIONAL
@@ -34,34 +38,16 @@ def executar_scanner(
 
     try:
 
-        dados = yf.download(
+        dados = baixar_dados_finnhub(
 
             lista_ativos,
 
-            period=periodo,
-
-            auto_adjust=True,
-
-            progress=False,
-
-            threads=True
+            periodo
 
         )
-
-    except:
+    except Exception:
 
         return pd.DataFrame()
-
-    # ==========================================
-    # MULTIINDEX
-    # ==========================================
-
-    if isinstance(
-        dados.columns,
-        pd.MultiIndex
-    ):
-
-        dados = dados["Close"]
 
     # ==========================================
     # LIMPEZA
@@ -73,6 +59,10 @@ def executar_scanner(
         how="all"
 
     )
+
+    if dados.empty:
+
+        return pd.DataFrame()
 
     # ==========================================
     # ATIVOS VÁLIDOS
@@ -140,6 +130,8 @@ def executar_scanner(
     # ==========================================
 
     for ativo1, ativo2 in pares:
+
+        time.sleep(0.05)
 
         try:
 
@@ -366,7 +358,7 @@ def executar_scanner(
 
             })
 
-        except:
+        except Exception:
 
             continue
 
