@@ -13,38 +13,16 @@ def baixar_dados_finnhub(
 ):
 
     api_key = os.getenv(
-        "FINNHUB_API_KEY"
+        "TWELVEDATA_API_KEY"
     )
 
     if not api_key:
 
         return pd.DataFrame()
 
-    dias = {
+    interval = "1day"
 
-        "3mo": 90,
-        "6mo": 180,
-        "1y": 365,
-        "2y": 730,
-        "3y": 1095,
-        "90d": 90,
-        "120d": 120,
-        "180d": 180,
-        "200d": 200,
-        "250d": 250
-
-    }
-
-    dias_periodo = dias.get(
-        periodo,
-        365
-    )
-
-    fim = int(time.time())
-
-    inicio = fim - (
-        dias_periodo * 24 * 60 * 60
-    )
+    outputsize = 500
 
     df_final = pd.DataFrame()
 
@@ -55,23 +33,19 @@ def baixar_dados_finnhub(
             ticker = ativo.replace(
                 ".SA",
                 ""
-            )
-
-            ticker = f"BVMF:{ticker}"
+            ) + ".BVMF"
 
             url = (
 
-                f"https://finnhub.io/api/v1/stock/candle"
+                f"https://api.twelvedata.com/time_series"
 
                 f"?symbol={ticker}"
 
-                f"&resolution=D"
+                f"&interval={interval}"
 
-                f"&from={inicio}"
+                f"&outputsize={outputsize}"
 
-                f"&to={fim}"
-
-                f"&token={api_key}"
+                f"&apikey={api_key}"
 
             )
 
@@ -85,23 +59,31 @@ def baixar_dados_finnhub(
 
             data = response.json()
 
-            if data.get("s") != "ok":
+            if "values" not in data:
 
                 continue
 
-            df = pd.DataFrame({
-
-                ativo: data["c"]
-
-            })
-
-            df.index = pd.to_datetime(
-
-                data["t"],
-
-                unit="s"
-
+            df = pd.DataFrame(
+                data["values"]
             )
+
+            df["datetime"] = pd.to_datetime(
+                df["datetime"]
+            )
+
+            df = df.sort_values(
+                "datetime"
+            )
+
+            df = df.set_index(
+                "datetime"
+            )
+
+            df[ativo] = df["close"].astype(
+                float
+            )
+
+            df = df[[ativo]]
 
             if df_final.empty:
 
@@ -117,7 +99,7 @@ def baixar_dados_finnhub(
 
                 )
 
-            time.sleep(0.5)
+            time.sleep(1)
 
         except Exception:
 
