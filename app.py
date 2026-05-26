@@ -4,8 +4,6 @@ import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
 
-import yfinance as yf
-
 from auth import (
     tela_login,
     tela_cadastro
