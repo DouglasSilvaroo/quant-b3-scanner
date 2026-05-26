@@ -56,28 +56,40 @@ def baixar_dados_finnhub(
 
             data = response.json()
 
+            print(data)
+
             if "values" not in data:
 
                 continue
 
             df = pd.DataFrame(
+
                 data["values"]
+
             )
 
             df["datetime"] = pd.to_datetime(
+
                 df["datetime"]
+
             )
 
             df = df.sort_values(
+
                 "datetime"
+
             )
 
             df = df.set_index(
+
                 "datetime"
+
             )
 
             df[ativo] = df["close"].astype(
+
                 float
+
             )
 
             df = df[[ativo]]
@@ -85,7 +97,7 @@ def baixar_dados_finnhub(
             if df_final.empty:
 
                 df_final = df
-
+                
             else:
 
                 df_final = df_final.join(
