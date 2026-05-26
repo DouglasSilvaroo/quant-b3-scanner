@@ -515,29 +515,11 @@ if (
         if dados.empty:
 
             st.error(
-                "Yahoo Finance temporariamente indisponível. Tente novamente em alguns segundos."
+                "Dados temporariamente indisponíveis.". Tente novamente em alguns segundos."
             )
 
             st.stop()
-       
-        # ==========================================
-        # AJUSTE YFINANCE
-        # ==========================================
-
-        if isinstance(
-            dados.columns,
-            pd.MultiIndex
-        ):
-
-            dados = dados.xs(
-
-                "Close",
-
-                axis=1,
-
-                level=0
-
-            )
+               
         # ==========================================
         # REMOVE NAN
         # ==========================================
