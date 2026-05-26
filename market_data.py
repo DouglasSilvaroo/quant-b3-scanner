@@ -39,8 +39,8 @@ def baixar_dados_finnhub(
                 ""
             )
 
-            ticker = f"{ticker}/BVMF"
-
+            ticker = f"{ticker}:BVMF"
+            
             print(f"BAIXANDO: {ticker}")
 
             url = (
@@ -72,7 +72,7 @@ def baixar_dados_finnhub(
             data = response.json()
 
             print("RESPOSTA API:")
-            print(data)
+            print("RESPOSTA API:", str(data)[:1000])
 
             # ======================================
             # VALIDAÇÃO
