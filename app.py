@@ -398,8 +398,16 @@ if (
 # REMOVE NAN
 # ==========================================
 
-        dados = dados.dropna()
+        dados = dados.dropna(
 
+            subset=[
+
+                ativo1,
+                ativo2
+
+            ]
+
+        )
         if dados.empty:
 
             st.warning(
