@@ -720,7 +720,7 @@ if (
 
             inicio += camada
 
-        if bins[-1] < dist_max:
+        if len(bins) > 0 and bins[-1] < dist_max:
 
             bins.append(round(dist_max + camada, 2))
 
