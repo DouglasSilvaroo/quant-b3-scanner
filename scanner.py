@@ -10,7 +10,7 @@ from market_data import (
 )
 
 # ==========================================
-# SCANNER QUANTITATIVO INSTITUCIONAL
+# FUNÇÃO SCANNER
 # ==========================================
 
 def executar_scanner(
@@ -31,6 +31,7 @@ def executar_scanner(
 ):
 
     resultados = []
+
 
     # ==========================================
     # DOWNLOAD ÚNICO
