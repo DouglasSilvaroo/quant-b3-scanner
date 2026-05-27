@@ -38,9 +38,7 @@ def baixar_dados_finnhub(
                 ".SA",
                 ""
             )
-
-            ticker = f"{ticker}:BVMF"
-            
+                                   
             print(f"BAIXANDO: {ticker}")
 
             url = (
