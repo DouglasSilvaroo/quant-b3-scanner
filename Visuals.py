@@ -1,0 +1,199 @@
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+
+
+# ==========================================
+# HISTOGRAMA DE CAMADAS
+# ==========================================
+
+def render_histograma(
+
+    spread,
+    ativo1,
+    ativo2,
+    camada
+
+):
+
+    st.subheader(
+
+        f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
+
+    )
+
+    distancia = spread.abs()
+
+    dist_max = float(distancia.max())
+
+    dist_min = float(distancia.min())
+
+    spread_atual = float(abs(spread.iloc[-1]))
+
+    media_hist = float(distancia.mean())
+
+    bins = []
+
+    inicio = 0
+
+    while inicio <= dist_max + camada:
+
+        bins.append(round(inicio, 2))
+
+        inicio += camada
+
+    if bins[-1] < dist_max:
+
+        bins.append(round(dist_max + camada, 2))
+
+    hist = pd.cut(
+
+        distancia,
+
+        bins=bins,
+
+        include_lowest=True
+
+    )
+
+    freq = hist.value_counts().sort_index()
+
+    camada_dominante = freq.idxmax()
+
+    camada_texto = (
+
+        f"{camada_dominante.left:.2f} → "
+        f"{camada_dominante.right:.2f}"
+
+    )
+
+    h1, h2, h3, h4 = st.columns(4)
+
+    with h1:
+
+        st.metric(
+
+            "Distância Máxima",
+
+            f"R$ {dist_max:.2f}"
+
+        )
+
+    with h2:
+
+        st.metric(
+
+            "Distância Mínima",
+
+            f"R$ {dist_min:.2f}"
+
+        )
+
+    with h3:
+
+        st.metric(
+
+            "Camada Dominante",
+
+            camada_texto
+
+        )
+
+    with h4:
+
+        st.metric(
+
+            "Ocorrências",
+
+            int(freq.max())
+
+        )
+
+    st.info(f"""
+
+📅 PERÍODO ANALISADO: {spread.index[0].strftime('%d/%m/%Y')} até {spread.index[-1].strftime('%d/%m/%Y')}
+
+📊 Candles analisados: {len(spread)}
+
+📈 Tamanho da camada: R$ {camada}
+
+🎯 Camada dominante: {camada_texto}
+
+📌 Frequência: {freq.max()} ocorrências
+
+""")
+
+    fig_hist = go.Figure()
+
+    x_labels = [
+
+        round(i.mid, 2)
+
+        for i in freq.index
+
+    ]
+
+    fig_hist.add_trace(
+
+        go.Bar(
+
+            x=x_labels,
+
+            y=freq.values,
+
+            marker_color="#d89500",
+
+            opacity=0.90
+
+        )
+
+    )
+
+    fig_hist.add_vline(
+
+        x=media_hist,
+
+        line_width=3,
+
+        line_dash="dash",
+
+        line_color="red"
+
+    )
+
+    fig_hist.add_vline(
+
+        x=spread_atual,
+
+        line_width=3,
+
+        line_color="yellow"
+
+    )
+
+    fig_hist.update_layout(
+
+        template="plotly_dark",
+
+        height=600,
+
+        title="Distribuição da Distância entre os Ativos",
+
+        xaxis_title="Faixas de Distância (R$)",
+
+        yaxis_title="Ocorrências",
+
+        bargap=0.03
+
+    )
+
+    st.plotly_chart(
+
+        fig_hist,
+
+        width="stretch"
+
+    )
+
+    return freq
