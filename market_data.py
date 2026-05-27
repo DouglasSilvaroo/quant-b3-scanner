@@ -1,9 +1,20 @@
-import streamlit as st
-import yfinance as yf
 import pandas as pd
+import yfinance as yf
+import streamlit as st
+import time
 
 
-@st.cache_data(ttl=3600)
+# ==========================================
+# DOWNLOAD MARKET DATA
+# ==========================================
+
+@st.cache_data(
+
+    ttl=3600,
+
+    show_spinner=False
+
+)
 
 def baixar_dados_market(
 
@@ -15,6 +26,32 @@ def baixar_dados_market(
 
     try:
 
+        # ==========================================
+        # VALIDAÇÃO
+        # ==========================================
+
+        if not ativos:
+
+            return pd.DataFrame()
+
+        # ==========================================
+        # REMOVER DUPLICADOS
+        # ==========================================
+
+        ativos = list(
+
+            set(ativos)
+
+        )
+
+        print("ATIVOS SOLICITADOS:")
+
+        print(ativos)
+
+        # ==========================================
+        # DOWNLOAD LOTE
+        # ==========================================
+
         dados = yf.download(
 
             ativos,
@@ -22,15 +59,40 @@ def baixar_dados_market(
             period=periodo,
 
             auto_adjust=True,
-            progress=False
+
+            progress=False,
+
+            threads=False
 
         )
 
+        # ==========================================
+        # VALIDAÇÃO
+        # ==========================================
+
         if dados.empty:
+
+            print("DATAFRAME VAZIO")
 
             return pd.DataFrame()
 
-        fechamento = dados["Close"]
+        # ==========================================
+        # CLOSE
+        # ==========================================
+
+        if len(ativos) == 1:
+
+            fechamento = dados[["Close"]].copy()
+
+            fechamento.columns = ativos
+
+        else:
+
+            fechamento = dados["Close"].copy()
+
+        # ==========================================
+        # LIMPEZA
+        # ==========================================
 
         fechamento = fechamento.dropna(
 
@@ -38,11 +100,44 @@ def baixar_dados_market(
 
         )
 
+        fechamento.index = pd.to_datetime(
+
+            fechamento.index
+
+        )
+
+        fechamento = fechamento.sort_index()
+
+        # ==========================================
+        # LOG
+        # ==========================================
+
+        print("COLUNAS FINAIS:")
+
+        print(
+
+            fechamento.columns.tolist()
+
+        )
+
+        print(
+
+            fechamento.tail()
+
+        )
+
+        # ==========================================
+        # PEQUENO DELAY
+        # ==========================================
+
+        time.sleep(0.5)
+
         return fechamento
 
     except Exception as erro:
 
-        print("ERRO:")
+        print("ERRO MARKET DATA:")
+
         print(erro)
 
         return pd.DataFrame()
