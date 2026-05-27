@@ -18,6 +18,10 @@ from market_data import (
     baixar_dados_market
 )
 
+from visuals import (
+    render_histograma
+)
+
 # ==========================================
 
 # CONFIG STREAMLIT
@@ -720,45 +724,14 @@ if (
         # HISTOGRAMA
         # ==========================================
 
-        st.subheader(
+        freq = render_histograma(
 
-            f"📊 Histograma de Camadas — {ativo1} x {ativo2}"
-
-        )
-
-        distancia = spread.abs()
-
-        dist_max = float(distancia.max())
-
-        spread_atual = float(abs(spread.iloc[-1]))
-
-        media_hist = float(distancia.mean())
-
-        bins = []
-
-        inicio = 0
-
-        while inicio <= dist_max + camada:
-
-            bins.append(round(inicio, 2))
-
-            inicio += camada
-
-        if len(bins) > 0 and bins[-1] < dist_max:
-
-            bins.append(round(dist_max + camada, 2))
-
-        hist = pd.cut(
-
-            distancia,
-
-            bins=bins,
-
-            include_lowest=True
+            spread,
+            ativo1,
+            ativo2,
+            camada
 
         )
-
-        freq = hist.value_counts().sort_index()
         
         # ==========================================
         # MAPA INSTITUCIONAL
