@@ -71,9 +71,7 @@ def baixar_dados_finnhub(
 
             print("RESPOSTA API:")
             print("RESPOSTA API:", str(data)[:1000])
-
-            raise Exception(data)
-            
+                    
             # ======================================
             # VALIDAÇÃO
             # ======================================
