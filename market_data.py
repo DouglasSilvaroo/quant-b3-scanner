@@ -4,6 +4,7 @@ import streamlit as st
 import time
 
 
+
 # ==========================================
 # DOWNLOAD MARKET DATA
 # ==========================================
@@ -67,6 +68,21 @@ def baixar_dados_market(
         )
 
         # ==========================================
+        # MULTIINDEX
+        # ==========================================
+
+        if isinstance(
+
+            dados.columns,
+
+            pd.MultiIndex
+
+        ):
+
+            dados = dados["Close"]
+
+        
+        # ==========================================
         # VALIDAÇÃO
         # ==========================================
 
@@ -79,17 +95,21 @@ def baixar_dados_market(
         # ==========================================
         # CLOSE
         # ==========================================
-
+        
         if len(ativos) == 1:
 
-            fechamento = dados[["Close"]].copy()
+            fechamento = pd.DataFrame(
+
+            dados.copy()
+
+            )
 
             fechamento.columns = ativos
 
         else:
 
-            fechamento = dados["Close"].copy()
-
+            fechamento = dados.copy()
+        
         # ==========================================
         # LIMPEZA
         # ==========================================
@@ -130,8 +150,7 @@ def baixar_dados_market(
         # PEQUENO DELAY
         # ==========================================
 
-        time.sleep(0.5)
-
+        
         return fechamento
 
     except Exception as erro:
