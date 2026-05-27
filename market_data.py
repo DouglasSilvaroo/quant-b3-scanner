@@ -59,11 +59,13 @@ def baixar_dados_market(
 
                 f"&symbol={ticker}.SAO"
 
-                outputsize=compact
+                f"&outputsize=compact"
 
                 f"&apikey={api_key}"
 
             )
+
+            print(url)
 
             response = requests.get(
 
@@ -74,6 +76,8 @@ def baixar_dados_market(
             )
 
             data = response.json()
+
+            print(data)
 
             # ==========================================
             # VALIDAÇÃO
@@ -91,14 +95,14 @@ def baixar_dados_market(
 
                 print(f"SEM DADOS PARA {ticker}")
 
-               ativos_falharam.append(
-                   ticker
-            )
+                ativos_falharam.append(
+                    ticker
+                )
 
-            print(data)
+                print(data)
 
-            continue
-            
+                continue
+
             # ==========================================
             # DATAFRAME
             # ==========================================
@@ -127,6 +131,8 @@ def baixar_dados_market(
 
             df = df[[ativo]]
 
+            print(df.head())
+
             # ==========================================
             # JOIN
             # ==========================================
@@ -149,12 +155,16 @@ def baixar_dados_market(
             # RATE LIMIT
             # ==========================================
 
-            time.sleep(1)
+            time.sleep(15)
 
         except Exception as erro:
 
             print("ERRO:")
             print(erro)
+
+            ativos_falharam.append(
+                ativo
+            )
 
             continue
 
