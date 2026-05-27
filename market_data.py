@@ -59,7 +59,7 @@ def baixar_dados_market(
 
                 f"&symbol={ticker}.SAO"
 
-                f"&outputsize=full"
+                outputsize=compact
 
                 f"&apikey={api_key}"
 
@@ -149,7 +149,7 @@ def baixar_dados_market(
             # RATE LIMIT
             # ==========================================
 
-            time.sleep(12)
+            time.sleep(1)
 
         except Exception as erro:
 
