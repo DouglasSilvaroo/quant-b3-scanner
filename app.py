@@ -445,7 +445,7 @@ def baixar_dados(
 
 ):
 
-    return baixar_dados_finnhub(
+    return baixar_dados_market(
 
         ativos,
 
