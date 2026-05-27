@@ -55,7 +55,7 @@ def baixar_dados_market(
 
                 "https://www.alphavantage.co/query"
 
-                f"?function=TIME_SERIES_DAILY_ADJUSTED"
+                f"?function=TIME_SERIES_DAILY"
 
                 f"&symbol={ticker}.SAO"
 
@@ -122,7 +122,7 @@ def baixar_dados_market(
             df = df.sort_index()
 
             df[ativo] = df[
-                "5. adjusted close"
+                "4. close"
             ].astype(float)
 
             df = df[[ativo]]
