@@ -38,7 +38,7 @@ def executar_scanner(
 
     try:
 
-        dados = baixar_dados_finnhub(
+        dados = baixar_dados_market(
 
             lista_ativos,
 
