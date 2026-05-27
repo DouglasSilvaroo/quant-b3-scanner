@@ -22,11 +22,11 @@ def executar_scanner(
 
     modo="Mesmo Setor",
 
-    correlacao_min=0.95,
+    correlacao_min=0.80,
 
     pvalue_max=0.05,
 
-    zscore_min=1.5
+    zscore_min=0.8
 
 ):
 
@@ -132,8 +132,7 @@ def executar_scanner(
 
     for ativo1, ativo2 in pares:
 
-        time.sleep(0.05)
-
+        
         try:
 
             # ==================================
