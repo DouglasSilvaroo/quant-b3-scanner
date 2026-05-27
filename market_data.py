@@ -95,7 +95,15 @@ def baixar_dados_market(
             # RATE LIMIT
             # ==========================================
 
-            if "code" in data:
+            if (
+
+                "code" in data
+
+                or
+
+                "values" not in data
+
+            ):
 
                 print(f"ERRO API: {ticker}")
 
