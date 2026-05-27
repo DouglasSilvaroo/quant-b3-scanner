@@ -17,8 +17,12 @@ def baixar_dados_market(
 ):
 
     api_key = os.getenv(
-        "ALPHAVANTAGE_API_KEY"
+        "TWELVEDATA_API_KEY"
     )
+
+    # ==========================================
+    # VALIDAÇÃO API
+    # ==========================================
 
     if not api_key:
 
@@ -26,14 +30,22 @@ def baixar_dados_market(
 
         return pd.DataFrame()
 
-    print("API KEY CARREGADA")
+    print("API KEY OK")
+
+    # ==========================================
+    # CONFIG
+    # ==========================================
+
+    interval = "1day"
+
+    outputsize = 500
 
     df_final = pd.DataFrame()
 
     ativos_falharam = []
 
     # ==========================================
-    # LOOP ATIVOS
+    # LOOP PRINCIPAL
     # ==========================================
 
     for ativo in ativos:
@@ -48,24 +60,26 @@ def baixar_dados_market(
             print(f"BAIXANDO: {ticker}")
 
             # ==========================================
-            # URL ALPHAVANTAGE
+            # URL API
             # ==========================================
 
             url = (
 
-                "https://www.alphavantage.co/query"
+                "https://api.twelvedata.com/time_series"
 
-                f"?function=TIME_SERIES_DAILY"
+                f"?symbol={ticker}"
 
-                f"&symbol={ticker}.SAO"
+                f"&interval={interval}"
 
-                f"&outputsize=compact"
+                f"&outputsize={outputsize}"
 
                 f"&apikey={api_key}"
 
             )
 
-            print(url)
+            # ==========================================
+            # REQUEST
+            # ==========================================
 
             response = requests.get(
 
@@ -77,29 +91,33 @@ def baixar_dados_market(
 
             data = response.json()
 
-            print(data)
-
             # ==========================================
-            # VALIDAÇÃO
+            # RATE LIMIT
             # ==========================================
 
-            if (
+            if "code" in data:
 
-                "Time Series (Daily)" not in data
+                print(f"ERRO API: {ticker}")
 
-                or
-
-                len(data["Time Series (Daily)"]) == 0
-
-            ):
-
-                print(f"SEM DADOS PARA {ticker}")
+                print(data)
 
                 ativos_falharam.append(
                     ticker
                 )
 
-                print(data)
+                continue
+
+            # ==========================================
+            # VALIDAÇÃO
+            # ==========================================
+
+            if "values" not in data:
+
+                print(f"SEM DADOS: {ticker}")
+
+                ativos_falharam.append(
+                    ticker
+                )
 
                 continue
 
@@ -107,31 +125,53 @@ def baixar_dados_market(
             # DATAFRAME
             # ==========================================
 
-            serie = data[
-                "Time Series (Daily)"
-            ]
+            df = pd.DataFrame(
 
-            df = pd.DataFrame.from_dict(
-
-                serie,
-
-                orient="index"
+                data["values"]
 
             )
 
-            df.index = pd.to_datetime(
-                df.index
+            if df.empty:
+
+                ativos_falharam.append(
+                    ticker
+                )
+
+                continue
+
+            # ==========================================
+            # DATETIME
+            # ==========================================
+
+            df["datetime"] = pd.to_datetime(
+
+                df["datetime"]
+
             )
 
-            df = df.sort_index()
+            df = df.sort_values(
 
-            df[ativo] = df[
-                "4. close"
-            ].astype(float)
+                "datetime"
+
+            )
+
+            df = df.set_index(
+
+                "datetime"
+
+            )
+
+            # ==========================================
+            # PREÇO
+            # ==========================================
+
+            df[ativo] = df["close"].astype(
+
+                float
+
+            )
 
             df = df[[ativo]]
-
-            print(df.head())
 
             # ==========================================
             # JOIN
@@ -152,14 +192,15 @@ def baixar_dados_market(
                 )
 
             # ==========================================
-            # RATE LIMIT
+            # RATE LIMIT CONTROL
             # ==========================================
 
-            time.sleep(15)
+            time.sleep(1.2)
 
         except Exception as erro:
 
-            print("ERRO:")
+            print(f"ERRO INTERNO: {ativo}")
+
             print(erro)
 
             ativos_falharam.append(
@@ -169,13 +210,27 @@ def baixar_dados_market(
             continue
 
     # ==========================================
-    # FINAL
+    # LIMPEZA FINAL
     # ==========================================
 
-    print("DATAFRAME FINAL:")
-    print(df_final.head())
+    if not df_final.empty:
+
+        df_final = df_final.sort_index()
+
+    # ==========================================
+    # LOG FINAL
+    # ==========================================
 
     print("ATIVOS COM FALHA:")
+
     print(ativos_falharam)
+
+    print("COLUNAS FINAIS:")
+
+    print(df_final.columns.tolist())
+
+    # ==========================================
+    # RETURN
+    # ==========================================
 
     return df_final
