@@ -84,157 +84,36 @@ if not st.session_state["logado"]:
         tela_cadastro()
 
     st.stop()
-
-# ==========================================
-
+#=====================================
 # ATIVOS B3 POR SEGMENTO
-
-# ==========================================
+# ===================================
 
 SEGMENTOS = {
 
-"Bancos": [
+    "Bancos": [
 
-    "ITUB3.SA",
-    "ITUB4.SA",
-    "BBDC3.SA",
-    "BBDC4.SA",
-    "BBAS3.SA",
-    "SANB3.SA",
-    "SANB4.SA",
-    "SANB11.SA",
-    "BPAC11.SA",
-    "ABCB4.SA",
-    "BRSR3.SA",
-    "BRSR6.SA",
-    "BMGB4.SA"
+        "ITUB4.SA",
+        "BBDC4.SA",
+        "BBAS3.SA"
 
-],
+    ],
 
-"Petroleo": [
+    "Petroleo": [
 
-    "PETR3.SA",
-    "PETR4.SA",
-    "PRIO3.SA",
-    "RECV3.SA",
-    "BRAV3.SA",
-    "CSAN3.SA",
-    "VBBR3.SA",
-    "UGPA3.SA"
+        "PETR3.SA",
+        "PETR4.SA",
+        "PRIO3.SA"
 
-],
+    ],
 
-"Mineracao": [
+    "Mineracao": [
 
-    "VALE3.SA",
-    "BRAP3.SA",
-    "BRAP4.SA",
-    "CSNA3.SA",
-    "GGBR3.SA",
-    "GGBR4.SA",
-    "GOAU3.SA",
-    "GOAU4.SA",
-    "USIM3.SA",
-    "USIM5.SA",
-    "CMIN3.SA"
+        "VALE3.SA",
+        "GGBR4.SA"
 
-],
-
-"Energia": [
-
-    "AXIA3.SA",
-    "AXIA6.SA",
-    "CPFE3.SA",
-    "CMIG3.SA",
-    "CMIG4.SA",
-    "TAEE3.SA",
-    "TAEE4.SA",
-    "TAEE11.SA",
-    "EGIE3.SA",
-    "ENGI11.SA",
-    "EQTL3.SA",
-    "ENEV3.SA",
-    "CPLE3.SA",
-    "NEOE3.SA",
-    "ISAE3.SA",
-    "ISAE4.SA",
-    "AURE3.SA",
-    "ALUP3.SA",
-    "ALUP4.SA",
-    "ALUP11.SA"
-
-],
-
-"Varejo": [
-
-    "MGLU3.SA",
-    "LREN3.SA",
-    "BHIA3.SA",
-    "ASAI3.SA",
-    "PCAR3.SA",
-    "RADL3.SA",
-    "CEAB3.SA",
-    "AUAU3.SA"
-
-],
-
-"Papel": [
-
-    "SUZB3.SA",
-    "KLBN3.SA",
-    "KLBN4.SA",
-    "KLBN11.SA",
-    "RANI3.SA"
-
-],
-
-"Construcao": [
-
-    "CYRE3.SA",
-    "EZTC3.SA",
-    "MRVE3.SA",
-    "DIRR3.SA",
-    "TEND3.SA",
-    "LAVV3.SA"
-
-],
-
-"Telecom": [
-
-    "VIVT3.SA",
-    "TIMS3.SA",
-    "POSI3.SA",
-    "TOTS3.SA"
-
-],
-
-"Logistica": [
-
-    "RAIL3.SA",
-    "MOTV3.SA",
-    "ECOR3.SA"
-
-],
-
-"Alimentos": [
-
-    "ABEV3.SA",
-    "MBRF3.SA",
-    "SLCE3.SA"
-
-],
-
-"Saude": [
-
-    "HAPV3.SA",
-    "QUAL3.SA",
-    "FLRY3.SA",
-    "RDOR3.SA"
-
-]
+    ]
 
 }
-
 # ==========================================
 
 # LISTA CONSOLIDADA
@@ -536,6 +415,22 @@ if (
 # ==========================================
 # SÉRIES
 # ==========================================
+
+        if ativo1 not in dados.columns:
+
+           st.error(
+               f"Ativo sem dados: {ativo1}"
+           )
+
+           st.stop()
+
+        if ativo2 not in dados.columns:
+
+            st.error(
+               f"Ativo sem dados: {ativo2}"
+            )
+
+            st.stop()
 
         serie1 = dados[ativo1]
 
