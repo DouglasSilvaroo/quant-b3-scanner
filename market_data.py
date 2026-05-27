@@ -112,14 +112,24 @@ def baixar_dados_market(
 
             )
 
-            df[ativo] = df["close"].astype(
+            df = df.rename(
+
+                columns={
+
+                    "close": ativo
+
+                }
+
+            )
+
+            df[ativo] = df[ativo].astype(
 
                 float
 
             )
 
             df = df[[ativo]]
-
+            
             # ======================================
             # JOIN
             # ======================================
