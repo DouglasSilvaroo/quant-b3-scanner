@@ -30,6 +30,8 @@ def baixar_dados_market(
 
     df_final = pd.DataFrame()
 
+    ativos_falharam = []
+
     # ==========================================
     # LOOP ATIVOS
     # ==========================================
@@ -77,14 +79,26 @@ def baixar_dados_market(
             # VALIDAÇÃO
             # ==========================================
 
-            if "Time Series (Daily)" not in data:
+            if (
+
+                "Time Series (Daily)" not in data
+
+                or
+
+                len(data["Time Series (Daily)"]) == 0
+
+            ):
 
                 print(f"SEM DADOS PARA {ticker}")
 
-                print(data)
+               ativos_falharam.append(
+                   ticker
+            )
 
-                continue
+            print(data)
 
+            continue
+            
             # ==========================================
             # DATAFRAME
             # ==========================================
@@ -150,5 +164,8 @@ def baixar_dados_market(
 
     print("DATAFRAME FINAL:")
     print(df_final.head())
+
+    print("ATIVOS COM FALHA:")
+    print(ativos_falharam)
 
     return df_final
