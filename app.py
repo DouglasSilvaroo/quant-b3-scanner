@@ -93,23 +93,19 @@ SEGMENTOS = {
     "Bancos": [
 
         "ITUB4.SA",
-        "BBDC4.SA",
-        "BBAS3.SA"
+        "BBDC4.SA"
 
     ],
 
     "Petroleo": [
 
-        "PETR3.SA",
-        "PETR4.SA",
-        "PRIO3.SA"
+        "PETR4.SA"
 
     ],
 
     "Mineracao": [
 
-        "VALE3.SA",
-        "GGBR4.SA"
+        "VALE3.SA"
 
     ]
 
