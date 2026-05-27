@@ -6,7 +6,7 @@ import time
 from statsmodels.tsa.stattools import coint
 
 from market_data import (
-    baixar_dados_finnhub
+    baixar_dados_market
 )
 
 # ==========================================
