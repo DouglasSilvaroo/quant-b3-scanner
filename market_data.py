@@ -16,8 +16,8 @@ def baixar_dados_market(
         "TWELVEDATA_API_KEY"
     )
 
-    print("API KEY:", api_key)
-
+    print("API KEY CARREGADA")
+    
     if not api_key:
 
         print("API KEY NÃO ENCONTRADA")
