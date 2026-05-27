@@ -4,7 +4,7 @@ import os
 import time
 
 
-def baixar_dados_finnhub(
+def baixar_dados_market(
 
     ativos,
 
