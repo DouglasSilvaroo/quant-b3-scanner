@@ -4,6 +4,10 @@ import os
 import time
 
 
+# ==========================================
+# DOWNLOAD MARKET DATA
+# ==========================================
+
 def baixar_dados_market(
 
     ativos,
@@ -13,22 +17,22 @@ def baixar_dados_market(
 ):
 
     api_key = os.getenv(
-        "TWELVEDATA_API_KEY"
+        "ALPHAVANTAGE_API_KEY"
     )
 
-    print("API KEY CARREGADA")
-    
     if not api_key:
 
         print("API KEY NÃO ENCONTRADA")
 
         return pd.DataFrame()
 
-    interval = "1day"
-
-    outputsize = 500
+    print("API KEY CARREGADA")
 
     df_final = pd.DataFrame()
+
+    # ==========================================
+    # LOOP ATIVOS
+    # ==========================================
 
     for ativo in ativos:
 
@@ -38,101 +42,80 @@ def baixar_dados_market(
                 ".SA",
                 ""
             )
-                                   
+
             print(f"BAIXANDO: {ticker}")
+
+            # ==========================================
+            # URL ALPHAVANTAGE
+            # ==========================================
 
             url = (
 
-                f"https://api.twelvedata.com/time_series"
+                "https://www.alphavantage.co/query"
 
-                f"?symbol={ticker}"
+                f"?function=TIME_SERIES_DAILY_ADJUSTED"
 
-                f"&interval={interval}"
+                f"&symbol={ticker}.SAO"
 
-                f"&outputsize={outputsize}"
+                f"&outputsize=full"
 
                 f"&apikey={api_key}"
 
             )
 
-            print("URL:", url)
-
             response = requests.get(
 
                 url,
 
-                timeout=15
+                timeout=10
 
             )
-
-            print("STATUS CODE:", response.status_code)
 
             data = response.json()
 
-            print("RESPOSTA API:")
-            print("RESPOSTA API:", str(data)[:1000])
-                    
-            # ======================================
+            # ==========================================
             # VALIDAÇÃO
-            # ======================================
+            # ==========================================
 
-            if "values" not in data:
+            if "Time Series (Daily)" not in data:
 
                 print(f"SEM DADOS PARA {ticker}")
 
+                print(data)
+
                 continue
 
-            # ======================================
+            # ==========================================
             # DATAFRAME
-            # ======================================
+            # ==========================================
 
-            df = pd.DataFrame(
+            serie = data[
+                "Time Series (Daily)"
+            ]
 
-                data["values"]
+            df = pd.DataFrame.from_dict(
 
-            )
+                serie,
 
-            print(df.head())
-
-            df["datetime"] = pd.to_datetime(
-
-                df["datetime"]
+                orient="index"
 
             )
 
-            df = df.sort_values(
-
-                "datetime"
-
+            df.index = pd.to_datetime(
+                df.index
             )
 
-            df = df.set_index(
+            df = df.sort_index()
 
-                "datetime"
-
-            )
-
-            df = df.rename(
-
-                columns={
-
-                    "close": ativo
-
-                }
-
-            )
-
-            df[ativo] = df[ativo].astype(
-
-                float
-
-            )
+            df[ativo] = df[
+                "5. adjusted close"
+            ].astype(float)
 
             df = df[[ativo]]
-            
-            # ======================================
+
+            # ==========================================
             # JOIN
-            # ======================================
+            # ==========================================
 
             if df_final.empty:
 
@@ -148,7 +131,11 @@ def baixar_dados_market(
 
                 )
 
-            time.sleep(1)
+            # ==========================================
+            # RATE LIMIT
+            # ==========================================
+
+            time.sleep(12)
 
         except Exception as erro:
 
@@ -156,6 +143,10 @@ def baixar_dados_market(
             print(erro)
 
             continue
+
+    # ==========================================
+    # FINAL
+    # ==========================================
 
     print("DATAFRAME FINAL:")
     print(df_final.head())
