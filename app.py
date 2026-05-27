@@ -3,6 +3,7 @@ import streamlit as st
 import pandas as pd
 import plotly.graph_objects as go
 import plotly.express as px
+import time
 
 from auth import (
     tela_login,
@@ -14,7 +15,7 @@ from scanner import (
 )
 
 from market_data import (
-    baixar_dados_finnhub
+    baixar_dados_market
 )
 
 # ==========================================
@@ -357,7 +358,7 @@ with st.sidebar:
 
             st.session_state["menu"] = "Painel"
 
-            # st.rerun()
+            st.rerun()
 
         else:
 
@@ -429,7 +430,7 @@ with st.sidebar:
 
         st.session_state["painel_pronto"] = False
 
-        # st.rerun()     
+        st.rerun()    
         
 # ==========================================
 # PAINEL
@@ -489,8 +490,7 @@ if (
 
     try:
 
-        import time
-
+     
         agora = time.time()
 
         if "ultima_execucao" not in st.session_state:
@@ -519,28 +519,9 @@ if (
 
             st.stop()
 
-        st.success(
-            "Dados carregados com sucesso."
-        )
-
-        st.write(
-            dados.tail()
-        )
-
-    except Exception as erro:
-
-        st.error(
-            f"ERRO REAL: {erro}"
-        )
-
-        print("ERRO REAL:")
-        print(erro)
-
-        st.stop()
-               
-        # ==========================================
-        # REMOVE NAN
-        # ==========================================
+# ==========================================
+# REMOVE NAN
+# ==========================================
 
         dados = dados.dropna()
 
@@ -552,13 +533,25 @@ if (
 
             st.stop()
 
+# ==========================================
+# SÉRIES
+# ==========================================
+
         serie1 = dados[ativo1]
 
         serie2 = dados[ativo2]
 
+# ==========================================
+# FATORES
+# ==========================================
+
         fator1 = lote1 / 100
 
         fator2 = lote2 / 100
+
+# ==========================================
+# SPREAD
+# ==========================================
 
         spread = (
 
@@ -573,6 +566,10 @@ if (
         media = spread.mean()
 
         desvio = spread.std()
+
+# ==========================================
+# ZSCORE
+# ==========================================
 
         if desvio == 0:
 
@@ -590,14 +587,22 @@ if (
 
             ) / desvio
 
+# ==========================================
+# CORRELAÇÃO
+# ==========================================
+
         correlacao = serie1.corr(
 
             serie2
 
-        )
+        ) 
+
+# ==========================================
+# MÉTRICAS
+# ==========================================
 
         col1, col2, col3, col4 = st.columns(4)
-        
+
         with col1:
 
             st.metric(
@@ -620,11 +625,11 @@ if (
 
         with col3:
 
-           st.metric(
+            st.metric(
 
-               "DISTÂNCIA ATUAL",
+                "Spread",
 
-               f"{spread.iloc[-1]:.2f}"
+                f"{spread.iloc[-1]:.2f}"
 
             )
 
@@ -632,7 +637,7 @@ if (
 
             st.metric(
 
-                "Pontuação Z",
+                "Z-Score",
 
                 f"{zscore:.2f}"
 
@@ -640,30 +645,56 @@ if (
 
         st.markdown("---")
 
-        c1, c2, c3 = st.columns(3)
+# ==========================================
+# GRÁFICO SPREAD
+# ==========================================
 
-        with c1:
+        fig = go.Figure()
 
-            st.metric(
-                "Correlação",
-                f"{correlacao:.4f}"
-            )
-  
-        with c2:
+        fig.add_trace(
 
-            st.metric(
-                "Spread Médio",
-                f"{media:.2f}"
-            )
+            go.Scatter(
 
-        with c3:
+                x=spread.index,
 
-            st.metric(
-                "Desvio",
-                f"{desvio:.2f}"
+                y=spread,
+
+                name="Spread"
+
             )
 
-        st.markdown("---")
+        )
+
+        fig.add_hline(
+
+            y=media,
+
+            line_dash="dash",
+
+            line_color="yellow"
+
+        )
+
+        fig.update_layout(
+
+            template="plotly_dark",
+
+            height=600
+
+        )
+
+        st.plotly_chart(
+
+            fig,
+
+            width="stretch"
+
+        )
+
+    
+        # ==========================================
+        # HISTOGRAMA
+        # ==========================================
 
         st.subheader(
 
@@ -674,8 +705,6 @@ if (
         distancia = spread.abs()
 
         dist_max = float(distancia.max())
-
-        dist_min = float(distancia.min())
 
         spread_atual = float(abs(spread.iloc[-1]))
 
@@ -706,150 +735,7 @@ if (
         )
 
         freq = hist.value_counts().sort_index()
-
-        camada_dominante = freq.idxmax()
-
-        camada_texto = (
-
-            f"{camada_dominante.left:.2f} → "
-            f"{camada_dominante.right:.2f}"
-
-        )
-
-        h1, h2, h3, h4 = st.columns(4)
-
-        with h1:
-
-            st.metric(
-
-                "Distância Máxima",
-
-                f"R$ {dist_max:.2f}"
-
-            )
-
-        with h2:
-
-            st.metric(
-
-                "Distância Mínima",
-
-                f"R$ {dist_min:.2f}"
-
-            )
-
-        with h3:
-
-            st.metric(
-
-                "Camada Dominante",
-
-                camada_texto
-
-            )
-
-        with h4:
-
-            st.metric(
-
-                "Ocorrências",
-
-                int(freq.max())
-
-            )
-
-        st.info(f"""
-
-📅 PERÍODO ANALISADO: {spread.index[0].strftime('%d/%m/%Y')} até {spread.index[-1].strftime('%d/%m/%Y')}
-
-📊 Velas analisadas: {len(spread)}
-
-📈 Tamanho da camada: R$ {camada}
-
-🎯 Camada dominante: {camada_texto}
-
-📌 Frequência: {freq.max()} ocorrências
-
-🔺 {ativo1} ficou mais caro em: {(spread > 0).mean()*100:.2f}% do período
-
-🔻 {ativo2} ficou mais caro em: {(spread < 0).mean()*100:.2f}% do período
-
-""")
-
-        fig_hist = go.Figure()
-
-        x_labels = [
-
-            round(i.mid, 2)
-
-            for i in freq.index
-
-        ]
-
-        fig_hist.add_trace(
-
-            go.Bar(
-
-                x=x_labels,
-
-                y=freq.values,
-
-                marker_color="#d89500",
-
-                opacity=0.90
-
-            )
-
-        )
-
-        fig_hist.add_vline(
-
-            x=media_hist,
-
-            line_width=3,
- 
-            line_dash="dash",
-
-            line_color="red"
-
-        )
-
-        fig_hist.add_vline(
-
-            x=spread_atual,
-
-            line_width=3,
-
-            line_color="yellow"
-
-        )
-
-        fig_hist.update_layout(
-
-            template="plotly_dark",
-
-            height=600,
-
-            title="Distribuição da Distância entre os Ativos",
-
-            xaxis_title="Faixas de Distância (R$)",
-
-            yaxis_title="Ocorrências",
-
-            bargap=0.03
-
-         )
-
-        st.plotly_chart(
-
-            fig_hist,
-
-            width="stretch"
-
-        )
-
-        st.markdown("---")
-
+        
         # ==========================================
         # MAPA INSTITUCIONAL
         # ==========================================
@@ -1288,7 +1174,15 @@ if (
     
     except Exception as erro:
 
-        st.error(f"Erro: {erro}")
+        st.error(
+            f"ERRO REAL: {erro}"
+        )
+
+        print("ERRO REAL:")
+        print(erro)
+
+        st.stop()
+
 # ==========================================
 
 # SCANNER
@@ -1421,6 +1315,8 @@ Encontrar pares com:
                         "Nenhum par encontrado"
                     )
 
+                    st.stop()
+
                 else:
 
                     st.success(
@@ -1529,7 +1425,7 @@ Encontrar pares com:
 
                                     st.session_state["painel_pronto"] = True
 
-                                    # st.rerun()                           
+                                    st.rerun()                           
                         st.divider()
 
             except Exception as erro:
