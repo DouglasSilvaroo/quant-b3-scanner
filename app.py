@@ -27,6 +27,7 @@ from visuals import (
     render_status_operacional
     render_dashboard_executivo
     render_cointegracao_rolling
+    render_regime_estatistico
   
 )
 
@@ -38,6 +39,7 @@ from analytics import (
     calcular_hedge_ratio,
     calcular_half_life
     calcular_cointegracao_rolling
+    calcular_regime_estatistico
 
 )
 
@@ -648,6 +650,15 @@ if (
 
         )
 
+        regime_info = calcular_regime_estatistico(
+
+            spread,
+            zscore,
+            half_life,
+            df_coint
+
+        )
+
         
 
 # ==========================================
@@ -736,7 +747,19 @@ if (
 
         )
 
-        st.markdown("---")        
+        st.markdown("---")     
+
+        # ==========================================
+        # REGIME ESTATÍSTICO
+        # ==========================================
+
+        render_regime_estatistico(
+
+            regime_info
+
+        )
+
+        st.markdown("---")
         
 
         # ==========================================
