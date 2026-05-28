@@ -23,6 +23,7 @@ from visuals import (
     render_histograma,
     render_heatmap
     render_permanencia
+    render_zscore
 
 )
 
@@ -677,51 +678,19 @@ if (
 
         st.markdown("---")
 
-# ==========================================
-# GRÁFICO SPREAD
-# ==========================================
+        # ==========================================
+        # ZSCORE INSTITUCIONAL
+        # ==========================================
 
-        fig = go.Figure()
+        render_zscore(
 
-        fig.add_trace(
-
-            go.Scatter(
-
-                x=spread.index,
-
-                y=spread,
-
-                name="Spread"
-
-            )
+            spread,
+            media,
+            desvio
 
         )
 
-        fig.add_hline(
-
-            y=media,
-
-            line_dash="dash",
-
-            line_color="yellow"
-
-        )
-
-        fig.update_layout(
-
-            template="plotly_dark",
-
-            height=600
-
-        )
-
-        st.plotly_chart(
-
-            fig,
-
-            use_container_width=True
-
-        )
+        st.markdown("---")
 
     
         # ==========================================
