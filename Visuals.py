@@ -1198,4 +1198,67 @@ def render_backtest(
 
         )
 
+# ==========================================
+# RISCO OPERACIONAL
+# ==========================================
+
+def render_risco_operacional(
+
+    risco_info
+
+):
+
+    st.subheader(
+
+        "🛡️ Risco Operacional"
+
+    )
+
+    risco = risco_info["risco"]
+
+    nivel = risco_info["nivel"]
+
+    c1, c2 = st.columns(
+
+        [1, 3]
+
+    )
+
+    with c1:
+
+        st.metric(
+
+            "Risk Score",
+
+            risco
+
+        )
+
+    with c2:
+
+        if "BAIXO" in nivel:
+
+            st.success(nivel)
+
+        elif "MODERADO" in nivel:
+
+            st.warning(nivel)
+
+        else:
+
+            st.error(nivel)
+
+    progresso = min(
+
+        risco / 10,
+        1.0
+
+    )
+
+    st.progress(
+
+        progresso
+
+    )
+
     
