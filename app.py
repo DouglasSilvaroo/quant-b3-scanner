@@ -26,10 +26,16 @@ from visuals import (
     render_zscore
     render_status_operacional
     render_dashboard_executivo
+  
+)
+
+from analytics import (
+
     calcular_spread,
     calcular_estatisticas,
-    calcular_correlacao
-    calcular_hedge_ratio
+    calcular_correlacao,
+    calcular_hedge_ratio,
+    calcular_half_life
 
 )
 
@@ -626,6 +632,14 @@ if (
             serie2
 
         )
+        
+        half_life = calcular_half_life(
+
+            spread
+
+        )        
+
+        
 
 # ==========================================
 # MÉTRICAS
