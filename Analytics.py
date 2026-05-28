@@ -1,6 +1,7 @@
 import pandas as pd
 import statsmodels.api as sm
 import numpy as np
+from statsmodels.tsa.stattools import coint
 
 
 # ==========================================
@@ -182,3 +183,81 @@ def calcular_half_life(
         2
 
     )
+
+# ==========================================
+# COINTEGRAÇÃO ROLLING
+# ==========================================
+
+def calcular_cointegracao_rolling(
+
+    serie1,
+    serie2,
+    janela=60
+
+):
+
+    datas = []
+
+    pvalues = []
+
+    for i in range(
+
+        janela,
+        len(serie1)
+
+    ):
+
+        s1 = serie1.iloc[
+
+            i - janela:i
+
+        ]
+
+        s2 = serie2.iloc[
+
+            i - janela:i
+
+        ]
+
+        try:
+
+            resultado = coint(
+
+                s1,
+                s2
+
+            )
+
+            pvalor = resultado[1]
+
+        except:
+
+            pvalor = 1
+
+        datas.append(
+
+            serie1.index[i]
+
+        )
+
+        pvalues.append(
+
+            pvalor
+
+        )
+
+    df = pd.DataFrame({
+
+        "Data": datas,
+
+        "PValor": pvalues
+
+    })
+
+    df = df.set_index(
+
+        "Data"
+
+    )
+
+    return df
