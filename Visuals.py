@@ -1116,4 +1116,86 @@ def render_score_quant(
 
     )
 
+# ==========================================
+# BACKTEST
+# ==========================================
+
+def render_backtest(
+
+    backtest_info
+
+):
+
+    st.subheader(
+
+        "🧪 Backtest Operacional"
+
+    )
+
+    c1, c2, c3, c4 = st.columns(4)
+
+    with c1:
+
+        st.metric(
+
+            "Trades",
+
+            backtest_info["trades"]
+
+        )
+
+    with c2:
+
+        st.metric(
+
+            "Win Rate",
+
+            f"{backtest_info['winrate']}%"
+
+        )
+
+    with c3:
+
+        st.metric(
+
+            "Retorno Total",
+
+            f"{backtest_info['retorno_total']:.2f}"
+
+        )
+
+    with c4:
+
+        st.metric(
+
+            "Retorno Médio",
+
+            f"{backtest_info['retorno_medio']:.2f}"
+
+        )
+
+    if backtest_info["winrate"] >= 60:
+
+        st.success(
+
+            "Estratégia Estatisticamente Forte"
+
+        )
+
+    elif backtest_info["winrate"] >= 45:
+
+        st.warning(
+
+            "Estratégia Moderada"
+
+        )
+
+    else:
+
+        st.error(
+
+            "Estratégia Fraca"
+
+        )
+
     
