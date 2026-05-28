@@ -710,7 +710,8 @@ if (
             spread,
             media,
             desvio,
-            zscore
+            zscore,
+            half_life
 
         )
 
