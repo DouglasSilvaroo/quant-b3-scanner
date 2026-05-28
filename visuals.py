@@ -268,7 +268,7 @@ def render_heatmap(
 
     st.data_editor(
 
-        df_tempo,
+        df_heatmap,
 
         use_container_width=True,
 
@@ -276,7 +276,7 @@ def render_heatmap(
 
     )
 
-    fig_perm = px.pie(
+    fig_heat = px.bar(
 
         df_heatmap,
 
@@ -810,27 +810,29 @@ def render_dashboard_executivo(
 
     with c3:
 
-        st.metric(
+    st.metric(
 
-            "Desvio Atual",
+        "Desvio Atual",
 
-            f"{desvio_atual:.2f}"
+        f"{desvio_atual:.2f}"
 
-        )
+    )
 
-        st.metric(
+    st.metric(
 
-            "Score Quant",
+        "Score Quant",
 
-            f"{score_quant:.2f}"
+        f"{score_quant:.2f}"
 
-        st.metric(
+    )
 
-            "Half-Life",
+    st.metric(
 
-            f"{half_life:.2f}"
+        "Half-Life",
 
-        )
+        f"{half_life:.2f}"
+
+    )
 
 
 # ==========================================
