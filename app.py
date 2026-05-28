@@ -22,6 +22,7 @@ from visuals import (
 
     render_histograma,
     render_heatmap
+    render_permanencia
 
 )
 
@@ -754,94 +755,9 @@ if (
         # PERMANÊNCIA TEMPORAL
         # ==========================================
 
-        st.subheader("⏳ Permanência Temporal das Camadas")
+        render_permanencia(
 
-        permanencia = []
-
-        for faixa, ocorrencias in freq.items():
-
-            zona = (
-                f"{faixa.left:.2f} ➜ "
-                f"{faixa.right:.2f}"
-            )
-
-            ocorrencias = int(ocorrencias)
-
-            tempo_medio = round(
-                ocorrencias / len(spread),
-                2
-            )
-
-            tempo_max = ocorrencias
-
-            score_temp = round(
-                tempo_medio * ocorrencias,
-                2
-            )
-
-            permanencia.append({
-
-                "Zona": zona,
-
-                "Tempo Médio": tempo_medio,
-
-                "Tempo Máximo": tempo_max,
-
-                "Ocorrencias": ocorrencias,
-
-                "Score Temporal": score_temp
-
-            })
-
-        df_perm = pd.DataFrame(
-            permanencia
-        )
-
-        df_perm = df_perm.sort_values(
-
-            by="Tempo Médio",
-
-            ascending=False
-
-        )
-
-        st.dataframe(
-
-            df_perm,
-
-            use_container_width=True
-
-        )
-
-        fig_perm = px.bar(
-
-            df_perm,
-
-            x="Tempo Médio",
-
-            y="Zona",
-
-            orientation="h",
-
-            text="Tempo Médio",
-
-            template="plotly_dark"
-
-        )
-
-        fig_perm.update_layout(
-
-            title="Tempo Médio de Permanência por Zona",
-
-            height=700
-
-        )
-
-        st.plotly_chart(
-
-            fig_perm,
-
-            use_container_width=True
+            freq
 
         )
 
