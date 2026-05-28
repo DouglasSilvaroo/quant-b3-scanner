@@ -28,7 +28,8 @@ from visuals import (
     render_dashboard_executivo,
     render_cointegracao_rolling,
     render_regime_estatistico,
-    render_sinal
+    render_sinal,
+    render_score_quant
   
 )
 
@@ -40,7 +41,8 @@ from analytics import (
     calcular_hedge_ratio,
     calcular_half_life,
     calcular_cointegracao_rolling,
-    calcular_regime_estatistico
+    calcular_regime_estatistico,
+    calcular_score_quant
 
 )
 
@@ -675,6 +677,17 @@ if (
 
         ) 
 
+        score_quant = calcular_score_quant(
+
+            zscore,
+            correlacao,
+            half_life,
+            regime_info["pvalor"],
+            regime_info["volatilidade"],
+            sinal_info["confianca"]
+
+        )
+
         
 
 # ==========================================
@@ -784,6 +797,18 @@ if (
         render_sinal(
 
             sinal_info
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # SCORE QUANTITATIVO
+        # ==========================================
+
+        render_score_quant(
+
+            score_quant
 
         )
 
