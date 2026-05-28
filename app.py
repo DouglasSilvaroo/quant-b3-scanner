@@ -26,6 +26,7 @@ from visuals import (
     render_zscore
     render_status_operacional
     render_dashboard_executivo
+    render_cointegracao_rolling
   
 )
 
@@ -36,6 +37,7 @@ from analytics import (
     calcular_correlacao,
     calcular_hedge_ratio,
     calcular_half_life
+    calcular_cointegracao_rolling
 
 )
 
@@ -637,7 +639,14 @@ if (
 
             spread
 
-        )        
+        )
+
+        df_coint = calcular_cointegracao_rolling(
+
+            serie1,
+            serie2
+
+        )
 
         
 
@@ -712,6 +721,18 @@ if (
             desvio,
             zscore,
             half_life
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # COINTEGRAÇÃO ROLLING
+        # ==========================================
+
+        render_cointegracao_rolling(
+
+            df_coint
 
         )
 
