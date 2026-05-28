@@ -106,7 +106,7 @@ def render_histograma(
 
             "Ocorrências",
 
-            int(freq.max())
+            int(.max())
 
         )
 
@@ -120,7 +120,7 @@ def render_histograma(
 
 🎯 Camada dominante: {camada_texto}
 
-📌 Frequência: {freq.max()} ocorrências
+📌 uência: {.max()} ocorrências
 
 """)
 
@@ -130,7 +130,7 @@ def render_histograma(
 
         round(i.mid, 2)
 
-        for i in freq.index
+        for i in .index
 
     ]
 
@@ -140,7 +140,7 @@ def render_histograma(
 
             x=x_labels,
 
-            y=freq.values,
+            y=.values,
 
             marker_color="#d89500",
 
@@ -197,3 +197,110 @@ def render_histograma(
     )
 
     return freq
+
+# ==========================================
+# HEATMAP INSTITUCIONAL
+# ==========================================
+
+def render_heatmap(
+
+    freq
+
+):
+
+    st.subheader(
+
+        "🔥 Mapa de Concentração Institucional"
+
+    )
+
+    tabela_heatmap = []
+
+    total_ocorrencias = int(freq.sum())
+
+    for faixa, ocorrencias in freq.items():
+
+        zona = (
+            f"{faixa.left:.2f} ➜ "
+            f"{faixa.right:.2f}"
+        )
+
+        ocorrencias = int(ocorrencias)
+
+        percentual = float(
+            (ocorrencias / total_ocorrencias) * 100
+        )
+
+        score = float(
+            percentual * ocorrencias
+        )
+
+        tabela_heatmap.append({
+
+            "Zona": zona,
+
+            "Ocorrencias": ocorrencias,
+
+            "Percentual": round(
+                percentual,
+                2
+            ),
+
+            "Score": round(
+                score,
+                2
+            )
+
+        })
+
+    df_heatmap = pd.DataFrame(
+        tabela_heatmap
+    )
+
+    df_heatmap = df_heatmap.sort_values(
+
+        by="Score",
+
+        ascending=False
+
+    )
+
+    st.dataframe(
+
+        df_heatmap,
+
+        use_container_width=True
+
+    )
+
+    fig_heat = px.bar(
+
+        df_heatmap,
+
+        x="Percentual",
+
+        y="Zona",
+
+        orientation="h",
+
+        text="Percentual",
+
+        template="plotly_dark"
+
+    )
+
+    fig_heat.update_layout(
+
+        title="Mapa de Concentração das Camadas",
+
+        height=700
+
+    )
+
+    st.plotly_chart(
+
+        fig_heat,
+
+        use_container_width=True
+
+    )
