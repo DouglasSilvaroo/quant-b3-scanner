@@ -610,3 +610,109 @@ def render_zscore(
         use_container_width=True
 
     )
+
+# ==========================================
+# STATUS OPERACIONAL
+# ==========================================
+
+def render_status_operacional(
+
+    zscore
+
+):
+
+    st.subheader(
+
+        "🚦 Status Operacional"
+
+    )
+
+    if zscore >= 2:
+
+        status = "🔴 VENDA SPREAD"
+
+        cor = "error"
+
+        descricao = (
+            "Spread extremamente esticado para cima."
+        )
+
+    elif zscore <= -2:
+
+        status = "🟢 COMPRA SPREAD"
+
+        cor = "success"
+
+        descricao = (
+            "Spread extremamente descontado."
+        )
+
+    elif abs(zscore) >= 1:
+
+        status = "🟡 ATENÇÃO"
+
+        cor = "warning"
+
+        descricao = (
+            "Spread entrando em zona operacional."
+        )
+
+    else:
+
+        status = "⚪ NEUTRO"
+
+        cor = "info"
+
+        descricao = (
+            "Spread em equilíbrio estatístico."
+        )
+
+    c1, c2 = st.columns(
+
+        [1, 3]
+
+    )
+
+    with c1:
+
+        st.metric(
+
+            "Z-Score",
+
+            f"{zscore:.2f}"
+
+        )
+
+    with c2:
+
+        if cor == "success":
+
+            st.success(
+
+                f"{status}\n\n{descricao}"
+
+            )
+
+        elif cor == "warning":
+
+            st.warning(
+
+                f"{status}\n\n{descricao}"
+
+            )
+
+        elif cor == "error":
+
+            st.error(
+
+                f"{status}\n\n{descricao}"
+
+            )
+
+        else:
+
+            st.info(
+
+                f"{status}\n\n{descricao}"
+
+            )
