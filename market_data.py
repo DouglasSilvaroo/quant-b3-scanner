@@ -85,6 +85,12 @@ def baixar_dados_market(
             except Exception as erro:
 
                 logger.error(
+                    
+                    f"TENTATIVA {tentativa + 1} FALHOU: {erro}"
+
+                )
+
+                time.sleep(5)
             
         # ==========================================
         # MULTIINDEX
