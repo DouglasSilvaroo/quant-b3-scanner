@@ -261,3 +261,91 @@ def calcular_cointegracao_rolling(
     )
 
     return df
+
+# ==========================================
+# REGIME ESTATÍSTICO
+# ==========================================
+
+def calcular_regime_estatistico(
+
+    spread,
+    zscore,
+    half_life,
+    df_coint
+
+):
+
+    volatilidade = float(
+
+        spread.std()
+
+    )
+
+    ultimo_pvalor = float(
+
+        df_coint["PValor"].iloc[-1]
+
+    )
+
+    score = 0
+
+    # ==========================================
+    # ZSCORE
+    # ==========================================
+
+    if abs(zscore) < 1.5:
+
+        score += 1
+
+    # ==========================================
+    # HALF LIFE
+    # ==========================================
+
+    if half_life < 30:
+
+        score += 1
+
+    # ==========================================
+    # COINTEGRAÇÃO
+    # ==========================================
+
+    if ultimo_pvalor <= 0.05:
+
+        score += 1
+
+    # ==========================================
+    # VOLATILIDADE
+    # ==========================================
+
+    if volatilidade > 0:
+
+        score += 1
+
+    # ==========================================
+    # CLASSIFICAÇÃO
+    # ==========================================
+
+    if score >= 4:
+
+        regime = "🟢 REGIME ESTÁVEL"
+
+    elif score >= 2:
+
+        regime = "🟡 REGIME MODERADO"
+
+    else:
+
+        regime = "🔴 REGIME INSTÁVEL"
+
+    return {
+
+        "regime": regime,
+
+        "score": score,
+
+        "volatilidade": volatilidade,
+
+        "pvalor": ultimo_pvalor
+
+    }
+
