@@ -2,6 +2,7 @@ import pandas as pd
 import statsmodels.api as sm
 import numpy as np
 from statsmodels.tsa.stattools import coint
+from config import *
 
 
 # ==========================================
