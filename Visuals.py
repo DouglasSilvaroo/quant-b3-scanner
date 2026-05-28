@@ -418,3 +418,195 @@ def render_permanencia(
         use_container_width=True
 
     )    
+
+# ==========================================
+# ZSCORE INSTITUCIONAL
+# ==========================================
+
+def render_zscore(
+
+    spread,
+    media,
+    desvio
+
+):
+
+    st.subheader(
+
+        "📉 Estrutura Estatística do Spread"
+
+    )
+
+    banda_1_sup = media + desvio
+    banda_1_inf = media - desvio
+
+    banda_2_sup = media + (desvio * 2)
+    banda_2_inf = media - (desvio * 2)
+
+    fig_z = go.Figure()
+
+    fig_z.add_trace(
+
+        go.Scatter(
+
+            x=spread.index,
+
+            y=spread,
+
+            mode="lines",
+
+            name="Spread",
+
+            line=dict(
+
+                color="#00c853",
+
+                width=2
+
+            )
+
+        )
+
+    )
+
+    fig_z.add_trace(
+
+        go.Scatter(
+
+            x=spread.index,
+
+            y=[media] * len(spread),
+
+            mode="lines",
+
+            name="Média",
+
+            line=dict(
+
+                color="white",
+
+                dash="dash"
+
+            )
+
+        )
+
+    )
+
+    fig_z.add_trace(
+
+        go.Scatter(
+
+            x=spread.index,
+
+            y=[banda_1_sup] * len(spread),
+
+            mode="lines",
+
+            name="+1 Desvio",
+
+            line=dict(
+
+                color="yellow",
+
+                dash="dot"
+
+            )
+
+        )
+
+    )
+
+    fig_z.add_trace(
+
+        go.Scatter(
+
+            x=spread.index,
+
+            y=[banda_1_inf] * len(spread),
+
+            mode="lines",
+
+            name="-1 Desvio",
+
+            line=dict(
+
+                color="yellow",
+
+                dash="dot"
+
+            )
+
+        )
+
+    )
+
+    fig_z.add_trace(
+
+        go.Scatter(
+
+            x=spread.index,
+
+            y=[banda_2_sup] * len(spread),
+
+            mode="lines",
+
+            name="+2 Desvios",
+
+            line=dict(
+
+                color="red",
+
+                dash="dash"
+
+            )
+
+        )
+
+    )
+
+    fig_z.add_trace(
+
+        go.Scatter(
+
+            x=spread.index,
+
+            y=[banda_2_inf] * len(spread),
+
+            mode="lines",
+
+            name="-2 Desvios",
+
+            line=dict(
+
+                color="red",
+
+                dash="dash"
+
+            )
+
+        )
+
+    )
+
+    fig_z.update_layout(
+
+        template="plotly_dark",
+
+        height=700,
+
+        title="Estrutura Estatística do Spread",
+
+        xaxis_title="Data",
+
+        yaxis_title="Spread"
+
+    )
+
+    st.plotly_chart(
+
+        fig_z,
+
+        use_container_width=True
+
+    )
