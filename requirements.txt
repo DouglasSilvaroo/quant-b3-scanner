@@ -7,7 +7,5 @@ numpy
 scipy
 requests
 statsmodels
-requests
 yfinance
-statsmodels
 python-dotenv
