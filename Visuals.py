@@ -831,4 +831,101 @@ def render_dashboard_executivo(
 
         )
 
+
+# ==========================================
+# COINTEGRAÇÃO ROLLING
+# ==========================================
+
+def render_cointegracao_rolling(
+
+    df_coint
+
+):
+
+    st.subheader(
+
+        "🧠 Cointegração Rolling"
+
+    )
+
+    fig_coint = go.Figure()
+
+    fig_coint.add_trace(
+
+        go.Scatter(
+
+            x=df_coint.index,
+
+            y=df_coint["PValor"],
+
+            mode="lines",
+
+            name="P-Valor",
+
+            line=dict(
+
+                color="#00b0ff",
+
+                width=2
+
+            )
+
+        )
+
+    )
+
+    fig_coint.add_hline(
+
+        y=0.05,
+
+        line_dash="dash",
+
+        line_color="red"
+
+    )
+
+    fig_coint.update_layout(
+
+        template="plotly_dark",
+
+        height=500,
+
+        title="Estabilidade Estatística do Par",
+
+        xaxis_title="Data",
+
+        yaxis_title="P-Valor"
+
+    )
+
+    st.plotly_chart(
+
+        fig_coint,
+
+        use_container_width=True
+
+    )
+
+    ultimo_pvalor = float(
+
+        df_coint["PValor"].iloc[-1]
+
+    )
+
+    if ultimo_pvalor <= 0.05:
+
+        st.success(
+
+            f"Cointegração ATIVA | P-Valor: {ultimo_pvalor:.4f}"
+
+        )
+
+    else:
+
+        st.error(
+
+            f"Cointegração FRACA | P-Valor: {ultimo_pvalor:.4f}"
+
+        )
+
     
