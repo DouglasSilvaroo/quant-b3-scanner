@@ -29,7 +29,8 @@ from visuals import (
     render_cointegracao_rolling,
     render_regime_estatistico,
     render_sinal,
-    render_score_quant
+    render_score_quant,
+    render_backtest
   
 )
 
@@ -42,7 +43,8 @@ from analytics import (
     calcular_half_life,
     calcular_cointegracao_rolling,
     calcular_regime_estatistico,
-    calcular_score_quant
+    calcular_score_quant,
+    backtest_spread
 
 )
 
@@ -688,6 +690,14 @@ if (
 
         )
 
+        backtest_info = backtest_spread(
+
+            spread,
+            media,
+            desvio
+
+        )
+
         
 
 # ==========================================
@@ -809,6 +819,18 @@ if (
         render_score_quant(
 
             score_quant
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # BACKTEST OPERACIONAL
+        # ==========================================
+
+        render_backtest(
+
+            backtest_info
 
         )
 
