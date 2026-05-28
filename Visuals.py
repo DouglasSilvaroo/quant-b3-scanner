@@ -106,7 +106,7 @@ def render_histograma(
 
             "Ocorrências",
 
-            int(.max())
+            int(freq.max())
 
         )
 
@@ -120,7 +120,7 @@ def render_histograma(
 
 🎯 Camada dominante: {camada_texto}
 
-📌 uência: {.max()} ocorrências
+📌 Frequência: {freq.max()} ocorrências
 
 """)
 
@@ -130,7 +130,7 @@ def render_histograma(
 
         round(i.mid, 2)
 
-        for i in .index
+        for i in freq.index
 
     ]
 
@@ -140,7 +140,7 @@ def render_histograma(
 
             x=x_labels,
 
-            y=.values,
+            y=freq.values,
 
             marker_color="#d89500",
 
@@ -192,7 +192,7 @@ def render_histograma(
 
         fig_hist,
 
-        width="stretch"
+        use_container_width=True
 
     )
 
@@ -265,11 +265,13 @@ def render_heatmap(
 
     )
 
-    st.dataframe(
+    st.data_editor(
 
         df_heatmap,
 
-        use_container_width=True
+        use_container_width=True,
+
+        disabled=True
 
     )
 
@@ -293,7 +295,13 @@ def render_heatmap(
 
         title="Mapa de Concentração das Camadas",
 
-        height=700
+        height=500,
+
+        yaxis=dict(
+
+            autorange="reversed"
+
+        )
 
     )
 
@@ -304,3 +312,109 @@ def render_heatmap(
         use_container_width=True
 
     )
+
+# ==========================================
+# PERMANÊNCIA TEMPORAL
+# ==========================================
+
+def render_permanencia(
+
+    freq
+
+):
+
+    st.subheader(
+
+        "⏳ Permanência Temporal das Camadas"
+
+    )
+
+    tabela_tempo = []
+
+    total = int(freq.sum())
+
+    for faixa, ocorrencias in freq.items():
+
+        percentual = float(
+
+            (ocorrencias / total) * 100
+
+        )
+
+        tabela_tempo.append({
+
+            "Faixa": (
+                f"{faixa.left:.2f} ➜ "
+                f"{faixa.right:.2f}"
+            ),
+
+            "Candles": int(
+                ocorrencias
+            ),
+
+            "Percentual": round(
+                percentual,
+                2
+            )
+
+        })
+
+    df_tempo = pd.DataFrame(
+        tabela_tempo
+    )
+
+    df_tempo = df_tempo.sort_values(
+
+        by="Percentual",
+
+        ascending=False
+
+    )
+
+    st.data_editor(
+
+        df_heatmap,
+
+        use_container_width=True,
+
+        disabled=True
+
+    )
+
+    fig_heat = px.bar(
+
+        df_heatmap,
+
+        x="Percentual",
+
+        y="Zona",
+
+        orientation="h",
+
+        text="Percentual",
+
+        template="plotly_dark"
+
+    )
+
+    fig_heat.update_layout(
+
+        title="Mapa de Concentração das Camadas",
+
+        height=500,
+
+        yaxis=dict(
+
+            autorange="reversed"
+
+        )
+
+    )
+
+    st.plotly_chart(
+
+        fig_heat,
+
+        use_container_width=True
+
+    )    
