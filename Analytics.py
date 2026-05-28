@@ -558,3 +558,86 @@ def backtest_spread(
         )
 
     }
+
+# ==========================================
+# RISCO OPERACIONAL
+# ==========================================
+
+def calcular_risco_operacional(
+
+    spread,
+    zscore,
+    volatilidade,
+    half_life
+
+):
+
+    risco = 0
+
+    # ==========================================
+    # ZSCORE
+    # ==========================================
+
+    if abs(zscore) >= 3:
+
+        risco += 3
+
+    elif abs(zscore) >= 2:
+
+        risco += 2
+
+    else:
+
+        risco += 1
+
+    # ==========================================
+    # VOLATILIDADE
+    # ==========================================
+
+    if volatilidade > spread.std():
+
+        risco += 2
+
+    else:
+
+        risco += 1
+
+    # ==========================================
+    # HALF LIFE
+    # ==========================================
+
+    if half_life > 50:
+
+        risco += 3
+
+    elif half_life > 20:
+
+        risco += 2
+
+    else:
+
+        risco += 1
+
+    # ==========================================
+    # CLASSIFICAÇÃO
+    # ==========================================
+
+    if risco <= 4:
+
+        nivel = "🟢 BAIXO RISCO"
+
+    elif risco <= 6:
+
+        nivel = "🟡 RISCO MODERADO"
+
+    else:
+
+        nivel = "🔴 RISCO ELEVADO"
+
+    return {
+
+        "risco": risco,
+
+        "nivel": nivel
+
+    }
