@@ -810,29 +810,29 @@ def render_dashboard_executivo(
 
     with c3:
 
-    st.metric(
+        st.metric(
 
-        "Desvio Atual",
+            "Desvio Atual",
 
-        f"{desvio_atual:.2f}"
+            f"{desvio_atual:.2f}"
 
-    )
+        )
 
-    st.metric(
+        st.metric(
 
-        "Score Quant",
+            "Score Quant",
 
-        f"{score_quant:.2f}"
+            f"{score_quant:.2f}"
 
-    )
+        )
 
-    st.metric(
+        st.metric(
 
-        "Half-Life",
+            "Half-Life",
 
-        f"{half_life:.2f}"
+            f"{half_life:.2f}"
 
-    )
+        )
 
 
 # ==========================================
