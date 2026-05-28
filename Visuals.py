@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
+from config import *
 
 
 # ==========================================
@@ -176,7 +177,7 @@ def render_histograma(
 
         template="plotly_dark",
 
-        height=600,
+        height=PLOT_HEIGHT,
 
         title="Distribuição da Distância entre os Ativos",
 
@@ -593,7 +594,7 @@ def render_zscore(
 
         template="plotly_dark",
 
-        height=700,
+        height=PLOT_HEIGHT_BIG,
 
         title="Estrutura Estatística do Spread",
 
