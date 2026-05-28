@@ -1,5 +1,6 @@
 import pandas as pd
 import statsmodels.api as sm
+import numpy as np
 
 
 # ==========================================
@@ -135,3 +136,49 @@ def calcular_hedge_ratio(
     )
 
     return hedge_ratio
+
+# ==========================================
+# HALF LIFE
+# ==========================================
+
+def calcular_half_life(
+
+    spread
+
+):
+
+    spread_lag = spread.shift(1)
+
+    spread_ret = spread - spread_lag
+
+    spread_lag = spread_lag.dropna()
+
+    spread_ret = spread_ret.dropna()
+
+    spread_lag = sm.add_constant(
+
+        spread_lag
+
+    )
+
+    modelo = sm.OLS(
+
+        spread_ret,
+        spread_lag
+
+    ).fit()
+
+    beta = modelo.params.iloc[1]
+
+    if beta == 0:
+
+        return 0
+
+    half_life = -np.log(2) / beta
+
+    return round(
+
+        float(half_life),
+        2
+
+    )
