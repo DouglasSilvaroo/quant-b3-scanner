@@ -1068,4 +1068,52 @@ def render_sinal(
 
             )
 
+# ==========================================
+# SCORE QUANT
+# ==========================================
+
+def render_score_quant(
+
+    score_quant
+
+):
+
+    st.subheader(
+
+        "🎯 Score Quantitativo"
+
+    )
+
+    if score_quant >= 80:
+
+        st.success(
+
+            f"🔥 SCORE INSTITUCIONAL: {score_quant}/100"
+
+        )
+
+    elif score_quant >= 60:
+
+        st.warning(
+
+            f"⚡ SCORE MODERADO: {score_quant}/100"
+
+        )
+
+    else:
+
+        st.error(
+
+            f"❌ SCORE FRACO: {score_quant}/100"
+
+        )
+
+    progresso = score_quant / 100
+
+    st.progress(
+
+        progresso
+
+    )
+
     
