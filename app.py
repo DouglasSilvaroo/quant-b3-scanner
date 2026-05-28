@@ -21,13 +21,14 @@ from market_data import (
 from visuals import (
 
     render_histograma,
-    render_heatmap
-    render_permanencia
-    render_zscore
-    render_status_operacional
-    render_dashboard_executivo
-    render_cointegracao_rolling
-    render_regime_estatistico
+    render_heatmap,
+    render_permanencia,
+    render_zscore,
+    render_status_operacional,
+    render_dashboard_executivo,
+    render_cointegracao_rolling,
+    render_regime_estatistico,
+    render_sinal
   
 )
 
@@ -37,9 +38,15 @@ from analytics import (
     calcular_estatisticas,
     calcular_correlacao,
     calcular_hedge_ratio,
-    calcular_half_life
-    calcular_cointegracao_rolling
+    calcular_half_life,
+    calcular_cointegracao_rolling,
     calcular_regime_estatistico
+
+)
+
+from signals import (
+
+    gerar_sinal
 
 )
 
@@ -659,6 +666,15 @@ if (
 
         )
 
+        sinal_info = gerar_sinal(
+
+            zscore,
+            correlacao,
+            half_life,
+            regime_info["pvalor"]
+
+        ) 
+
         
 
 # ==========================================
@@ -756,6 +772,18 @@ if (
         render_regime_estatistico(
 
             regime_info
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # ENGINE DE SINAIS
+        # ==========================================
+
+        render_sinal(
+
+            sinal_info
 
         )
 
