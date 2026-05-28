@@ -12,7 +12,7 @@ from logger import logger
 
 @st.cache_data(
 
-    ttl=3600,
+    ttl=300,
 
     show_spinner=False
 
@@ -56,20 +56,37 @@ def baixar_dados_market(
         # DOWNLOAD LOTE
         # ==========================================
 
-        dados = yf.download(
 
-            ativos,
+        dados = pd.DataFrame()
 
-            period=periodo,
+        for tentativa in range(3):
 
-            auto_adjust=True,
+            try:
 
-            progress=False,
+                dados = yf.download(
 
-            threads=False
+                    ativos,
 
-        )
+                    period=periodo,
 
+                    auto_adjust=True,
+
+                    progress=False,
+
+                    threads=True
+
+            )
+
+            if not dados.empty:
+
+                break
+
+        except Exception as erro:
+
+            logger.error(erro)
+
+            time.sleep(5)
+            
         # ==========================================
         # MULTIINDEX
         # ==========================================
