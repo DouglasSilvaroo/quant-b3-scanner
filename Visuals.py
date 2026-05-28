@@ -716,3 +716,110 @@ def render_status_operacional(
                 f"{status}\n\n{descricao}"
 
             )
+
+# ==========================================
+# DASHBOARD EXECUTIVO
+# ==========================================
+
+def render_dashboard_executivo(
+
+    spread,
+    media,
+    desvio,
+    zscore
+
+):
+
+    st.subheader(
+
+        "📊 Dashboard Executivo Quantitativo"
+
+    )
+
+    volatilidade = float(
+
+        spread.std()
+
+    )
+
+    amplitude = float(
+
+        spread.max() - spread.min()
+
+    )
+
+    spread_max = float(
+        spread.max()
+    )
+
+    spread_min = float(
+        spread.min()
+    )
+
+    desvio_atual = float(
+
+        spread.iloc[-1] - media
+
+    )
+
+    score_quant = float(
+
+        abs(zscore) * volatilidade
+
+    )
+
+    c1, c2, c3 = st.columns(3)
+
+    with c1:
+
+        st.metric(
+
+            "Volatilidade",
+
+            f"{volatilidade:.2f}"
+
+        )
+
+        st.metric(
+
+            "Amplitude",
+
+            f"{amplitude:.2f}"
+
+        )
+
+    with c2:
+
+        st.metric(
+
+            "Spread Máximo",
+
+            f"{spread_max:.2f}"
+
+        )
+
+        st.metric(
+
+            "Spread Mínimo",
+
+            f"{spread_min:.2f}"
+
+        )
+
+    with c3:
+
+        st.metric(
+
+            "Desvio Atual",
+
+            f"{desvio_atual:.2f}"
+
+        )
+
+        st.metric(
+
+            "Score Quant",
+
+            f"{score_quant:.2f}"
+
+        )
