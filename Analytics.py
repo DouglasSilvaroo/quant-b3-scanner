@@ -435,3 +435,126 @@ def calcular_score_quant(
 
     )
 
+# ==========================================
+# BACKTEST SPREAD
+# ==========================================
+
+def backtest_spread(
+
+    spread,
+    media,
+    desvio
+
+):
+
+    trades = []
+
+    posicao = None
+
+    entrada = 0
+
+    for valor in spread:
+
+        z = (
+
+            valor - media
+
+        ) / desvio
+
+        # ==========================================
+        # ENTRADA SELL
+        # ==========================================
+
+        if z >= 2 and posicao is None:
+
+            posicao = "SELL"
+
+            entrada = valor
+
+        # ==========================================
+        # ENTRADA BUY
+        # ==========================================
+
+        elif z <= -2 and posicao is None:
+
+            posicao = "BUY"
+
+            entrada = valor
+
+        # ==========================================
+        # SAÍDA
+        # ==========================================
+
+        elif abs(z) <= 0.5 and posicao is not None:
+
+            if posicao == "SELL":
+
+                pnl = entrada - valor
+
+            else:
+
+                pnl = valor - entrada
+
+            trades.append(
+
+                pnl
+
+            )
+
+            posicao = None
+
+    if len(trades) == 0:
+
+        return {
+
+            "trades": 0,
+            "winrate": 0,
+            "retorno_total": 0,
+            "retorno_medio": 0
+
+        }
+
+    wins = [
+
+        t for t in trades
+
+        if t > 0
+
+    ]
+
+    winrate = (
+
+        len(wins) / len(trades)
+
+    ) * 100
+
+    retorno_total = sum(trades)
+
+    retorno_medio = retorno_total / len(trades)
+
+    return {
+
+        "trades": len(trades),
+
+        "winrate": round(
+
+            winrate,
+            2
+
+        ),
+
+        "retorno_total": round(
+
+            retorno_total,
+            2
+
+        ),
+
+        "retorno_medio": round(
+
+            retorno_medio,
+            2
+
+        )
+
+    }
