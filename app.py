@@ -26,6 +26,9 @@ from visuals import (
     render_zscore
     render_status_operacional
     render_dashboard_executivo
+    calcular_spread,
+    calcular_estatisticas,
+    calcular_correlacao
 
 )
 
@@ -588,49 +591,33 @@ if (
 # SPREAD
 # ==========================================
 
-        spread = (
+        spread = calcular_spread(
 
-            (serie1 * fator1)
-
-            -
-
-            (serie2 * fator2)
+            serie1,
+            serie2,
+            fator1,
+            fator2
 
         )
 
-        media = spread.mean()
+        estatisticas = calcular_estatisticas(
 
-        desvio = spread.std()
+            spread
 
-# ==========================================
-# ZSCORE
-# ==========================================
+        )
 
-        if desvio == 0:
+        media = estatisticas["media"]
 
-            zscore = 0
+        desvio = estatisticas["desvio"]
 
-        else:
+        zscore = estatisticas["zscore"]
 
-            zscore = (
+        correlacao = calcular_correlacao(
 
-                spread.iloc[-1]
-
-                -
-
-                media
-
-            ) / desvio
-
-# ==========================================
-# CORRELAÇÃO
-# ==========================================
-
-        correlacao = serie1.corr(
-
+            serie1,
             serie2
 
-        ) 
+        )
 
 # ==========================================
 # MÉTRICAS
