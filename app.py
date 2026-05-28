@@ -19,7 +19,10 @@ from market_data import (
 )
 
 from visuals import (
-    render_histograma
+
+    render_histograma,
+    render_heatmap
+
 )
 
 # ==========================================
@@ -732,105 +735,20 @@ if (
             camada
 
         )
-        
+
         # ==========================================
         # MAPA INSTITUCIONAL
         # ==========================================
 
-        st.subheader("🔥 Mapa de Concentração Institucional")
+        render_heatmap(
 
-        tabela_heatmap = []
-
-        total_ocorrencias = int(freq.sum())
-
-        for faixa, ocorrencias in freq.items():
-
-            zona = (
-                f"{faixa.left:.2f} ➜ "
-                f"{faixa.right:.2f}"
-            )
-
-            ocorrencias = int(ocorrencias)
-
-            percentual = float(
-                (ocorrencias / total_ocorrencias) * 100
-            )
-
-            score = float(
-                percentual * ocorrencias
-            )
-
-            tabela_heatmap.append({
-
-                "Zona": zona,
-
-                "Ocorrencias": ocorrencias,
-
-                "Percentual": round(
-                    percentual,
-                    2
-                ),
-
-                "Score": round(
-                    score,
-                    2
-                )
-
-            })
-
-        df_heatmap = pd.DataFrame(
-            tabela_heatmap
-        )
-
-        df_heatmap = df_heatmap.sort_values(
-
-            by="Score",
-
-            ascending=False
+           freq
 
         )
 
-        st.dataframe(
+        st.markdown("---")        
 
-            df_heatmap,
 
-            use_container_width=True
-
-        )
-
-        fig_heat = px.bar(
-
-            df_heatmap,
-
-            x="Percentual",
-
-            y="Zona",
-
-            orientation="h",
-
-            text="Percentual",
-
-            template="plotly_dark"
-
-        )
-
-        fig_heat.update_layout(
-
-            title="Mapa de Concentração das Camadas",
-
-            height=700
-
-        )
-
-        st.plotly_chart(
-
-            fig_heat,
-
-            use_container_width=True
-
-        )
-
-        st.markdown("---")
         
         # ==========================================
         # PERMANÊNCIA TEMPORAL
