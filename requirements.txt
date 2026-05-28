@@ -9,4 +9,5 @@ requests
 statsmodels
 requests
 yfinance
+statsmodels
 
