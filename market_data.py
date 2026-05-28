@@ -56,12 +56,13 @@ def baixar_dados_market(
         # DOWNLOAD LOTE
         # ==========================================
 
-
         dados = pd.DataFrame()
 
         for tentativa in range(3):
 
             try:
+
+                time.sleep(2)
 
                 dados = yf.download(
 
@@ -83,7 +84,11 @@ def baixar_dados_market(
 
         except Exception as erro:
 
-            logger.error(erro)
+            logger.error(
+
+                f"TENTATIVA {tentativa + 1} FALHOU: {erro}"
+
+            )
 
             time.sleep(5)
             
