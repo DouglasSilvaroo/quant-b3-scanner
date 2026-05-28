@@ -5,6 +5,12 @@ import plotly.graph_objects as go
 import plotly.express as px
 import time
 
+from config import SEGMENTOS
+
+import os
+
+from historical_loader import carregar_historico
+
 from auth import (
     tela_login,
     tela_cadastro
@@ -55,7 +61,6 @@ from signals import (
 
 )
 
-from config import SEGMENTOS
 
 # ==========================================
 
@@ -64,6 +69,14 @@ from config import SEGMENTOS
 # ==========================================
 
 st.set_page_config(
+
+    layout="wide"
+
+)
+
+if os.getenv("LOAD_HISTORICO") == "True":
+
+    carregar_historico()
 
 
 page_title="PAINEL SPREADS",
