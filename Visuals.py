@@ -928,4 +928,74 @@ def render_cointegracao_rolling(
 
         )
 
+# ==========================================
+# REGIME ESTATÍSTICO
+# ==========================================
+
+def render_regime_estatistico(
+
+    regime_info
+
+):
+
+    st.subheader(
+
+        "📡 Regime Estatístico"
+
+    )
+
+    regime = regime_info["regime"]
+
+    score = regime_info["score"]
+
+    volatilidade = regime_info["volatilidade"]
+
+    pvalor = regime_info["pvalor"]
+
+    c1, c2, c3, c4 = st.columns(4)
+
+    with c1:
+
+        st.metric(
+
+            "Score Regime",
+
+            score
+
+        )
+
+    with c2:
+
+        st.metric(
+
+            "Volatilidade",
+
+            f"{volatilidade:.2f}"
+
+        )
+
+    with c3:
+
+        st.metric(
+
+            "P-Valor",
+
+            f"{pvalor:.4f}"
+
+        )
+
+    with c4:
+
+        if "ESTÁVEL" in regime:
+
+            st.success(regime)
+
+        elif "MODERADO" in regime:
+
+            st.warning(regime)
+
+        else:
+
+            st.error(regime)
+
     
