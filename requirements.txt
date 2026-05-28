@@ -10,4 +10,4 @@ statsmodels
 requests
 yfinance
 statsmodels
-
+python-dotenv
