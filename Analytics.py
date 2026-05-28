@@ -1,4 +1,5 @@
 import pandas as pd
+import statsmodels.api as sm
 
 
 # ==========================================
@@ -102,3 +103,35 @@ def calcular_correlacao(
     )
 
     return correlacao
+
+# ==========================================
+# HEDGE RATIO
+# ==========================================
+
+def calcular_hedge_ratio(
+
+    serie1,
+    serie2
+
+):
+
+    x = sm.add_constant(
+
+        serie2
+
+    )
+
+    modelo = sm.OLS(
+
+        serie1,
+        x
+
+    ).fit()
+
+    hedge_ratio = float(
+
+        modelo.params.iloc[1]
+
+    )
+
+    return hedge_ratio
