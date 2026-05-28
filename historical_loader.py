@@ -63,6 +63,7 @@ for segmento in SEGMENTOS.values():
     ativos.extend(segmento)
 
 ativos = list(set(ativos))
+ativos = ativos[:5]
 
 
 # ==========================================
