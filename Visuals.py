@@ -726,7 +726,8 @@ def render_dashboard_executivo(
     spread,
     media,
     desvio,
-    zscore
+    zscore,
+    half_life
 
 ):
 
@@ -822,4 +823,12 @@ def render_dashboard_executivo(
 
             f"{score_quant:.2f}"
 
+        st.metric(
+
+            "Half-Life",
+
+            f"{half_life:.2f}"
+
         )
+
+    
