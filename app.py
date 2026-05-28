@@ -25,6 +25,7 @@ from visuals import (
     render_permanencia
     render_zscore
     render_status_operacional
+    render_dashboard_executivo
 
 )
 
@@ -690,6 +691,21 @@ if (
         )
 
         st.markdown("---")       
+
+        # ==========================================
+        # DASHBOARD EXECUTIVO
+        # ==========================================
+
+        render_dashboard_executivo(
+
+            spread,
+            media,
+            desvio,
+            zscore
+
+        )
+
+        st.markdown("---")        
         
 
         # ==========================================
