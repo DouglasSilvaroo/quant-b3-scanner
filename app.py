@@ -24,6 +24,7 @@ from visuals import (
     render_heatmap
     render_permanencia
     render_zscore
+    render_status_operacional
 
 )
 
@@ -677,6 +678,19 @@ if (
             )
 
         st.markdown("---")
+
+        # ==========================================
+        # STATUS OPERACIONAL
+        # ==========================================
+
+        render_status_operacional(
+
+            zscore
+
+        )
+
+        st.markdown("---")       
+        
 
         # ==========================================
         # ZSCORE INSTITUCIONAL
