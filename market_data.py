@@ -76,21 +76,15 @@ def baixar_dados_market(
 
                     threads=True
 
-            )
+                )
 
-            if not dados.empty:
+                if not dados.empty:
 
-                break
+                    break
 
-        except Exception as erro:
+            except Exception as erro:
 
-            logger.error(
-
-                f"TENTATIVA {tentativa + 1} FALHOU: {erro}"
-
-            )
-
-            time.sleep(5)
+                logger.error(
             
         # ==========================================
         # MULTIINDEX
