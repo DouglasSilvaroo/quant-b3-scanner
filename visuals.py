@@ -268,7 +268,7 @@ def render_heatmap(
 
     st.data_editor(
 
-        df_heatmap,
+        df_tempo,
 
         use_container_width=True,
 
@@ -276,7 +276,7 @@ def render_heatmap(
 
     )
 
-    fig_heat = px.bar(
+    fig_perm = px.pie(
 
         df_heatmap,
 
