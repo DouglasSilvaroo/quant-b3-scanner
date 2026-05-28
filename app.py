@@ -19,7 +19,6 @@ from market_data import (
 )
 
 from visuals import (
-
     render_histograma,
     render_heatmap,
     render_permanencia,
