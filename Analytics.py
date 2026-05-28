@@ -371,7 +371,7 @@ def calcular_score_quant(
     # ZSCORE
     # ==========================================
 
-    if abs(zscore) >= 2:
+    if abs(zscore) >= ZSCORE_ENTRY:
 
         score += 25
 
@@ -387,7 +387,7 @@ def calcular_score_quant(
 
         score += 25
 
-    elif correlacao >= 0.80:
+    if correlacao >= CORRELACAO_MIN:
 
         score += 15
 
@@ -399,7 +399,7 @@ def calcular_score_quant(
 
         score += 20
 
-    elif half_life <= 30:
+    if half_life <= HALF_LIFE_MAX:
 
         score += 10
 
@@ -411,7 +411,7 @@ def calcular_score_quant(
 
         score += 20
 
-    elif pvalor <= 0.05:
+    if pvalor <= PVALOR_LIMITE:
 
         score += 10
 
