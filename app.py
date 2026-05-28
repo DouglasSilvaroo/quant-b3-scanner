@@ -63,12 +63,14 @@ from signals import (
 
 
 # ==========================================
-
 # CONFIG STREAMLIT
-
 # ==========================================
 
 st.set_page_config(
+
+    page_title="PAINEL SPREADS",
+
+    page_icon="📈",
 
     layout="wide"
 
@@ -77,65 +79,6 @@ st.set_page_config(
 if os.getenv("LOAD_HISTORICO") == "True":
 
     carregar_historico()
-
-
-page_title="PAINEL SPREADS",
-page_icon="📈",
-layout="wide",
-
-)
-
-# ==========================================
-
-# SESSION
-
-# ==========================================
-
-if "logado" not in st.session_state:
-
-    st.session_state["logado"] = False
-
-
-if "usuario" not in st.session_state:
-
-    st.session_state["usuario"] = ""
-
-
-if "menu" not in st.session_state:
-
-    st.session_state["menu"] = "Painel"
-
-
-if "painel_pronto" not in st.session_state:
-
-    st.session_state["painel_pronto"] = False
-    
-# ==========================================
-
-# LOGIN
-
-# ==========================================
-
-if not st.session_state["logado"]:
-
-    st.title("🏦 PAINEL SPREADS")
-
-    aba1, aba2 = st.tabs([
-
-    "Login",
-    "Cadastro"
-
-    ])
-
-    with aba1:
-
-        tela_login()
-
-    with aba2:
-
-        tela_cadastro()
-
-    st.stop()
 
 
 # ==========================================
