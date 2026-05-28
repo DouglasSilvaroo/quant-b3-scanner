@@ -30,7 +30,8 @@ from visuals import (
     render_regime_estatistico,
     render_sinal,
     render_score_quant,
-    render_backtest
+    render_backtest,
+    render_risco_operacional
   
 )
 
@@ -44,7 +45,8 @@ from analytics import (
     calcular_cointegracao_rolling,
     calcular_regime_estatistico,
     calcular_score_quant,
-    backtest_spread
+    backtest_spread,
+    calcular_risco_operacional
 
 )
 
@@ -698,6 +700,15 @@ if (
 
         )
 
+        risco_info = calcular_risco_operacional(
+
+            spread,
+            zscore,
+            regime_info["volatilidade"],
+            half_life
+
+        )
+
         
 
 # ==========================================
@@ -831,6 +842,18 @@ if (
         render_backtest(
 
             backtest_info
+
+        )
+
+        st.markdown("---")
+
+        # ==========================================
+        # RISCO OPERACIONAL
+        # ==========================================
+
+        render_risco_operacional(
+
+            risco_info
 
         )
 
