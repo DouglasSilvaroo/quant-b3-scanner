@@ -29,6 +29,7 @@ from visuals import (
     calcular_spread,
     calcular_estatisticas,
     calcular_correlacao
+    calcular_hedge_ratio
 
 )
 
@@ -583,9 +584,16 @@ if (
 # FATORES
 # ==========================================
 
-        fator1 = lote1 / 100
+        hedge_ratio = calcular_hedge_ratio(
 
-        fator2 = lote2 / 100
+            serie1,
+            serie2
+
+        )
+
+        fator1 = 1
+
+        fator2 = hedge_ratio
 
 # ==========================================
 # SPREAD
