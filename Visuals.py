@@ -998,4 +998,74 @@ def render_regime_estatistico(
 
             st.error(regime)
 
+# ==========================================
+# SINAL OPERACIONAL
+# ==========================================
+
+def render_sinal(
+
+    sinal_info
+
+):
+
+    st.subheader(
+
+        "🚨 Engine de Sinais"
+
+    )
+
+    sinal = sinal_info["sinal"]
+
+    confianca = sinal_info["confianca"]
+
+    motivo = sinal_info["motivo"]
+
+    c1, c2 = st.columns(
+
+        [1, 3]
+
+    )
+
+    with c1:
+
+        st.metric(
+
+            "Confiança",
+
+            f"{confianca}/4"
+
+        )
+
+    with c2:
+
+        texto = "\n".join(
+
+            motivo
+
+        )
+
+        if "BUY" in sinal:
+
+            st.success(
+
+                f"{sinal}\n\n{texto}"
+
+            )
+
+        elif "SELL" in sinal:
+
+            st.error(
+
+                f"{sinal}\n\n{texto}"
+
+            )
+
+        else:
+
+            st.info(
+
+                f"{sinal}\n\n{texto}"
+
+            )
+
     
