@@ -46,9 +46,11 @@ def baixar_dados_market(
 
         )
 
-        print("ATIVOS SOLICITADOS:")
+        logger.info(
 
-        print(ativos)
+            f"ATIVOS SOLICITADOS: {ativos}"
+
+        )
 
         # ==========================================
         # DOWNLOAD LOTE
@@ -89,9 +91,11 @@ def baixar_dados_market(
 
         if dados.empty:
 
-            print("DATAFRAME VAZIO")
+            logger.warning(
 
-            return pd.DataFrame()
+                "DATAFRAME VAZIO"
+
+        )
 
         # ==========================================
         # CLOSE
@@ -133,20 +137,23 @@ def baixar_dados_market(
         # LOG
         # ==========================================
 
-        print("COLUNAS FINAIS:")
+        logger.info(
 
-        print(
+            "COLUNAS FINAIS"
+
+        )
+
+        logger.info(
 
             fechamento.columns.tolist()
 
         )
 
-        print(
+        logger.info(
 
             fechamento.tail()
 
         )
-
         # ==========================================
         # PEQUENO DELAY
         # ==========================================
@@ -156,8 +163,10 @@ def baixar_dados_market(
 
     except Exception as erro:
 
-        print("ERRO MARKET DATA:")
+        logger.error(
 
-        print(erro)
+            f"ERRO MARKET DATA: {erro}"
 
+        )
+  
         return pd.DataFrame()
