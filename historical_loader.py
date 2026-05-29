@@ -176,6 +176,6 @@ for ativo in ativos:
 
         )
 
-        return
+        continue
 
-    dados = dados.reset_index
+    dados = dados.reset_index()
