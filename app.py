@@ -84,16 +84,34 @@ st.set_page_config(
 # ==========================================
 
 if "usuario" not in st.session_state:
-
     st.session_state["usuario"] = None
 
 if "menu" not in st.session_state:
-
     st.session_state["menu"] = "Painel"
 
 if "logado" not in st.session_state:
-
     st.session_state["logado"] = False
+
+if "painel_pronto" not in st.session_state:
+    st.session_state["painel_pronto"] = False
+
+if "ultima_execucao" not in st.session_state:
+    st.session_state["ultima_execucao"] = 0
+
+if "ativo1_select" not in st.session_state:
+    st.session_state["ativo1_select"] = "Selecione"
+
+if "ativo2_select" not in st.session_state:
+    st.session_state["ativo2_select"] = "Selecione"
+
+if "periodo_select" not in st.session_state:
+    st.session_state["periodo_select"] = "3mo"
+
+if "lote1" not in st.session_state:
+    st.session_state["lote1"] = 100
+
+if "lote2" not in st.session_state:
+    st.session_state["lote2"] = 100
 
 
 # ==========================================
@@ -290,8 +308,12 @@ with st.sidebar:
     if st.button("Sair"):
 
         st.session_state["logado"] = False
+        st.session_state["usuario"] = None
 
         st.session_state["painel_pronto"] = False
+
+        st.session_state["ativo1_select"] = "Selecione"
+        st.session_state["ativo2_select"] = "Selecione"
 
         st.rerun()    
         
@@ -1221,14 +1243,13 @@ Encontrar pares com:
                                 ):
 
                                     st.session_state["ativo1_select"] = row["Ativo 1"]
-
                                     st.session_state["ativo2_select"] = row["Ativo 2"]
-                                    
-                                    st.session_state["menu"] = "Painel"
 
                                     st.session_state["painel_pronto"] = True
+                                    st.session_state["menu"] = "Painel"
 
-                                    st.rerun()                           
+                                    st.rerun()   
+                                    
                         st.divider()
 
             except Exception as erro:
