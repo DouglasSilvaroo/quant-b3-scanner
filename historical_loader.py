@@ -53,7 +53,6 @@ SUPABASE_KEY
 
 def obter_ativos():
 
-```
 ativos = []
 
 for segmento in SEGMENTOS.values():
@@ -63,7 +62,6 @@ for segmento in SEGMENTOS.values():
 return sorted(
     list(set(ativos))
 )
-```
 
 # ==========================================
 
@@ -73,7 +71,6 @@ return sorted(
 
 def carregar_historico():
 
-```
 ativos = obter_ativos()
 
 logger.info(
@@ -101,4 +98,4 @@ for ativo in ativos:
         try:
 
             time
-```
+
