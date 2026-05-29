@@ -69,21 +69,21 @@ def obter_ativos():
 
 def carregar_historico():
 
-ativos = obter_ativos()
-
-logger.info(
-    f"TOTAL DE ATIVOS: {len(ativos)}"
-)
-
-ativos_processados = 0
-
-for ativo in ativos:
+    ativos = obter_ativos()
 
     logger.info(
-        f"BAIXANDO HISTÓRICO: {ativo}"
+        f"TOTAL DE ATIVOS: {len(ativos)}"
     )
 
-    dados = pd.DataFrame()
+    ativos_processados = 0
+
+    for ativo in ativos:
+
+        logger.info(
+            f"BAIXANDO HISTÓRICO: {ativo}"
+        )
+
+        dados = pd.DataFrame()
 
     # ==================================
     # RETRY DOWNLOAD
