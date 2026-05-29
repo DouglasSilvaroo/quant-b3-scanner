@@ -9,10 +9,10 @@ from config import SEGMENTOS
 
 import os
 
-from historical_loader import carregar_historico
-if os.getenv("LOAD_HISTORICO") == "True":
+#from historical_loader import carregar_historico
+#if os.getenv("LOAD_HISTORICO") == "True":
 
-    carregar_historico()
+#    carregar_historico()
 
 from auth import (
     tela_login,
@@ -79,9 +79,13 @@ st.set_page_config(
 
 )
 
-if os.getenv("LOAD_HISTORICO") == "True":
+# ==========================================
+# SESSION STATE
+# ==========================================
 
-    carregar_historico()
+if "usuario" not in st.session_state:
+
+    st.session_state["usuario"] = None
 
 
 # ==========================================
@@ -108,9 +112,11 @@ with st.sidebar:
 
     st.title("🏦 PAINEL SPREAD")
 
-    st.success(
-        f"👤 {st.session_state['usuario']}"
-    )
+    if st.session_state["usuario"]:
+
+        st.success(
+            f"👤 {st.session_state['usuario']}"
+        )
 
     st.markdown("---")
 
