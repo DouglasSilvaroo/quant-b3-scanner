@@ -87,7 +87,7 @@ def carregar_historico():
         dados = pd.DataFrame()
 
         # ==================================
-        # RETRY DOWNLOAD
+        # DOWNLOAD
         # ==================================
 
         for tentativa in range(
@@ -125,7 +125,7 @@ def carregar_historico():
                 )
 
         # ==================================
-        # VALIDAÇÃO
+        # VALIDAÇÕES
         # ==================================
 
         if dados.empty:
@@ -159,29 +159,33 @@ def carregar_historico():
         # ==================================
 
         dados = dados.reset_index()
-      
-        if isinstance(dados.columns, pd.MultiIndex):
+
+        if isinstance(
+            dados.columns,
+            pd.MultiIndex
+        ):
 
             dados.columns = [
                 col[0]
                 for col in dados.columns
-
             ]
 
         logger.info(
-             f"COLUNAS: {dados.columns.tolist()}"
+            f"{ativo} | "
+            f"{len(dados)} registros"
         )
 
+        # ==================================
+        # PREPARA LOTE
+        # ==================================
 
-        # ==================================
-        # INSERT
-        # ==================================
+        registros = []
 
         for _, row in dados.iterrows():
 
             try:
 
-                registro = {
+                registros.append({
 
                     "ticker": ativo,
 
@@ -195,10 +199,10 @@ def carregar_historico():
 
                     "high": float(
                         row["High"]
-                    ), 
+                    ),
 
                     "low": float(
-                       row["Low"]
+                        row["Low"]
                     ),
 
                     "close": float(
@@ -208,21 +212,40 @@ def carregar_historico():
                     "volume": float(
                         row["Volume"]
                     )
-              
-                }
+
+                })
+
+            except Exception as erro:
+
+                logger.error(
+                    f"ERRO PREPARANDO "
+                    f"REGISTRO {ativo}: "
+                    f"{erro}"
+                )
+
+        # ==================================
+        # UPSERT EM LOTE
+        # ==================================
+
+        try:
+
+            if registros:
 
                 supabase.table(
                     MARKET_TABLE
                 ).upsert(
-                    registro,
+                    registros,
                     on_conflict="ticker,date"
                 ).execute()
 
-            except Exception as erro:
+        except Exception as erro:
 
-                logger.exception(
-                    f"ERRO INSERT {ativo}"                    
-                )
+            logger.exception(
+                f"ERRO UPSERT LOTE "
+                f"{ativo}"
+            )
+
+            continue
 
         ativos_processados += 1
 
@@ -232,5 +255,6 @@ def carregar_historico():
 
     logger.info(
         f"CARGA FINALIZADA | "
-        f"ATIVOS PROCESSADOS: {ativos_processados}"
+        f"ATIVOS PROCESSADOS: "
+        f"{ativos_processados}"
     )
