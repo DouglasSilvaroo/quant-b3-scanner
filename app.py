@@ -87,6 +87,14 @@ if "usuario" not in st.session_state:
 
     st.session_state["usuario"] = None
 
+if "menu" not in st.session_state:
+
+    st.session_state["menu"] = "Painel"
+
+if "logado" not in st.session_state:
+
+    st.session_state["logado"] = False
+
 
 # ==========================================
 
