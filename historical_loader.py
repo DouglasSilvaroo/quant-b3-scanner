@@ -1,181 +1,104 @@
-
+import os
 import time
 import pandas as pd
 import yfinance as yf
 
 from supabase import create_client
 
+from dotenv import load_dotenv
+
 from config import (
-    SEGMENTOS,
-    MARKET_HISTORY_PERIOD,
-    MARKET_MAX_RETRIES,
-    MARKET_RETRY_SLEEP,
-    MARKET_DOWNLOAD_SLEEP,
-    MARKET_TABLE
+SEGMENTOS,
+MARKET_HISTORY_PERIOD,
+MARKET_MAX_RETRIES,
+MARKET_RETRY_SLEEP,
+MARKET_DOWNLOAD_SLEEP,
+MARKET_TABLE
 )
 
 from logger import logger
 
-from dotenv import load_dotenv
-
-import os
-
-
 # ==========================================
+
 # LOAD ENV
+
 # ==========================================
 
 load_dotenv()
 
-
 # ==========================================
+
 # SUPABASE
+
 # ==========================================
 
 SUPABASE_URL = os.getenv(
-
-    "SUPABASE_URL"
-
+"SUPABASE_URL"
 )
 
 SUPABASE_KEY = os.getenv(
-
-    "SUPABASE_KEY"
-
+"SUPABASE_KEY"
 )
 
 supabase = create_client(
-
-    SUPABASE_URL,
-    SUPABASE_KEY
-
+SUPABASE_URL,
+SUPABASE_KEY
 )
 
-
-# ==========================================
-# LISTA ATIVOS
 # ==========================================
 
+# LISTA DE ATIVOS
+
+# ==========================================
+
+def obter_ativos():
+
+```
 ativos = []
 
 for segmento in SEGMENTOS.values():
 
     ativos.extend(segmento)
 
-ativos = list(set(ativos))
-
-ativos = ativos[:5]
-
+return sorted(
+    list(set(ativos))
+)
+```
 
 # ==========================================
-# DOWNLOAD + INSERT
+
+# FUNÇÃO PRINCIPAL
+
 # ==========================================
+
+def carregar_historico():
+
+```
+ativos = obter_ativos()
+
+logger.info(
+    f"TOTAL DE ATIVOS: {len(ativos)}"
+)
+
+ativos_processados = 0
 
 for ativo in ativos:
 
     logger.info(
-
         f"BAIXANDO HISTÓRICO: {ativo}"
-
     )
 
     dados = pd.DataFrame()
 
+    # ==================================
+    # RETRY DOWNLOAD
+    # ==================================
+
     for tentativa in range(
-
         MARKET_MAX_RETRIES
-
     ):
 
         try:
 
-            time.sleep(
-
-                MARKET_DOWNLOAD_SLEEP
-
-            )
-
-            dados = yf.download(
-
-                ativo,
-
-                period=MARKET_HISTORY_PERIOD,
-
-                auto_adjust=True,
-
-                progress=False,
-
-                threads=False
-
-            )
-
-            if not dados.empty:
-
-                break
-
-        except Exception as erro:
-
-            logger.error(
-
-                f"{ativo} | "
-                f"TENTATIVA "
-                f"{tentativa + 1} | "
-                f"{erro}"
-
-            )
-
-            time.sleep(
-
-                MARKET_RETRY_SLEEP
-
-            )
-            
-        dados = dados.dropna()
-
-        if dados.empty:
-
-            logger.warning(f"{ticker} sem histórico válido")
-            continue
-
-        if len(dados) < 100:
-
-            logger.warning(f"{ticker} histórico insuficiente")
-            continue
-
-    # ==========================================
-    # VALIDAÇÃO
-    # ==========================================
-
-    if dados.empty:
-
-        logger.error(
-
-            f"SEM DADOS: {ativo}"
-
-        )
-
-        continue
-
-    # ==========================================
-    # RESET INDEX
-    # ==========================================
-
-    dados = dados.reset_index()
-
-    # ==========================================
-    # PREPARAÇÃO DOS DADOS
-    # ==========================================
-
-    dados = dados.dropna()
-
-    if dados.empty:
-
-        logger.warning(
-
-            f"{ativo} sem histórico válido"
-
-        )
-
-        continue
-
-    dados = dados.reset_index()
+            time
+```
