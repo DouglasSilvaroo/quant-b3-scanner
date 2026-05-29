@@ -38,7 +38,7 @@ SUPABASE_KEY = os.getenv(
 )
 
 logger.info(
-    f"KEY PREFIX: {SUPABASE_KEY[:20]}"
+    f"KEY PREFIX: {SUPABASE_KEY[:30]}"
 )
 
 supabase = create_client(
