@@ -10,6 +10,9 @@ from config import SEGMENTOS
 import os
 
 from historical_loader import carregar_historico
+if os.getenv("LOAD_HISTORICO") == "True":
+
+    carregar_historico()
 
 from auth import (
     tela_login,
