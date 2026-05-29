@@ -216,9 +216,8 @@ def carregar_historico():
 
             except Exception as erro:
 
-                logger.error(
-                    f"ERRO INSERT {ativo}: "
-                    f"{erro}"
+                logger.exception(
+                    f"ERRO INSERT {ativo}"                    
                 )
 
         ativos_processados += 1
