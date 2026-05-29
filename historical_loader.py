@@ -169,9 +169,9 @@ def carregar_historico():
                     "ticker": ativo,
 
                     "date": row["Date"].strftime(
-                        "%Y-%m-%d"
-                    ),
-
+                        row["Date"]
+                    ).date().isoformat(),
+                                        
                     "open": float(
                         row["Open"]
                     ),
