@@ -181,20 +181,20 @@ def carregar_historico():
 
                     "ticker": ativo,
 
-                    pd.to_datetime
+                    "date": pd.to_datetime(
                         row["Date"]
                     ).date().isoformat(),
-                                        
+
                     "open": float(
                         row["Open"]
                     ),
 
                     "high": float(
                         row["High"]
-                    ),
+                    ), 
 
                     "low": float(
-                        row["Low"]
+                       row["Low"]
                     ),
 
                     "close": float(
@@ -204,7 +204,7 @@ def carregar_historico():
                     "volume": float(
                         row["Volume"]
                     )
-
+              
                 }
 
                 supabase.table(
