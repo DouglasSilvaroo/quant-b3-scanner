@@ -156,18 +156,16 @@ def carregar_historico():
 
         dados = dados.reset_index()
       
-       if isinstance(dados.columns, pd.MultiIndex):
+        if isinstance(dados.columns, pd.MultiIndex):
 
             dados.columns = [
-
                 col[0]
-
                 for col in dados.columns
 
             ]
 
         logger.info(
-            f"COLUNAS: {dados.columns.tolist()}"
+             f"COLUNAS: {dados.columns.tolist()}"
         )
 
 
