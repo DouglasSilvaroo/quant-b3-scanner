@@ -129,6 +129,18 @@ for ativo in ativos:
                 MARKET_RETRY_SLEEP
 
             )
+            
+        dados = dados.dropna()
+
+        if dados.empty:
+
+            logger.warning(f"{ticker} sem histórico válido")
+            continue
+
+        if len(dados) < 100:
+
+            logger.warning(f"{ticker} histórico insuficiente")
+            continue
 
     # ==========================================
     # VALIDAÇÃO
@@ -151,86 +163,19 @@ for ativo in ativos:
     dados = dados.reset_index()
 
     # ==========================================
-    # INSERT LINHAS
+    # PREPARAÇÃO DOS DADOS
     # ==========================================
 
-    for _, row in dados.iterrows():
+    dados = dados.dropna()
 
-        try:
+    if dados.empty:
 
-            registro = {
+        logger.warning(
 
-                "ticker": ativo,
+            f"{ativo} sem histórico válido"
 
-                "date": row["Date"].strftime(
+        )
 
-                    "%Y-%m-%d"
+        return
 
-                ),
-
-                "open": float(
-
-                    row["Open"]
-
-                ),
-
-                "high": float(
-
-                    row["High"]
-
-                ),
-
-                "low": float(
-
-                    row["Low"]
-
-                ),
-
-                "close": float(
-
-                    row["Close"]
-
-                ),
-
-                "volume": float(
-
-                    row["Volume"]
-
-                )
-
-            }
-
-            supabase.table(
-
-                MARKET_TABLE
-
-            ).upsert(
-
-                registro,
-
-                on_conflict="ticker,date"
-
-            ).execute()
-
-        except Exception as erro:
-
-            logger.error(
-
-                f"ERRO INSERT {ativo}: "
-                f"{erro}"
-
-            )
-
-    logger.info(
-
-        f"HISTÓRICO SALVO: {ativo}"
-
-    )
-
-
-logger.info(
-
-    "CARGA HISTÓRICA FINALIZADA"
-
-)
-
+    dados = dados.reset_index
