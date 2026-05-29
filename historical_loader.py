@@ -155,6 +155,9 @@ def carregar_historico():
         # ==================================
 
         dados = dados.reset_index()
+        logger.info(
+            f"COLUNAS: {dados.columns.tolist()}"
+        )
 
         # ==================================
         # INSERT
