@@ -374,7 +374,7 @@ def render_permanencia(
 
     st.data_editor(
 
-        df_heatmap,
+        df_tempo,
 
         use_container_width=True,
 
@@ -382,13 +382,13 @@ def render_permanencia(
 
     )
 
-    fig_heat = px.bar(
+    fig_tempo = px.bar(
 
-        df_heatmap,
+        df_tempo,
 
         x="Percentual",
 
-        y="Zona",
+        y="Faixa",
 
         orientation="h",
 
@@ -398,9 +398,9 @@ def render_permanencia(
 
     )
 
-    fig_heat.update_layout(
+    fig_tempo.update_layout(
 
-        title="Mapa de Concentração das Camadas",
+        title="Permanência Temporal por Faixa",
 
         height=500,
 
@@ -414,11 +414,11 @@ def render_permanencia(
 
     st.plotly_chart(
 
-        fig_heat,
+        fig_tempo,
 
         use_container_width=True
 
-    )    
+    )
 
 # ==========================================
 # ZSCORE INSTITUCIONAL
