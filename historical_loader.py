@@ -52,16 +52,14 @@ SUPABASE_KEY
 # ==========================================
 
 def obter_ativos():
+    ativos = []
 
-ativos = []
+    for segmento in SEGMENTOS.values():
+        ativos.extend(segmento)
 
-for segmento in SEGMENTOS.values():
-
-    ativos.extend(segmento)
-
-return sorted(
-    list(set(ativos))
-)
+    return sorted(
+        list(set(ativos))
+    )
 
 # ==========================================
 
