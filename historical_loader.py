@@ -168,7 +168,7 @@ def carregar_historico():
 
                     "ticker": ativo,
 
-                    "date": row["Date"].strftime(
+                    "date": pd.to_datetime(
                         row["Date"]
                     ).date().isoformat(),
                                         
